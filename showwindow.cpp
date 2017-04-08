@@ -389,6 +389,8 @@ void showtabwindow::setPlotNum(int n)
 
 void showtabwindow::layout()
 {
+    prefix = "";
+    isOneKey = true;
     count = 0;
     Index = 0;
     isCalculate = false;
@@ -694,6 +696,10 @@ void showtabwindow::initDetect()
     detectWindow->setDetectIndex(0);
 }
 
+void showtabwindow::setPrefix(QString p)
+{
+    prefix = p;
+}
 
 void showtabwindow::initLocate(position** pos,int num,int size,
                                double**diameterfre,double*diametermin,double*diametermax,int* pointnum)
@@ -703,6 +709,13 @@ void showtabwindow::initLocate(position** pos,int num,int size,
     countwindow->setAttr(diameterfre,diametermin,diametermax,num,pos,pointnum);
 
     indexChanged(1);
+    if(isOneKey){
+        qDebug()<<"initLocate";
+        isOneKey = false;
+        for(int i = 0;i < num;i++) {
+            save(i,"data/user/"+prefix+"location" + QString::number(i)+".xls","data/user/"+prefix+"location"+QString::number(i)+".jpg");
+        }
+    }
 }
 
 void showtabwindow::setIndex(int index)
@@ -757,7 +770,7 @@ void showtabwindow::setWavelength(double w)
     detectWindow->getSca()->setWavelength(w);
 }
 
-void showtabwindow::save(){
-    countwindow->saveAsExcel();
-    countwindow->saveAsImage();
+void showtabwindow::save(int index,QString name1,QString name2){
+    countwindow->saveExcel(name1,index);
+    countwindow->saveImg(name2,index);
 }

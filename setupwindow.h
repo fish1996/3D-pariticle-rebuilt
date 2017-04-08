@@ -134,7 +134,6 @@ public:
     void setPath(QString);
     QString getPath();
     void loadImg(QString path);
-    void loadImg(QString path,const imgAttr_t& imgAttr);
     setupwindow(QWidget* parent = 0);
 };
 

@@ -138,20 +138,22 @@ private:
     int count;
     bool isCalculate;
     int Index;
+    QString prefix;
 
 public:
+    void setPrefix(QString);
+    bool isOneKey;
     plotwindow* countwindow;
     framewindow* frameWindow;
     framewindow* figWindow;
     framewindow* detectWindow;
     OpenGLView* openglWindow;
-   // basewindow* viewwindow;
     showtabwindow(QTabWidget* parent = 0);
     void addItem(int);
     void zoomIn();
     void zoomOut();
     void reset();
-    void save();
+    void save(int,QString,QString);
     void original();
     void setPath(QString);
     void fullScreen();

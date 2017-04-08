@@ -111,6 +111,8 @@ private slots:
     void chooseBackground();
     void clearBuffer();
     void saveImg();
+public:
+    void saveAll(QString,bool);
 
 protected:
     void closeEvent(QCloseEvent*);

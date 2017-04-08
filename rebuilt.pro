@@ -23,7 +23,6 @@ SOURCES += main.cpp\
     holdbutton.cpp \
     iconhelper.cpp \
     initwindow.cpp \
-    mainwidget.cpp \
     menu.cpp \
     openglwindow.cpp \
     plotwindow.cpp \
@@ -56,7 +55,6 @@ HEADERS  += mainwindow.h \
     holdbutton.h \
     iconhelper.h \
     initwindow.h \
-    mainwidget.h \
     menu.h \
     message.h \
     myhelper.h \

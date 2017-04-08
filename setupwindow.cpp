@@ -285,27 +285,6 @@ void setupwindow::loadImg(QString path)
     tabWindow->filePicture->setPixmap(img);
 }
 
-void setupwindow::loadImg(QString path,const imgAttr_t& imgAttr)
-{
-    QPixmap img(path);
-    QFileInfo info(path);
-
-    QString message = QStringLiteral("图片名：")
-            + info.fileName()
-            + QStringLiteral("宽度:")
-            + QString::number(imgAttr.getWidth())
-            + QStringLiteral("\n高度:")
-            + QString::number(imgAttr.getHeight())
-            + QStringLiteral("\n大小:")
-            + QString::number(imgAttr.getSize()/1024)
-            + QStringLiteral("KB\n修改日期:")
-            + imgAttr.getCreateDate()
-            + QStringLiteral("\n创建日期:")
-            + imgAttr.getReviseDate();
-    tabWindow->imgMessage->setText(message);
-    img = img.scaled(tabWindow->filePicture->size(),Qt::KeepAspectRatio);
-    tabWindow->filePicture->setPixmap(img);
-}
 
 void setupwindow::layout()
 {
@@ -371,8 +350,6 @@ void setupwindow::layout()
 
     glayout1->addWidget(oneKeyBtn,1,1,2,2);
     oneKeyBtn->setFixedSize(120,60);
-    oneKeyBtn->setStyleSheet("background-color: qconicalgradient(cx:0.5, cy:0.522909, angle:179.9, stop:0.494318 rgba(214, 214, 214, 255), stop:0.5 rgba(236, 236, 236, 255));border:1px solid rgb(124,124,124);"
-                             "border-radius:5px;");
     glayout1->addWidget(runBtn,1,3,1,1);
     runBtn->setFixedWidth(80);
     glayout1->addWidget(figplotBtn,1,4,1,1);

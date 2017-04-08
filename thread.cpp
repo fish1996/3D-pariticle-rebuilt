@@ -8,23 +8,24 @@
 
 threadA::threadA() {}
 
-void threadA::set(QString _name,double _zmin, double _zmax, double _interval,int _size,
-                  progressbar* _bar,mainwindow* _window)
-{
 
+
+void threadA::set(double _min,double _max,QString _name,int _size,
+         double _interval,int _imgnum,progressbar* _bar,mainwindow* _window)
+{
+    zmin = _min;
+    zmax = _max;
     name = _name;
-    zmin = _zmin * 0.01;
-    zmax = _zmax * 0.01;
-    interval = _interval * 0.001;
     size = _size;
+    interval = _interval * 0.001;
+    imgnum = _imgnum;
     bar = _bar;
     window = _window;
 }
 
-
 void threadA::run()
 {
-    ext = new extend((zmax-zmin)/interval+1,size,name.toStdString(),zmin,zmax,interval);
+    ext = new extend(size,imgnum,name.toStdString(),zmin,zmax,interval);
     connect(ext,SIGNAL(extendOk()),bar,SLOT(changeState()));
     connect(ext,SIGNAL(extendAll()),window->showWindow,SLOT(initPlot()));
     connect(ext,SIGNAL(extendAll()),this,SLOT(release()));
@@ -99,7 +100,6 @@ void threadC::set(mainwindow* _window,int size,progressbar* _bar)
 
 void threadC::get(Mat* _p1xy,Mat* _p1area,Mat* _p1box,Mat* _ip1xy,Mat* _ip1area,Mat* _ip1box)
 {
-   // qDebug()<<"get hereherere";
     p1xy = _p1xy;
     p1area = _p1area;
     p1box = _p1box;
@@ -124,10 +124,7 @@ void threadC::run(){
     connect(Location,SIGNAL(locateAll(position**,int,int,double**,double*,double*,int*)),
             window->showWindow,SLOT(initLocate(position**,int,int,double**,double*,double*,int*)));
     connect(Location,SIGNAL(locateAll()),this,SLOT(release()));
-    connect(Location,SIGNAL(locateAll(double**,double*)),window->showWindow,SLOT(locate));
     Location->set(p1xy,p1area,p1box,ip1xy,ip1area,ip1box);
-    //调用方式diameterfre[0][0]前一个0表示一次性实现的图像张数例如3张，后一个0表示第1个区间的频率
-    //直接diametermin[0],diametermax[0],第一张图对应的最大最小值横坐标
     Location->p_location(tempfilename1,boxcoef,planesumnuber,secnum,imgnum);
 }
 
@@ -161,9 +158,10 @@ thread::thread()
     connect(this,SIGNAL(send(int)),this,SLOT(errorMsg(int)));
 }
 
-void thread::oneKey()
+void thread:: oneKey()
 {
     handle();
+    window->showWindow->isOneKey = true;
     connect(this,SIGNAL(Next()),this,SLOT(figplot()));
     connect(thA,SIGNAL(Next()),this,SLOT(detect()));
     connect(thB,SIGNAL(Next()),this,SLOT(locate()));
@@ -172,39 +170,40 @@ void thread::oneKey()
 
 void thread::complete()
 {
+   // window->saveAll("data/user");
     disconnect(this,SIGNAL(Next()),this,SLOT(figplot()));
     disconnect(thA,SIGNAL(Next()),this,SLOT(detect()));
     disconnect(thB,SIGNAL(Next()),this,SLOT(locate()));
     disconnect(thC,SIGNAL(Next()),this,SLOT(complete()));
+    window->saveAll("data/user",true);
 }
 
 void thread::locate()
 {
     bar = new progressbar(QStringLiteral("颗粒定位"));
-    bar->total = ((int)((((zmax1-zmin1)/interval))+1))*filename.size();
+    bar->total = size*imgnum;
     bar->count = 0;
     bar->display();
-    thC->set(window,filename.size(),bar);
+    thC->set(window,imgnum,bar);
     thC->start();
 }
 
 void thread::detect()
 {
     bar = new progressbar(QStringLiteral("颗粒探测"));
-    bar->total = 2*filename.size();
+    bar->total = 2*imgnum;
     bar->display();
-    thB->set(window,bar,filename.size());
+    thB->set(window,bar,imgnum);
     thB->start();
 }
 
 void thread::figplot()
 {
     bar = new progressbar(QStringLiteral("景深扩展"));
-    bar->total = (2*(int)((((zmax1-zmin1)/interval))+1))*filename.size();
+    bar->total = (2*size*imgnum);
     bar->display();
-    thA->set(window->msg.path,window->setupWindow->zminText->text().toDouble(),
-             window->setupWindow->zmaxText->text().toDouble(),
-             window->setupWindow->intervalText->text().toDouble(),filename.size(),bar,window);
+    thA->set(zmin1,zmax1,window->msg.path,size,
+             window->setupWindow->intervalText->text().toDouble(),imgnum,bar,window);
     thA->start();
 }
 
@@ -279,8 +278,9 @@ void thread::handle()
     bar = new progressbar(QStringLiteral("全息重建"));
 
     window->count = bar->count = 0;
+    imgnum = filename.size();
     bar->total = ((int)((((zmax1-zmin1)/interval))+1))*filename.size();
-    window->totalnum = window->total= (((zmax1-zmin1)/interval)) + 1;
+    size = window->totalnum = window->total= (((zmax1-zmin1)/interval)) + 1;
     window->imgnum = filename.size();
     window->showWindow->setTotalNum(((zmax1-zmin1)/interval)+1);
 
@@ -306,18 +306,18 @@ void thread::changeState(State s)
     case Null:
         break;
     case Rebuilt:
-        qDebug()<<"enale";
         window->setupWindow->figplotBtn->setEnabled(true);
+        window->setupWindow->locationBtn->setEnabled(false);
+        window->setupWindow->detectionBtn->setEnabled(false);
         break;
     case Extend:
         window->setupWindow->detectionBtn->setEnabled(true);
         break;
     case Detect:
-        qDebug()<<"detect";
         window->setupWindow->locationBtn->setEnabled(true);
         break;
     case Locate:
-        //window->setupWindow->locationBtn->setEnabled(true);
+        window->setupWindow->runBtn->setEnabled(true);
         break;
     }
 }
@@ -334,9 +334,7 @@ void thread::barClose()
 
 void thread::run()
 {
-    qDebug()<<"run";
     reb = new reBuilt(tempfilename, filename, zmin1, zmax1, lamda1, pixelsize, interval,bar); //调用rebuilt类*
-    qDebug()<<"run222";
     connect(reb,SIGNAL(finish()),this,SLOT(change()));
     connect(reb,SIGNAL(ok()),bar,SLOT(display()));
     connect(bar,SIGNAL(isClose()),this,SLOT(barClose()));

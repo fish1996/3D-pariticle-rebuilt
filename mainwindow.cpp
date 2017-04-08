@@ -19,6 +19,7 @@
 #include <QSlider>
 #include <QEvent>
 #include <fstream>
+#include <time.h>
 #include <QComboBox>
 #define nullptr 0
 
@@ -39,27 +40,24 @@ void message_t::set(double d1,double d2,double d3,double minr,double maxr,
 mainwindow::mainwindow(QWidget *parent)
     : QWidget(parent)
 {
-
+    srand(time(nullptr));
     loadAttr();
     layout();
     setConnect();
-    qDebug()<<"dfsfsdfsfdsfsdsdsfdsfdfsd";
     preAttr = "";
     name = "";
     backgroundname = "";
 
     msg.set(128,0.5,0.6,2*setupWindow->dpixText->text().toDouble(),
             INF,"data/temp",1,true);
-qDebug()<<"dfsfsdfsfdsfsdsdsfdsfdfsd";
+
     viewWindow->setPath(currentPath);
     setupWindow->setPath("data/camera/");
     showWindow->setPath(msg.path);
-
-    //Inverse = new imginverse();
     isInverse = new bool();
     *isInverse = false;
     showWindow->setI(isInverse);
-    qDebug()<<"dfsfsdfsfdsfsdsdsfdsfdfsd";
+
 }
 
 void mainwindow::loadAttr()
@@ -200,33 +198,52 @@ bool mainwindow::copyFile(QString sourceDir ,QString toDir, bool coverFileIfExis
     return true;
 }
 
+void mainwindow::saveAll(QString path,bool isOneKey)
+{
+    QChar* tmp = new QChar[6];
+    tmp[0] = '[';
+    tmp[1] = rand()%(123-41) + 41;
+    tmp[2] = rand()%(123-41) + 41;
+    tmp[3] = rand()%(123-41) + 41;
+    tmp[4] = ']';
+    tmp[5] = '\0';
+    QString prefix(tmp);
+    delete[] tmp;
+
+    showWindow->setPrefix(prefix);
+    for(int i = 0;i < imgnum;i++) {
+
+        for(int j = 0; j < totalnum ;j++) {
+
+            copyFile(msg.path+"/temp_plane_"+QString::number(i*totalnum + j)+".jpg" ,path+"/"+prefix+"temp_plane_"+QString::number(i*totalnum + j)+".jpg", true);
+            copyFile(msg.path+"/temp_plane_"+QString::number(i*totalnum + j)+"i.jpg" ,path+"/"+prefix+"temp_plane_"+QString::number(i*totalnum + j)+"i.jpg", true);
+        }
+        copyFile(msg.path+"/img_fuse"+QString::number(i)+".bmp" ,path+"/"+prefix+"img_fuse"+QString::number(i)+".bmp", true);
+        copyFile(msg.path+"/img_fuse"+QString::number(i)+"i.bmp" ,path+"/"+prefix+"img_fuse"+QString::number(i)+"i.bmp", true);
+
+        copyFile(msg.path+"/img_binaryzation"+QString::number(i)+".bmp" ,path+"/"+prefix+"binaryzation"+QString::number(i)+".jpg", true);
+        copyFile(msg.path+"/img_binaryzation"+QString::number(i)+"i.bmp" ,path+"/"+prefix+"binaryzation"+QString::number(i)+"i.jpg", true);
+        copyFile(msg.path+"/map_highfrequency"+QString::number(i)+".tiff" ,path+"/"+prefix+"map_highfrequency"+QString::number(i)+".tiff", true);
+        copyFile(msg.path+"/map_highfrequency"+QString::number(i)+"i.tiff" ,path+"/"+prefix+"map_highfrequency"+QString::number(i)+"i.tiff", true);
+qDebug()<<"come here";
+        copyFile(msg.path+"/map_lowfrequency"+QString::number(i)+".tiff" ,path+"/"+prefix+"map_lowfrequency"+QString::number(i)+".tiff", true);
+        copyFile(msg.path+"/map_lowfrequency"+QString::number(i)+"i.tiff" ,path+"/"+prefix+"map_lowfrequency"+QString::number(i)+"i.tiff", true);
+
+        if(!isOneKey){
+            qDebug()<<"no OneKey";
+            showWindow->save(i,path+"/"+prefix+"/location" + QString::number(i)+".xls",path+"/"+prefix+"location"+QString::number(i)+".jpg");
+        }
+    }
+    QMessageBox::about(0,"Message",QStringLiteral("保存成功!自动命名前缀为：")+prefix);
+}
+
 void mainwindow::saveImg()
 {
     QUrl url = QFileDialog::getExistingDirectoryUrl
             (this);
 
     QString path = url.toString().mid(8);
-    for(int i = 0;i < imgnum;i++) {
-        for(int j = 0; j < totalnum ;j++) {
-            copyFile(msg.path+"/temp_plane_"+QString::number(i*totalnum + j)+".jpg" ,path+"/temp_plane_"+QString::number(i*totalnum + j)+".jpg", true);
-            copyFile(msg.path+"/temp_plane_"+QString::number(i*totalnum + j)+"i.jpg" ,path+"/temp_plane_"+QString::number(i*totalnum + j)+"i.jpg", true);
-        }
-        copyFile(msg.path+"/img_fuse"+QString::number(i)+".bmp" ,path+"/img_fuse"+QString::number(i)+".bmp", true);
-        copyFile(msg.path+"/img_fuse"+QString::number(i)+"i.bmp" ,path+"/img_fuse"+QString::number(i)+"i.bmp", true);
-
-        copyFile(msg.path+"/img_binaryzation"+QString::number(i)+".bmp" ,path+"/binaryzation"+QString::number(i)+".jpg", true);
-        copyFile(msg.path+"/img_binaryzation"+QString::number(i)+"i.bmp" ,path+"/binaryzation"+QString::number(i)+"i.jpg", true);
-
-        copyFile(msg.path+"/map_highfrequency"+QString::number(i)+".tiff" ,path+"/map_highfrequency"+QString::number(i)+".tiff", true);
-        copyFile(msg.path+"/map_highfrequency"+QString::number(i)+"i.tiff" ,path+"/map_highfrequency"+QString::number(i)+"i.tiff", true);
-
-        copyFile(msg.path+"/map_lowfrequency"+QString::number(i)+".tiff" ,path+"/map_lowfrequency"+QString::number(i)+".tiff", true);
-        copyFile(msg.path+"/map_lowfrequency"+QString::number(i)+"i.tiff" ,path+"/map_lowfrequency"+QString::number(i)+"i.tiff", true);
-
-    }
-  //  showWindow->save();
-  //  lineedit->setText(url.toString());
-  //  path = url.toString();
+    saveAll(path,false);
 
 }
 
@@ -541,16 +558,7 @@ void mainwindow::importImg()
         return;
     }
     else{
-        image.load(name);
-        QFileInfo info(name);
-        imgAttr_t imgAttr;
-        imgAttr.setHeight(image.height());
-        imgAttr.setWidth(image.width());
-        imgAttr.setSize(info.size());
-        imgAttr.setCreateDate(info.created().toString());
-        imgAttr.setReviseDate(info.lastModified().toString());
-        setupWindow->loadImg(name,imgAttr);
-        setupWindow->tabWindow->setCurrentIndex(1);
+        setupWindow->loadImg(name);
     }
 
 }

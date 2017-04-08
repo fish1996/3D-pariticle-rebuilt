@@ -84,56 +84,7 @@ void plotwindow::saveAsExcel()
     QString filepath = QFileDialog::getSaveFileName(this, tr("Save as..."),
             QString(), tr("EXCEL files (*.xls *.xlsx);;HTML-Files (*.htm *.html);;"));
     if(filepath=="")return;
-    QString Begin = QString::fromLocal8Bit("<html><head></head><body><table border=\"1\" >");
-    QString end = QString::fromLocal8Bit("</table></body></html>");
-    QList<QString> list;
-  //若有列标题，取消此部分注释
-    QString header = "<tr>";
-    header += QString("<td>%1</td>").arg("id");
-    header += QString("<td>%1</td>").arg("X");
-    header += QString("<td>%1</td>").arg("Y");
-    header += QString("<td>%1</td>").arg("Z");
-    header += QString("<td>%1</td>").arg(QStringLiteral("颗粒直径"));
-    header += QString("<td>%1</td>").arg(QStringLiteral("颗粒总数"));
-    header += "</tr>";
-    list.push_back(header);
-
-    for(int i=0;i<pointnum[index];i++) {
-        QString rowStr = "<tr>";
-      //  for(int j=0;j<col;j++) {
-            QString cel;
-            cel = QString::number(i+1);
-            rowStr += QString("<td>%1</td>").arg(cel);
-            cel = QString::number(pos[index][i].X);
-            rowStr += QString("<td>%1</td>").arg(cel);
-            cel = QString::number(pos[index][i].Y);
-            rowStr += QString("<td>%1</td>").arg(cel);
-            cel = QString::number(pos[index][i].Z);
-            rowStr += QString("<td>%1</td>").arg(cel);
-            cel = QString::number(pos[index][i].D);
-            rowStr += QString("<td>%1</td>").arg(cel);
-            if(i == 0) {
-                cel = QString::number(pointnum[index]);
-                rowStr += QString("<td>%1</td>").arg(cel);
-            }
-      //  }
-        rowStr += "</tr>";
-        list.push_back(rowStr);
-    }
-    QString text = Begin;
-    for(int i=0;i<list.size();++i){
-        text.append(list.at(i));
-    }
-    text.append(end);
-    QTextEdit textEdit;
-    textEdit.setText(text);
-
-    QFile file(filepath);
-    if(file.open(QFile::WriteOnly | QIODevice::Text)) {
-        QTextStream ts(&file);
-        ts.setCodec("UTF-8");
-        ts<<textEdit.document()->toHtml("UTF-8");
-    }
+    saveExcel(filepath,index);
 }
 
 bool plotwindow::Rect::isOn(int x,int y)
@@ -162,6 +113,7 @@ plotwindow::Rect::Rect(int bx,int by,int sx,int sy):
 
 void plotwindow::setAttr(double** _diameterfre,double* _diametermin,double* _diametermax,int n,position** p,int* num)
 {
+    qDebug()<<"setAttr";
     pos = p;
     pointnum = num;
     imgnum = n;
@@ -274,19 +226,13 @@ void plotwindow::paintEvent(QPaintEvent* e)
     }
 }
 
-void plotwindow::saveAsImage()
+void plotwindow::saveImg(QString filename,int index)
 {
+    qDebug()<<"saveIMG";
     int _XMIN = 40,_XMAX = 500,_YMIN = 40,_YMAX = 400,_SIZEW = 580,_SIZEH = 480;
-    QString filename = QFileDialog::getSaveFileName(this, tr("保存图片"),QDir::currentPath(), tr("Images (*.png);; Image(*.bmp);; Image(*.jpg);"));
-    if(filename.isEmpty()) {
-        return;
-    }
     QPixmap* pixmap = new QPixmap(_SIZEW,_SIZEH);
 
-    qDebug()<<filename;
     QPainter paint(pixmap);
-    //pixmap = pixmap->scaled(_SIZEW,_SIZEH);
-
     float step = 0.1f;
     float length;
     if(num!=0)length = (_YMAX - _YMIN)/num;
@@ -305,9 +251,11 @@ void plotwindow::saveAsImage()
     for(int i = 1;i<=num;i++){
         paint.drawText(20,_YMAX-i*length,QString::number(step*(i)));
     }
+    double s = (diametermax[index] - diametermin[index])/(x);
     for(int i=0;i<x;i++){
-        paint.drawText(_XMIN + i*(_XMAX-_XMIN)/x,_YMAX+10,QString::number((int)(diametermin[index]+i*x)));
+        paint.drawText(_XMIN + i*(_XMAX-_XMIN)/x,_YMAX+10,QString::number((int)(diametermin[index]+i*s)));
     }
+
      paint.setPen(QColor(100,100,100));
     for(int i = 1;i<=num;i++){
         paint.drawLine(_XMIN,_YMAX-i*length,_XMAX,_YMAX-i*length);
@@ -329,4 +277,69 @@ void plotwindow::saveAsImage()
         paint.drawRect(_XMIN + i*(_XMAX-_XMIN)/x,_YMAX-(_YMAX-_YMIN)*diameterfre[index][i],(_XMAX-_XMIN)/x - 1,(_YMAX-_YMIN)*diameterfre[index][i]);
     }
     pixmap->save(filename);
+}
+
+void plotwindow::saveExcel(QString filepath,int index)
+{
+    qDebug()<<"saveExcel";
+    QString Begin = QString::fromLocal8Bit("<html><head></head><body><table border=\"1\" >");
+    QString end = QString::fromLocal8Bit("</table></body></html>");
+    QList<QString> list;
+
+    QString header = "<tr>";
+    header += QString("<td>%1</td>").arg("id");
+    header += QString("<td>%1</td>").arg("X");
+    header += QString("<td>%1</td>").arg("Y");
+    header += QString("<td>%1</td>").arg("Z");
+    header += QString("<td>%1</td>").arg(QStringLiteral("颗粒直径"));
+    header += QString("<td>%1</td>").arg(QStringLiteral("颗粒总数"));
+    header += "</tr>";
+    list.push_back(header);
+
+    for(int i=0;i<pointnum[index];i++) {
+        QString rowStr = "<tr>";
+      //  for(int j=0;j<col;j++) {
+            QString cel;
+            cel = QString::number(i+1);
+            rowStr += QString("<td>%1</td>").arg(cel);
+            cel = QString::number(pos[index][i].X);
+            rowStr += QString("<td>%1</td>").arg(cel);
+            cel = QString::number(pos[index][i].Y);
+            rowStr += QString("<td>%1</td>").arg(cel);
+            cel = QString::number(pos[index][i].Z);
+            rowStr += QString("<td>%1</td>").arg(cel);
+            cel = QString::number(pos[index][i].D);
+            rowStr += QString("<td>%1</td>").arg(cel);
+            if(i == 0) {
+                cel = QString::number(pointnum[index]);
+                rowStr += QString("<td>%1</td>").arg(cel);
+            }
+      //  }
+        rowStr += "</tr>";
+        list.push_back(rowStr);
+    }
+    QString text = Begin;
+    for(int i=0;i<list.size();++i){
+        text.append(list.at(i));
+    }
+    text.append(end);
+    QTextEdit textEdit;
+    textEdit.setText(text);
+
+    QFile file(filepath);
+    if(file.open(QFile::WriteOnly | QIODevice::Text)) {
+        QTextStream ts(&file);
+        ts.setCodec("UTF-8");
+        ts<<textEdit.document()->toHtml("UTF-8");
+    }
+}
+
+void plotwindow::saveAsImage()
+{
+
+    QString filename = QFileDialog::getSaveFileName(this, tr("保存图片"),QDir::currentPath(), tr("Images (*.png);; Images(*.bmp);; Images(*.jpg);"));
+    if(filename.isEmpty()) {
+        return;
+    }
+    saveImg(filename,index);
 }

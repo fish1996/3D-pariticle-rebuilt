@@ -54,6 +54,8 @@ private:
     position** pos;
 
 public:
+    void saveImg(QString name,int);
+    void saveExcel(QString name,int);
     void setIndex(int);
     bool isDraw;
     void setPlotNum(int n);

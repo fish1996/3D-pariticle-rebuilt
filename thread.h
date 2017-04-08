@@ -23,6 +23,7 @@ class threadA:public QThread
 {
     Q_OBJECT
 private:
+    int imgnum;
     double zmin;
     double zmax;
     double interval;
@@ -35,8 +36,8 @@ private:
 protected:
     void run()override;
 public:
-    void set(QString _name,double _zmin, double _zmax,
-             double _interval,int size,progressbar*,mainwindow* _window);
+    void set(double _min,double _max,QString _name,int _size,
+             double _interval,int _imgnum,progressbar*,mainwindow* _window);
     threadA();
 private slots:
     void release();
@@ -57,7 +58,6 @@ private:
     mainwindow* window;
     int imgnum;
     string tempfilename1;
-    //Engine* ep;
 private slots:
     void release();
 public:
@@ -127,7 +127,8 @@ private:
     double interval;
     std::string tempfilename;
     std::vector<std::string> filename;
-    //Mat image1;
+    int imgnum;
+    int size;
 
 public:
     thread();
