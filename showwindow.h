@@ -141,6 +141,7 @@ private:
     QString prefix;
 
 public:
+
     void setPrefix(QString);
     bool isOneKey;
     plotwindow* countwindow;
@@ -160,6 +161,7 @@ public:
     void setTotalNum(int);
     void reloadImg();
     void setI(bool*);
+    void setInverse(bool);
     void setCalculate(bool);
     bool getCalculate();
     void setPlotNum(int n);
@@ -171,8 +173,11 @@ public slots:
     scale* getSca();
     void initDetect();
     void initPlot();
-    void initLocate(position** pos,int num,int size,
-                                   double**diameterfre,double*diametermin,double*diametermax,int*);
+    void initLocate(position** pos,position** ipos,int num,int size,
+                                   double**diameterfre,double** idiameterfre,
+                                   double*diametermin,double*idiametermin,
+                                   double*diametermax,double*idiametermax,
+                                   int* pointnum,int * ipointnum);
     void indexChanged(int);
     void setIndex(int);
     void initIndex(int);

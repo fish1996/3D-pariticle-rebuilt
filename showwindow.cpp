@@ -681,6 +681,12 @@ void showtabwindow::setI(bool* is)
     detectWindow->setI(is);
 }
 
+void showtabwindow::setInverse(bool is)
+{
+    countwindow->setInverse(is);
+    openglWindow->setInverse(is);
+}
+
 void showtabwindow::setNum(int n)
 {
     num = n;
@@ -701,16 +707,19 @@ void showtabwindow::setPrefix(QString p)
     prefix = p;
 }
 
-void showtabwindow::initLocate(position** pos,int num,int size,
-                               double**diameterfre,double*diametermin,double*diametermax,int* pointnum)
+void showtabwindow::initLocate(position** pos,position** ipos,int num,int size,
+                                                  double**diameterfre,double** idiameterfre,
+                                                  double*diametermin,double*idiametermin,
+                                                  double*diametermax,double*idiametermax,
+                                                  int* pointnum,int * ipointnum)
 {
-    openglWindow->setPos(pos,num,pointnum);
+    openglWindow->setPos(pos,ipos,num,pointnum,ipointnum);
     countwindow->isDraw = true;
-    countwindow->setAttr(diameterfre,diametermin,diametermax,num,pos,pointnum);
-
+    countwindow->setAttr(diameterfre,idiameterfre,diametermin,idiametermin,
+                         diametermax,idiametermax,num,pos,ipos,
+                         pointnum,ipointnum);
     indexChanged(1);
     if(isOneKey){
-        qDebug()<<"initLocate";
         isOneKey = false;
         for(int i = 0;i < num;i++) {
             save(i,"data/user/"+prefix+"location" + QString::number(i)+".xls","data/user/"+prefix+"location"+QString::number(i)+".jpg");

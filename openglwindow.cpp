@@ -8,11 +8,11 @@ OpenGLView::OpenGLView()
     pos = nullptr;
     number = 0;
     pointnum = 0;
+    ipointnum = 0;
     index = 0;
-    qDebug()<<"OpenGLView";
+    isInverse = false;
 
     attrBox = new QComboBox(this);
- qDebug()<<"OpenGLView";
     attrBox->addItem(QStringLiteral("重建结果"),0);
     attrBox->addItem(QStringLiteral("3D视图"),1);
     attrBox->addItem(QStringLiteral("景深扩展"),2);
@@ -22,25 +22,45 @@ OpenGLView::OpenGLView()
 }
 
 
-void OpenGLView::setPos(position** _pos,int _num,int* _size)
+void OpenGLView::setPos(position** _pos,position** _ipos,int _num,int * _size,int* _isize)
 {
 
     if(pos!=nullptr) {
-        qDebug()<<"delete before";
         for(int i=0;i<number;i++){
-            qDebug()<<"delete" <<i;
             delete[] pos[i];
         }
-        qDebug()<<"delete after";
+        delete[] pointnum;
         delete[] pos;
     }
 
+    if(ipos!=nullptr) {
+        for(int i=0;i<number;i++){
+            delete[] ipos[i];
+        }
+        delete[] ipointnum;
+        delete[] ipos;
+    }
 
+    ipos = _ipos;
     pos = _pos;
     number = _num;
     pointnum = _size;
+    ipointnum = _isize;
+    reset(pos);
+    reset(ipos);
+
+}
+
+void OpenGLView::setInverse(bool is)
+{
+    isInverse = is;
+    update();
+}
+
+void OpenGLView::reset(position** pos)
+{
     for(int i = 0;i<number;i++){
-        qDebug()<<number;
+
         minx = 10000;
         miny = 10000;
         minz = 10000;
@@ -68,7 +88,7 @@ void OpenGLView::setPos(position** _pos,int _num,int* _size)
                 maxz = pos[i][j].Z;
             }
         }
-        qDebug()<<minx << maxx<<miny<<maxy<<minz<<maxz;
+
         double dx = maxx - minx;
         double dy = maxy - miny;
         double dz = maxz - minz;
@@ -79,7 +99,6 @@ void OpenGLView::setPos(position** _pos,int _num,int* _size)
                 pos[i][j].Z = 6*(pos[i][j].Z - minz)/dz - 3;
         }
     }
-   // update();
 }
 
 void OpenGLView::updateIndex(int _index)
@@ -189,13 +208,23 @@ void OpenGLView::drawScene()
     glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
     glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-    if(pointnum == nullptr)return;
-    for(int j = 0;j<pointnum[index];j++) {
-        glPushMatrix();
-      //  qDebug()<<pos[index][j].X<<" "<<pos[index][j].Y<<" "<<pos[index][j].Z<<" "<<pos[index][j].D;
-        glTranslatef(pos[index][j].Y,pos[index][j].Z,-pos[index][j].X);
-        glutSolidSphere(pos[index][j].D/100,16,16);
-        glPopMatrix();
+    if(!isInverse) {
+        if(pointnum == nullptr)return;
+        for(int j = 0;j<pointnum[index];j++) {
+            glPushMatrix();
+            glTranslatef(pos[index][j].Y,pos[index][j].Z,-pos[index][j].X);
+            glutSolidSphere(pos[index][j].D/100,16,16);
+            glPopMatrix();
+        }
+    }
+    else {
+        if(ipointnum == nullptr)return;
+        for(int j = 0;j<ipointnum[index];j++) {
+            glPushMatrix();
+            glTranslatef(ipos[index][j].Y,pos[index][j].Z,-pos[index][j].X);
+            glutSolidSphere(ipos[index][j].D/100,16,16);
+            glPopMatrix();
+        }
     }
 }
 

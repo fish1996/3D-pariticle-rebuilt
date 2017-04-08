@@ -2,6 +2,7 @@
 #include "extend.h"
 #include<QDebug>
 
+
 extend::extend(int size1,int num1,string tempfilename1, double zmin1, double zmax1, double interval
                )
 {
@@ -16,14 +17,14 @@ extend::extend(int size1,int num1,string tempfilename1, double zmin1, double zma
 
 void extend::start()
 {
-    if(!dwt22Initialize()){
+    /*if(!dwt22Initialize()){
         cout<<"Could not initialize!"<<endl;
         return;
     }
     if(!idwt22Initialize()){
         cout<<"Could not initialize!"<<endl;
         return;
-    }
+    }*/
     for(int i = 0;i<num;i++) {
         qDebug()<<"i="<<i;
         image_extend(i,size, zmin, zmax, precision);
@@ -31,8 +32,8 @@ void extend::start()
     }
 
 
-    idwt22Terminate();
-    dwt22Terminate();
+    /*idwt22Terminate();
+    dwt22Terminate();*/
     qDebug()<<"allfinish hererere";
     emit(extendAll());
 }
@@ -75,7 +76,7 @@ Mat extend::stdfilt(Mat_<double> const& I, InputArray kernel, int borderType)
     return SQRT(max<double>(G2-G1,0.));//return SQRT<double>(MAMX<double>(G2-G1,0.));
 }
 
-mwArray extend::mat2mwarray(const Mat imgsrc)
+/*mwArray extend::mat2mwarray(const Mat imgsrc)
 {
     Mat imgsrcs=imgsrc.clone();
     int h,w,c;
@@ -141,9 +142,9 @@ Mat extend::mwarray2mat(const mwArray data)
         return img;
 
     }
-}
+}*/
 
-void extend::dwt2(Mat &i, Mat &ll, Mat &hh, Mat &dd, Mat &vv)
+/*void extend::dwt2(Mat &i, Mat &ll, Mat &hh, Mat &dd, Mat &vv)
 {
     mwArray p=mat2mwarray(i);
     Mat a=mwarray2mat(p);
@@ -167,7 +168,7 @@ void extend::idwt2(Mat &idst,Mat &llf,Mat &hhf,Mat &ddf,Mat &vvf)
     mwArray img_f;
     idwt22(1,img_f,lf,hf,vf,df);
     idst=mwarray2mat(img_f);
-}
+}*/
 
 int extend::round(float x)
 {
@@ -182,6 +183,220 @@ void extend::accurate4(Mat& img)
         }
     }
 }
+
+Mat extend::wextendcol(int sizeEXT,Mat x)
+{
+    int lx=x.cols;
+    int ly=x.rows;
+    int lf=sizeEXT;
+
+    Mat y(ly,2*lf+lx,CV_64F,Scalar(0));
+    for(int i=0;i<lf;i++){
+        Mat temp=x.col(lf-i-1);
+        temp.copyTo(y.col(i));
+    }
+    for(int i=0;i<lx;i++){
+        Mat temp=x.col(i);
+        temp.copyTo(y.col(i+lf));
+    }
+    for(int i=0;i<lf;i++){
+        Mat temp=x.col(lx-i-1);
+        temp.copyTo(y.col(i+lf+lx));
+    }
+    return y;
+}
+
+Mat extend::wextendrow(int sizeEXT,Mat x)
+{
+    int lx=x.cols;
+    int ly=x.rows;
+    int lf=sizeEXT;
+
+    Mat y(2*lf+ly,lx,CV_64F,Scalar(0));
+    for(int i=0;i<lf;i++){
+        Mat temp=x.row(lf-i-1);
+        temp.copyTo(y.row(i));
+    }
+    for(int i=0;i<ly;i++){
+        Mat temp=x.row(i);
+        temp.copyTo(y.row(i+lf));
+    }
+    for(int i=0;i<lf;i++){
+        Mat temp=x.row(ly-i-1);
+        temp.copyTo(y.row(i+lf+ly));
+    }
+    return y;
+}
+
+Mat extend::conv2(Mat img, Mat ikernel, ConvolutionType type)
+{
+    Mat dest;
+    Mat kernel;
+    flip(ikernel,kernel,-1);
+    Mat source = img;
+    if(CONVOLUTION_FULL == type)
+    {
+        source = Mat();
+        const int additionalRows = kernel.rows-1, additionalCols = kernel.cols-1;
+        copyMakeBorder(img, source, (additionalRows+1)/2, additionalRows/2, (additionalCols+1)/2, additionalCols/2, BORDER_CONSTANT, Scalar(0));
+    }
+    Point anchor(kernel.cols - kernel.cols/2 - 1, kernel.rows - kernel.rows/2 - 1);
+    int borderMode = BORDER_CONSTANT;
+    filter2D(source, dest, img.depth(), kernel, anchor, 0, borderMode);
+
+    if(CONVOLUTION_VALID == type)
+    {
+        dest = dest.colRange((kernel.cols-1)/2, dest.cols - kernel.cols/2).rowRange((kernel.rows-1)/2, dest.rows - kernel.rows/2);
+    }
+
+    return dest;
+}
+
+Mat extend::convdown(Mat x,Mat F,int first[],int last[],int sizeEXT)
+{
+    int f1=first[0];
+    int f2=first[1];
+    int l1=last[0];
+    int l2=last[1];
+
+    int num1=(l1-f1)/2+1;
+    int num2=(l2-f2)/2+1;
+
+    Mat y(x.rows,num2,CV_64F,Scalar(0));
+    for(int i=0;i<num2;i++){
+        Mat temp=x.col(f2+i*2-1);
+        temp.copyTo(y.col(i));
+    }
+
+    Mat y1=wextendrow(sizeEXT,y);
+
+    Mat y2=conv2(y1.t(),F,CONVOLUTION_VALID);
+    y2 = y2.t();
+
+    Mat y3(num1,y2.cols,CV_64F,Scalar(0));
+    for(int i=0;i<num1;i++){
+        Mat temp=y2.row(f1+i*2-1);
+        temp.copyTo(y3.row(i));
+    }
+
+    return y3;
+}
+
+void extend::dwt(Mat &i,Mat &a,Mat &h,Mat &v,Mat &d)
+{
+    i.convertTo(i,CV_64FC1);
+    Size size=i.size();
+    int sy=size.height;
+    int sx=size.width;
+
+    Mat Lo_D  = (Mat_<double>(1, 8) <<  -0.0758, -0.0296, 0.4976, 0.8037, 0.2979, -0.0992, -0.0126, 0.0322);
+    Mat Hi_D  = (Mat_<double>(1, 8) <<  -0.0322, -0.0126, 0.0992, 0.2979, -0.8037, 0.4976, 0.0296, -0.0758);
+
+    int first[2];
+    first[0]=2;
+    first[1]=2;
+    int last[2];
+    last[0]=sy+7;
+    last[1]=sx+7;
+    int sizeEXT=Lo_D.cols-1;
+
+    Mat y=wextendcol(sizeEXT,i);
+    Mat z;
+    z=conv2(y,Lo_D,CONVOLUTION_VALID);
+
+    a=convdown(z,Lo_D,first,last,sizeEXT);
+    h=convdown(z,Hi_D,first,last,sizeEXT);
+
+    z=conv2(y,Hi_D,CONVOLUTION_VALID);
+
+    v=convdown(z,Lo_D,first,last,sizeEXT);
+    d=convdown(z,Hi_D,first,last,sizeEXT);
+}
+
+Mat extend::wkeep2(Mat x,int siz[])
+{
+    Mat y = x.clone();
+    Size size=x.size();
+    int sx[2];
+    sx[0]=size.height;
+    sx[1]=size.width;
+    if(siz[0]>sx[0]){
+        siz[0]=sx[0];
+    }
+    if(siz[1]>sx[1]){
+        siz[1]=sx[1];
+    }
+
+    if(siz[0]<1||siz[1]<1){
+        qDebug()<<"error!";
+        return y;
+    }
+
+    double d[2];
+    d[0]=(sx[0]-siz[0])/2;
+    d[1]=(sx[1]-siz[1])/2;
+    int first[2];
+    first[0]= 0;
+    first[1]= 0;
+    int last[2];
+    last[0]= 0;
+    last[1]= 0;
+
+    first[0]=1+floor(d[0]);
+    first[1]=1+floor(d[1]);
+    last[0]=sx[0]-ceil(d[0]);
+    last[1]=sx[1]-ceil(d[1]);
+
+    Mat y1=y(Range(first[0]-1,last[0]),Range(first[1]-1,last[1]));
+
+    return y1;
+}
+
+Mat extend::upsconv(Mat &z,Mat f1,Mat f2,int sx[])
+{
+
+    int s[2];
+    s[0]=sx[0]-8+2;
+    s[1]=sx[1]-8+2;
+
+    Mat y(z.rows*2-1,z.cols,CV_64F,Scalar(0));
+    for(int i=0;i<z.rows;i++){
+        Mat temp=z.row(i);
+        temp.copyTo(y.row(2*i));
+    }
+
+    Mat y1=conv2(y.t(),f1,CONVOLUTION_FULL);
+    Mat y2=y1.t();
+
+    Mat y3(y2.rows,y2.cols*2+1,CV_64F,Scalar(0));
+    for(int i=0;i<y2.cols;i++){
+        Mat temp=y2.col(i);
+        temp.copyTo(y3.col(2*i+1));
+    }
+
+    Mat y4=conv2(y3,f2,CONVOLUTION_FULL);
+
+    Mat y5=wkeep2(y4,s);
+
+    return y5;
+}
+
+void extend::idwt(Mat &i,Mat &a,Mat &h,Mat &v,Mat &d)
+{
+    Mat Lo_R  = (Mat_<double>(1, 8) <<  0.0322, -0.0126, -0.0992, 0.2979, 0.8037, 0.4976, -0.0296, -0.0758);
+    Mat Hi_R  = (Mat_<double>(1, 8) <<  -0.0758, 0.0296, 0.4976, -0.8037, 0.2979, 0.0992, -0.0126, -0.0322);
+
+    Size size=a.size();
+    int sx[2];
+    sx[0]=size.height*2;
+    sx[1]=size.width*2;
+    Mat ia=upsconv(a,Lo_R,Lo_R,sx);
+    Mat ih=upsconv(h,Hi_R,Lo_R,sx);
+    Mat iv=upsconv(v,Lo_R,Hi_R,sx);
+    Mat id=upsconv(d,Hi_R,Hi_R,sx);
+    i=ia+ih+iv+id;
+}
+
 
 void extend::image_extend(int num,int size, double zmin, double zmax, double precision)
 {
@@ -211,7 +426,7 @@ void extend::image_extend(int num,int size, double zmin, double zmax, double pre
       //  qDebug()<<tempfilename_mat;
         Mat_<double> ll,hh,dd,vv;
 
-        dwt2(Image,ll,hh,vv,dd);
+        dwt(Image,ll,hh,vv,dd);
      //   qDebug()<<tempfilename_mat;
         Mat Sx = (Mat_<double>(3, 3) << -1, -2, -1, 0, 0, 0, 1, 2, 1);
         Mat Sxt=Sx.t();
@@ -295,7 +510,8 @@ void extend::image_extend(int num,int size, double zmin, double zmax, double pre
     accurate4(ddf);
 
     Mat img_f;
-    idwt2(img_f,llf,hhf,vvf,ddf);
+    idwt(img_f,llf,hhf,vvf,ddf);
+    accurate4(img_f);
 
     Size size=Image.size();
     int ny=size.height;
@@ -367,7 +583,7 @@ void extend::iimage_extend(int num,int size, double zmin, double zmax, double pr
       //  qDebug()<<tempfilename_mat;
         Mat_<double> ll,hh,dd,vv;
 
-        dwt2(Image,ll,hh,vv,dd);
+        dwt(Image,ll,hh,vv,dd);
      //   qDebug()<<tempfilename_mat;
         Mat Sx = (Mat_<double>(3, 3) << -1, -2, -1, 0, 0, 0, 1, 2, 1);
         Mat Sxt=Sx.t();
@@ -451,7 +667,8 @@ void extend::iimage_extend(int num,int size, double zmin, double zmax, double pr
     accurate4(ddf);
 
     Mat img_f;
-    idwt2(img_f,llf,hhf,vvf,ddf);
+    idwt(img_f,llf,hhf,vvf,ddf);
+    accurate4(img_f);
 
     Size size=Image.size();
     int ny=size.height;

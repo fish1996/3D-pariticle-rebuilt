@@ -52,14 +52,21 @@ private:
     double* diametermin;
     double* diametermax;
     position** pos;
-
+    int* ipointnum;
+    double** idiameterfre;
+    double* idiametermin;
+    double* idiametermax;
+    position** ipos;
+    bool isInverse;
 public:
+    void setInverse(bool);
     void saveImg(QString name,int);
     void saveExcel(QString name,int);
     void setIndex(int);
     bool isDraw;
     void setPlotNum(int n);
-    void setAttr(double** diameterfre,double* diametermin,double* diametermax,int,position**,int*);
+    void setAttr(double** diameterfre,double** idiameterfre,double* diametermin,double* idiametermin,
+                 double* diametermax,double* idiametermax,int,position**,position**,int*,int*);
     void loadTable(int row,int col);
     plotwindow(basewindow* parent = 0);
 protected:

@@ -270,7 +270,6 @@ void viewwindow::paintEvent(QPaintEvent* e)
         int w = image.width();
         int h = image.height();
         if(1.0*w /h  > 1.0*sizew/sizeh) {
-            //qDebug()<<fileList.at(i).filePath() <<"1";
             h = 1.0f*h/w*sizew;
             w = sizew;
         }
@@ -291,7 +290,6 @@ void viewwindow::setBackground(QString path)
     std::set<int>::iterator it;
     for(it = chooseImg.begin();it != chooseImg.end();it++) {
         QString name = fileList.at(*it).filePath();
-        //fileList.at(*it).setFile();
     }
     update();
 }
@@ -422,7 +420,6 @@ void viewwindow::setNextPage()
     if(front + 4 < fileList.size()){
         front = front + 4;
     }
-
     update();
 }
 

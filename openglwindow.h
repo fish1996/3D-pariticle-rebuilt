@@ -32,8 +32,11 @@ private:
     bool isDown;
     int number;
     int* pointnum;
+    int* ipointnum;
     float whRatio;
+    bool isInverse;
     position** pos;
+    position** ipos;
     double minx;
     double maxx;
     double miny;
@@ -41,8 +44,6 @@ private:
     double minz;
     double maxz;
     int index;
-    GLuint selectBuf[BUFSIZE];
-
 
     QOpenGLVertexArrayObject m_vao;
     QOpenGLBuffer m_logoVbo;
@@ -50,10 +51,11 @@ private:
     QMatrix4x4 m_camera;
     QMatrix4x4 m_world;
     void drawScene();
+    void reset(position** pos);
 public:
-
+    void setInverse(bool);
     void updateIndex(int);
-    void setPos(position** _pos,int _num,int* );
+    void setPos(position** _pos,position** _ipos,int _num,int* ,int*);
     QComboBox* attrBox;
     OpenGLView();
 protected:

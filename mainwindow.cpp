@@ -344,7 +344,6 @@ void mainwindow::chooseBackground()
         double gmax,gmin;
         minMaxIdx(hologram,&gmax,&gmin);
         hologram=(hologram-gmin)/(gmax-gmin);
-        //qDebug()<<QString::fromStdString(msg.path.toStdString()+"/" + vec[i].substr(0,vec[i].size()-5)+"r"+vec[i].substr(vec[i].size()-4));
         normalize(hologram,hologram,0.0,255.0,NORM_MINMAX);
 
         imwrite(vec[i].substr(0,vec[i].size()-4)+"r"+vec[i].substr(vec[i].size()-4),hologram);
@@ -397,9 +396,9 @@ void mainwindow::setInverse()
 {
     if(toolWindow->inverseBtn->isDown){
         *isInverse = true;
-      //  Inverse->doimginverse(showWindow->getPath().toStdString());
     }
     else *isInverse = false;
+    showWindow->setInverse(*isInverse);
     showWindow->reloadImg();
 }
 
@@ -687,11 +686,5 @@ void mainwindow::keyPressEvent(QKeyEvent* event)
 }
 
 void mainwindow::closeEvent(QCloseEvent*)
-{/*
-    Engine* ep;
-    if (!engClose(ep)) //测试是否关闭Matlab引擎成功。
-    {
-        qDebug()<<"Close Matlab Engine!" <<endl;
-    }else  qDebug()<<"Can't close Matlab engine!" <<endl;*/
-
+{
 }

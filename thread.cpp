@@ -121,8 +121,8 @@ void threadC::run(){
     Location = new location();
     qDebug()<<"run herererere";
     connect(Location,SIGNAL(locateOk()),bar,SLOT(changeState()));
-    connect(Location,SIGNAL(locateAll(position**,int,int,double**,double*,double*,int*)),
-            window->showWindow,SLOT(initLocate(position**,int,int,double**,double*,double*,int*)));
+    connect(Location,SIGNAL(locateAll(position**,position**,int,int,double**,double**,double*,double*,double*,double*,int*,int*)),
+            window->showWindow,SLOT(initLocate(position**,position**,int,int,double**,double**,double*,double*,double*,double*,int*,int*)));
     connect(Location,SIGNAL(locateAll()),this,SLOT(release()));
     Location->set(p1xy,p1area,p1box,ip1xy,ip1area,ip1box);
     Location->p_location(tempfilename1,boxcoef,planesumnuber,secnum,imgnum);

@@ -65,7 +65,7 @@ public:
 signals:
     void locateOk();
     void locateAll();
-    void locateAll(position**,int,int,double**,double*,double*,int*);
+    void locateAll(position**,position**,int,int,double**,double**,double*,double*,double*,double*,int*,int*);
 /*private:
     string tempfilename;
     double boxcoef;

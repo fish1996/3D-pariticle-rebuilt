@@ -435,11 +435,10 @@ void location::p_location(string tempfilename,double boxcoef,int planesumnuber,i
 
     }
 
-qDebug()<<"locateAll";
     emit(locateAll());
-    emit(locateAll(pos,imgnum,planesumnuber,diameterfre,
-            diametermin,
-            diametermax,pointnum));
+    emit(locateAll(pos,ipos,imgnum,planesumnuber,diameterfre,idiameterfre,
+            diametermin,idiametermin,diametermax,idiametermax,
+                   pointnum,ipointnum));
 }
 
 

@@ -31,6 +31,7 @@ void reBuilt::start()
         Mat image2;
         //Mat image3;
         image2=imread(name[i],CV_LOAD_IMAGE_GRAYSCALE);
+        qDebug()<<QString::fromStdString(name[i]);
         /*try {
             cvtColor(image2,image3, CV_BGR2GRAY); //灰度化
         } catch(cv::Exception& ) {

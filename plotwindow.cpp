@@ -23,7 +23,6 @@ plotwindow::plotwindow(basewindow* parent)
     currentRect = -1;
     layout();
     rectVector = new Rect[10];
-   // int radius[] = {340,310,200,204,180,185,170,176,124,101};
     x = 0;
     num = 10;
     for(int i=0;i<x;i++){
@@ -40,7 +39,7 @@ void plotwindow::setPlotNum(int n)
 
 void plotwindow::layout()
 {
-
+    isInverse = false;
     menu = new QMenu();
   //  pixmap = new QPixmap();
     saveAsImageAction = new QAction(this);
@@ -111,15 +110,23 @@ plotwindow::Rect::Rect(int bx,int by,int sx,int sy):
 
 }
 
-void plotwindow::setAttr(double** _diameterfre,double* _diametermin,double* _diametermax,int n,position** p,int* num)
+void plotwindow::setAttr(double** _diameterfre,double** _idiameterfre,
+                         double* _diametermin,double* _idiametermin,
+                         double* _diametermax,double* _idiametermax,
+                         int n,position** p,position** ip,int* num,int* inum)
 {
-    qDebug()<<"setAttr";
+
     pos = p;
     pointnum = num;
     imgnum = n;
     diameterfre =_diameterfre;
     diametermin = _diametermin;
     diametermax = _diametermax;
+    ipos = ip;
+    ipointnum = inum;
+    idiameterfre =_idiameterfre;
+    idiametermin = _idiametermin;
+    idiametermax = _idiametermax;
     update();
 }
 
@@ -155,6 +162,12 @@ void plotwindow::contextMenuEvent(QContextMenuEvent* event)
     event->accept();
 }
 
+void plotwindow::setInverse(bool is)
+{
+    isInverse = is;
+    update();
+}
+
 void plotwindow::paintEvent(QPaintEvent* e)
 {
     if(!isDraw)return;
@@ -165,61 +178,107 @@ void plotwindow::paintEvent(QPaintEvent* e)
     XMAX = SIZEW - 50;
     YMIN = 30;
     YMAX = SIZEH - 30;
-    //实际用到的diameterfre,diametermin，diametermax,pos
-    //调用方式diameterfre[0][0]前一个0表示一次性实现的图像张数例如3张，后一个0表示第1个区间的频率
-    //直接diametermin[0],diametermax[0],第一张图对应的最大最小值横坐标
-    //pos[0][0].X,第一张图对应的第一个球的X值，另有Y,Z,D,D表示的应该是球的直径，且每张图对应的球个数不同
-    for(int i=0;i<x;i++){
-    //    qDebug()<<XMIN + i*(XMAX-XMIN)/x<< YMAX-radius[i]<<(XMAX-XMIN)/x - 1<<radius[i];
-        Rect r(XMIN + i*(XMAX-XMIN)/x,YMAX-(YMAX-YMIN)*diameterfre[index][i],(XMAX-XMIN)/x - 1,(YMAX-YMIN)*diameterfre[index][i]);
-        rectVector[i] = r;
-    }
-    float step = 0.1f;
-    float length;
-    if(num!=0)length = (YMAX - YMIN)/num;
-    else length = 0;
-    QPainter paint(this);
-    paint.setPen(Qt::NoPen);
-    paint.setBrush(QColor(255,255,255));
-    paint.drawRect(0,0,SIZEW,SIZEH);
-    paint.setPen(QColor(0,0,0));
-    paint.drawText(XMAX/2,24,QStringLiteral("粒径分布直方图"));
-    paint.drawText(XMAX/2,YMAX + 20,QStringLiteral("粒径区间/um"));
-    paint.drawText(40,YMAX + 20,QStringLiteral("频率"));
-    paint.drawLine(XMIN,YMIN,XMIN,YMAX);
-    paint.drawLine(XMIN,YMAX,XMAX,YMAX);
-    paint.drawText(20,YMAX + 20,QString::number(0));
-    for(int i = 1;i<=num;i++){
-        paint.drawText(20,YMAX-i*length,QString::number(step*(i)));
-//        paint.drawLine(XMIN,YMAX-i*length,XMAX,YMAX-i*length);
-    }
-    double s = (diametermax[index] - diametermin[index])/(x);
-    for(int i=0;i<=x;i++){
 
-        paint.drawText(XMIN + i*(XMAX-XMIN)/x,YMAX+10,QString::number((int)(diametermin[index]+i*s)));
-    }
+    if(!isInverse) {
+        qDebug()<<"noinverse";
+        for(int i=0;i<x;i++){
+            Rect r(XMIN + i*(XMAX-XMIN)/x,YMAX-(YMAX-YMIN)*diameterfre[index][i],(XMAX-XMIN)/x - 1,(YMAX-YMIN)*diameterfre[index][i]);
+            rectVector[i] = r;
+        }
+        float step = 0.1f;
+        float length;
+        if(num!=0)length = (YMAX - YMIN)/num;
+        else length = 0;
+        QPainter paint(this);
+        paint.setPen(Qt::NoPen);
+        paint.setBrush(QColor(255,255,255));
+        paint.drawRect(0,0,SIZEW,SIZEH);
+        paint.setPen(QColor(0,0,0));
+        paint.drawText(XMAX/2,24,QStringLiteral("粒径分布直方图"));
+        paint.drawText(XMAX/2,YMAX + 20,QStringLiteral("粒径区间/um"));
+        paint.drawText(40,YMAX + 20,QStringLiteral("频率"));
+        paint.drawLine(XMIN,YMIN,XMIN,YMAX);
+        paint.drawLine(XMIN,YMAX,XMAX,YMAX);
+        paint.drawText(20,YMAX + 20,QString::number(0));
+        for(int i = 1;i<=num;i++){
+            paint.drawText(20,YMAX-i*length,QString::number(step*(i)));
+        }
+        double s = (diametermax[index] - diametermin[index])/(x);
+        for(int i=0;i<=x;i++){
 
- // paint.drawText(XMAX,30,QStringLiteral("平均粒径")+QString::number());
-    paint.setPen(QColor(100,100,100));
-    for(int i = 1;i<=num;i++){
-    //    paint.drawText(20,YMAX-i*length,QString::number(step*(i)));
-        paint.drawLine(XMIN,YMAX-i*length,XMAX,YMAX-i*length);
-    }
+            paint.drawText(XMIN + i*(XMAX-XMIN)/x,YMAX+10,QString::number((int)(diametermin[index]+i*s)));
+        }
 
-    paint.setPen(Qt::NoPen);
+        paint.setPen(QColor(100,100,100));
+        for(int i = 1;i<=num;i++){
+            paint.drawLine(XMIN,YMAX-i*length,XMAX,YMAX-i*length);
+        }
 
-    for(int i=0;i<x;i++){
-        if(currentRect==i){
-            paint.setPen(QColor(30,30,50));
-            paint.drawText(XMIN + i*(XMAX-XMIN)/x,YMAX-(YMAX-YMIN)*diameterfre[index][i]-10,
+        paint.setPen(Qt::NoPen);
+
+        for(int i=0;i<x;i++){
+           if(currentRect==i){
+                paint.setPen(QColor(30,30,50));
+                paint.drawText(XMIN + i*(XMAX-XMIN)/x,YMAX-(YMAX-YMIN)*diameterfre[index][i]-10,
                           QString::number(diameterfre[index][i]));
-            paint.setPen(Qt::NoPen);
-            paint.setBrush(QColor(30,30,50));
+                paint.setPen(Qt::NoPen);
+                paint.setBrush(QColor(30,30,50));
+            }
+            else{
+                paint.setBrush(colorVector[i%colorVector.size()]);
+            }
+            paint.drawRect(XMIN + i*(XMAX-XMIN)/x,YMAX-(YMAX-YMIN)*diameterfre[index][i],(XMAX-XMIN)/x - 1,(YMAX-YMIN)*diameterfre[index][i]);
         }
-        else{
-            paint.setBrush(colorVector[i%colorVector.size()]);
+    }
+    else if(isInverse) {
+        qDebug()<<"inverse";
+        for(int i=0;i<x;i++){
+            Rect r(XMIN + i*(XMAX-XMIN)/x,YMAX-(YMAX-YMIN)*idiameterfre[index][i],(XMAX-XMIN)/x - 1,(YMAX-YMIN)*idiameterfre[index][i]);
+            rectVector[i] = r;
         }
-        paint.drawRect(XMIN + i*(XMAX-XMIN)/x,YMAX-(YMAX-YMIN)*diameterfre[index][i],(XMAX-XMIN)/x - 1,(YMAX-YMIN)*diameterfre[index][i]);
+        float step = 0.1f;
+        float length;
+        if(num!=0)length = (YMAX - YMIN)/num;
+        else length = 0;
+        QPainter paint(this);
+        paint.setPen(Qt::NoPen);
+        paint.setBrush(QColor(255,255,255));
+        paint.drawRect(0,0,SIZEW,SIZEH);
+        paint.setPen(QColor(0,0,0));
+        paint.drawText(XMAX/2,24,QStringLiteral("粒径分布直方图"));
+        paint.drawText(XMAX/2,YMAX + 20,QStringLiteral("粒径区间/um"));
+        paint.drawText(40,YMAX + 20,QStringLiteral("频率"));
+        paint.drawLine(XMIN,YMIN,XMIN,YMAX);
+        paint.drawLine(XMIN,YMAX,XMAX,YMAX);
+        paint.drawText(20,YMAX + 20,QString::number(0));
+        for(int i = 1;i<=num;i++){
+            paint.drawText(20,YMAX-i*length,QString::number(step*(i)));
+        }
+        double s = (idiametermax[index] - idiametermin[index])/(x);
+        for(int i=0;i<=x;i++){
+            paint.drawText(XMIN + i*(XMAX-XMIN)/x,YMAX+10,QString::number((int)(idiametermin[index]+i*s)));
+        }
+
+        paint.setPen(QColor(100,100,100));
+        for(int i = 1;i<=num;i++){
+            paint.drawLine(XMIN,YMAX-i*length,XMAX,YMAX-i*length);
+        }
+
+        paint.setPen(Qt::NoPen);
+
+        for(int i=0;i<x;i++){
+           if(currentRect==i){
+                paint.setPen(QColor(30,30,50));
+                paint.drawText(XMIN + i*(XMAX-XMIN)/x,YMAX-(YMAX-YMIN)*idiameterfre[index][i]-10,
+                          QString::number(idiameterfre[index][i]));
+                paint.setPen(Qt::NoPen);
+                paint.setBrush(QColor(30,30,50));
+            }
+            else{
+                paint.setBrush(colorVector[i%colorVector.size()]);
+            }
+            paint.drawRect(XMIN + i*(XMAX-XMIN)/x,YMAX-(YMAX-YMIN)*idiameterfre[index][i],(XMAX-XMIN)/x - 1,(YMAX-YMIN)*idiameterfre[index][i]);
+        }
     }
     if(isFirstDraw){
         isFirstDraw = false;
@@ -251,32 +310,62 @@ void plotwindow::saveImg(QString filename,int index)
     for(int i = 1;i<=num;i++){
         paint.drawText(20,_YMAX-i*length,QString::number(step*(i)));
     }
-    double s = (diametermax[index] - diametermin[index])/(x);
-    for(int i=0;i<x;i++){
-        paint.drawText(_XMIN + i*(_XMAX-_XMIN)/x,_YMAX+10,QString::number((int)(diametermin[index]+i*s)));
-    }
-
-     paint.setPen(QColor(100,100,100));
-    for(int i = 1;i<=num;i++){
-        paint.drawLine(_XMIN,_YMAX-i*length,_XMAX,_YMAX-i*length);
-    }
-
-    paint.setPen(Qt::NoPen);
-
-    for(int i=0;i<x;i++){
-        if(currentRect==i){
-            paint.setPen(QColor(30,30,50));
-            paint.drawText(_XMIN + i*(_XMAX-_XMIN)/x,_YMAX-(_YMAX-_YMIN)*diameterfre[index][i]-10,
-                          QString::number(diameterfre[index][i]));
-            paint.setPen(Qt::NoPen);
-            paint.setBrush(QColor(30,30,50));
+    if(!isInverse) {
+        double s = (diametermax[index] - diametermin[index])/(x);
+        for(int i=0;i<x;i++){
+            paint.drawText(_XMIN + i*(_XMAX-_XMIN)/x,_YMAX+10,QString::number((int)(diametermin[index]+i*s)));
         }
-        else{
-            paint.setBrush(colorVector[i%colorVector.size()]);
+
+         paint.setPen(QColor(100,100,100));
+        for(int i = 1;i<=num;i++){
+            paint.drawLine(_XMIN,_YMAX-i*length,_XMAX,_YMAX-i*length);
         }
-        paint.drawRect(_XMIN + i*(_XMAX-_XMIN)/x,_YMAX-(_YMAX-_YMIN)*diameterfre[index][i],(_XMAX-_XMIN)/x - 1,(_YMAX-_YMIN)*diameterfre[index][i]);
+
+        paint.setPen(Qt::NoPen);
+
+        for(int i=0;i<x;i++){
+            if(currentRect==i){
+                paint.setPen(QColor(30,30,50));
+                paint.drawText(_XMIN + i*(_XMAX-_XMIN)/x,_YMAX-(_YMAX-_YMIN)*diameterfre[index][i]-10,
+                              QString::number(diameterfre[index][i]));
+                paint.setPen(Qt::NoPen);
+                paint.setBrush(QColor(30,30,50));
+            }
+            else{
+                paint.setBrush(colorVector[i%colorVector.size()]);
+            }
+            paint.drawRect(_XMIN + i*(_XMAX-_XMIN)/x,_YMAX-(_YMAX-_YMIN)*diameterfre[index][i],(_XMAX-_XMIN)/x - 1,(_YMAX-_YMIN)*diameterfre[index][i]);
+        }
+        pixmap->save(filename);
     }
-    pixmap->save(filename);
+    else {
+        double s = (idiametermax[index] - idiametermin[index])/(x);
+        for(int i=0;i<x;i++){
+            paint.drawText(_XMIN + i*(_XMAX-_XMIN)/x,_YMAX+10,QString::number((int)(idiametermin[index]+i*s)));
+        }
+
+         paint.setPen(QColor(100,100,100));
+        for(int i = 1;i<=num;i++){
+            paint.drawLine(_XMIN,_YMAX-i*length,_XMAX,_YMAX-i*length);
+        }
+
+        paint.setPen(Qt::NoPen);
+
+        for(int i=0;i<x;i++){
+            if(currentRect==i){
+                paint.setPen(QColor(30,30,50));
+                paint.drawText(_XMIN + i*(_XMAX-_XMIN)/x,_YMAX-(_YMAX-_YMIN)*idiameterfre[index][i]-10,
+                              QString::number(idiameterfre[index][i]));
+                paint.setPen(Qt::NoPen);
+                paint.setBrush(QColor(30,30,50));
+            }
+            else{
+                paint.setBrush(colorVector[i%colorVector.size()]);
+            }
+            paint.drawRect(_XMIN + i*(_XMAX-_XMIN)/x,_YMAX-(_YMAX-_YMIN)*idiameterfre[index][i],(_XMAX-_XMIN)/x - 1,(_YMAX-_YMIN)*idiameterfre[index][i]);
+        }
+        pixmap->save(filename);
+    }
 }
 
 void plotwindow::saveExcel(QString filepath,int index)
