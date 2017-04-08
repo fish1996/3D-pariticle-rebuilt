@@ -1,5 +1,4 @@
-﻿
-#ifndef EXTEND_H
+﻿#ifndef EXTEND_H
 #define EXTEND_H
 #include <QObject>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -57,4 +56,3 @@ signals:
 };
 
 #endif // EXTEND_H
-

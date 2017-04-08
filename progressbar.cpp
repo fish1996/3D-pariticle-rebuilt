@@ -17,8 +17,9 @@ void progressbar::display()
 
 void progressbar::layout()
 {
+   // setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowMinimizeButtonHint | Qt::WindowMaximizeButtonHint);
     setFixedSize(SIZEW,SIZEH);
-    setWindowFlags(Qt::WindowStaysOnTopHint);
+    setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowMinimizeButtonHint | Qt::WindowMaximizeButtonHint|Qt::WindowStaysOnTopHint);
     setWindowModality(Qt::ApplicationModal);
     setWindowTitle(QStringLiteral("正在执行")+name+QStringLiteral("..."));
 }

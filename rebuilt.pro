@@ -81,7 +81,8 @@ HEADERS  += mainwindow.h \
     dwt22.h \
     idwt22.h \
     engine.h \
-    savewindow.h
+    savewindow.h \
+    matrix.h
 
 FORMS    += \
     frmmessagebox.ui \

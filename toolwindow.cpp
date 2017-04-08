@@ -5,11 +5,20 @@
 #include <QGridLayout>
 #include <QButtonGroup>
 #include <QPushButton>
+#include <QPainter>
 
-toolwindow::toolwindow(QWidget* parent):
-    QWidget(parent)
+toolwindow::toolwindow(QWidget* window):
+    QWidget(window)
 {
     layout();
+}
+
+void toolwindow::paintEvent(QPaintEvent *)
+{
+    QPainter paint(this);
+    paint.setPen(QColor(255,255,255));
+    paint.setBrush(QColor(255,255,255));
+    paint.drawRect(rect());
 }
 
 void toolwindow::set(double zmin,double interval)
@@ -19,6 +28,7 @@ void toolwindow::set(double zmin,double interval)
 
 void toolwindow::layout()
 {
+    //setStyleSheet("background-color:rgb(200,200,200);");
 
     setFixedWidth(150);
 

@@ -29,7 +29,8 @@ public:
     Button* originBtn;
     Button* fullScreenBtn;
     slider* slid;
-    toolwindow(QWidget* parent = 0);
+    toolwindow(QWidget* = 0);
+    void paintEvent(QPaintEvent *);
     void set(double zmin,double interval);
 };
 

@@ -225,7 +225,7 @@ void mainwindow::saveAll(QString path,bool isOneKey)
         copyFile(msg.path+"/img_binaryzation"+QString::number(i)+"i.bmp" ,path+"/"+prefix+"binaryzation"+QString::number(i)+"i.jpg", true);
         copyFile(msg.path+"/map_highfrequency"+QString::number(i)+".tiff" ,path+"/"+prefix+"map_highfrequency"+QString::number(i)+".tiff", true);
         copyFile(msg.path+"/map_highfrequency"+QString::number(i)+"i.tiff" ,path+"/"+prefix+"map_highfrequency"+QString::number(i)+"i.tiff", true);
-qDebug()<<"come here";
+
         copyFile(msg.path+"/map_lowfrequency"+QString::number(i)+".tiff" ,path+"/"+prefix+"map_lowfrequency"+QString::number(i)+".tiff", true);
         copyFile(msg.path+"/map_lowfrequency"+QString::number(i)+"i.tiff" ,path+"/"+prefix+"map_lowfrequency"+QString::number(i)+"i.tiff", true);
 
@@ -465,18 +465,15 @@ void mainwindow::fullScreen()
 
 void mainwindow::layout()
 {
- //   setFixedSize(SIZEW,SIZEH);
-
     menuWindow = new menu();
-
     setupWindow = new setupwindow();
     showWindow = new showtabwindow();
     viewWindow = new viewwindow();
-    toolWindow = new toolwindow();
+    toolWindow = new toolwindow(this);
     initWindow = new initwindow(&namelist,&map);
     toolline = new toolLine();
-
-
+    dock = new QDockWidget(QStringLiteral("工具"),this);
+    dock->setWidget(toolWindow);
     showWindow->setPath("data/temp");
     showWindow->setPlotNum(map[namelist[0]].plotnum.toInt());
     for(int i=0;i<VMAX;i++){
@@ -486,21 +483,37 @@ void mainwindow::layout()
         vlayout[i] = new QVBoxLayout();
     }
 
-    hlayout[0]->addWidget(toolWindow);
+
+    hlayout[0]->addWidget(dock);
     hlayout[0]->addWidget(showWindow);
+    hlayout[0]->setContentsMargins(0,0,0,0);
 
     vlayout[0]->addLayout(hlayout[0]);
     vlayout[0]->addWidget(toolline);
     vlayout[0]->addWidget(viewWindow);
+    vlayout[0]->setMargin(0);
+    vlayout[0]->setSpacing(0);
 
     hlayout[1]->addLayout(vlayout[0]);
     hlayout[1]->addWidget(setupWindow);
+    hlayout[1]->setContentsMargins(10,0,10,10);
+   // hlayout[1]->setSpacing(0);
 
     vlayout[1]->addWidget(menuWindow);
     vlayout[1]->addLayout(hlayout[1]);
+    vlayout[1]->setMargin(0);
+
 
     initWindow->show();
     setLayout(vlayout[1]);
+}
+
+void mainwindow::paintEvent(QPaintEvent*)
+{
+    QPainter paint(this);
+    paint.setPen(QColor(240,240,240));
+    paint.setBrush(QColor(240,240,240));
+    paint.drawRect(rect());
 }
 
 void mainwindow::initOk()

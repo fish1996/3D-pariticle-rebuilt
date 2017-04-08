@@ -1,6 +1,7 @@
 ﻿#ifndef SETUPWINDOW_H
 #define SETUPWINDOW_H
 #include <QTabWidget>
+#include <QDockWidget>
 #include <QWidget>
 #include "attr.h"
 #include "Button.h"
@@ -23,6 +24,7 @@ private:
     QString createdate;
     QString revisedate;
     bool hasBackground;
+
 public:
     void setSize(int s);
     void setWidth(int w);
@@ -113,6 +115,8 @@ private:
     QHBoxLayout* hlayout[HMAX];
     QGridLayout* glayout;
     QGridLayout* glayout1;
+    QDockWidget* dock;
+    QWidget* window;
 
     QString Path;
 
@@ -135,6 +139,7 @@ public:
     QString getPath();
     void loadImg(QString path);
     setupwindow(QWidget* parent = 0);
+    void paintEvent(QPaintEvent*);
 };
 
 #endif // SETUPWINDOW_H

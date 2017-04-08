@@ -28,7 +28,6 @@
         <file>image/mutiplay.ico</file>
         <file>image/play.ico</file>
         <file>image/stop.ico</file>
-        <file>image/setting.ico</file>
         <file>image/cal.ico</file>
         <file>image/inverse.ico</file>
         <file>image/rule.ico</file>
@@ -45,5 +44,6 @@
         <file>image/fshader.glsl</file>
         <file>image/vline.glsl</file>
         <file>main.ico</file>
+        <file>image/setting.ico</file>
     </qresource>
 </RCC>

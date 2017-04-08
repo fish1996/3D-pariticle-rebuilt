@@ -14,7 +14,7 @@
 #include "attr.h"
 //#include "engine.h"
 #include "message.h"
-
+#include <QDockWidget>
 #include <QDir>
 #include <QWidget>
 #include <QVector>
@@ -57,15 +57,13 @@ private:
     setupdialog* setupDialog;
     catalog* cata;
     toolLine* toolline;
+
     void layout();
     void setConnect();
     void loadAttr();
+    void paintEvent(QPaintEvent*);
+    QDockWidget* dock;
     bool copyFile(QString sourceDir ,QString toDir, bool coverFileIfExist);
-    /*
-
-public:
-    Engine* ep;
-*/
 public:
     QString name;
     message_t msg;

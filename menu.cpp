@@ -48,6 +48,7 @@ void menu::layout()
     importBackgroundAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt:: Key_I));
 
     hlayout->addWidget(menuBar);
+    hlayout->setMargin(0);
 
     setLayout(hlayout);
 }

@@ -6,6 +6,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGroupBox>
+#include <QPainter>0
 #include <QDateTime>
 #include <QFileDialog>
 #include <qDebug>
@@ -80,6 +81,7 @@ tabwindow::tabwindow(QTabWidget* parent):
 
 void tabwindow::layout()
 {
+
     status = "connected";
     imgAttr.setSize(0);
     imgAttr.setWidth(0);
@@ -304,6 +306,7 @@ void setupwindow::layout()
     glayout = new QGridLayout();
     glayout1 = new QGridLayout();
     tabWindow = new tabwindow();
+    window = new QWidget();
     zmin = new QLabel(QStringLiteral("重建起点"));
     zmax = new QLabel(QStringLiteral("重建终点"));
     interval = new QLabel(QStringLiteral("平面间距"));
@@ -347,7 +350,9 @@ void setupwindow::layout()
     glayout->addWidget(dpix,3,4);
     glayout->addWidget(dpixText,3,5);
     glayout->addWidget(um,3,6);
+    glayout->setMargin(10);
 
+    glayout1->setMargin(10);
     glayout1->addWidget(oneKeyBtn,1,1,2,2);
     oneKeyBtn->setFixedSize(120,60);
     glayout1->addWidget(runBtn,1,3,1,1);
@@ -359,11 +364,40 @@ void setupwindow::layout()
     glayout1->addWidget(locationBtn,2,4,1,1);
     figplotBtn->setFixedSize(80,25);
 
+    vlayout[1]->addLayout(glayout);
+    vlayout[1]->addLayout(glayout1);
+    vlayout[1]->setMargin(0);
+    window->setLayout(vlayout[1]);
+
+    QWidget* title;
+ //   title->setFixedHeight(30);
+    dock = new QDockWidget(QStringLiteral("参数"),this);
+    dock->setFeatures(QDockWidget::DockWidgetFloatable);
+    if(title = dock->titleBarWidget()){
+        title->setStyleSheet("text-align: left;"
+                                           "background: rgb(255,0,0);"
+                                           "padding-left:5px;"
+                                           );
+    }
+    dock->setWidget(window);
+
     vlayout[0]->addWidget(tabWindow);
-    vlayout[0]->addLayout(glayout);
-    vlayout[0]->addLayout(glayout1);
+    vlayout[0]->addWidget(dock);
+    vlayout[0]->setMargin(0);
+    vlayout[0]->setSpacing(0);
+    vlayout[0]->setStretch(0,80);
+    vlayout[0]->setStretch(1,20);
+
 
     intervalText->setText("1");
 
     setLayout(vlayout[0]);
+}
+
+void setupwindow::paintEvent(QPaintEvent*)
+{
+    QPainter paint(this);
+    paint.setPen(QColor(255,255,255));
+    paint.setBrush(QColor(255,255,255));
+    paint.drawRect(rect());
 }
