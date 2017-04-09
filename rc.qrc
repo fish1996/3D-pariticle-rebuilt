@@ -47,5 +47,7 @@
         <file>image/setting.ico</file>
         <file>image/save.ico</file>
         <file>image/editclear.ico</file>
+        <file>image/config.ico</file>
+        <file>image/import.ico</file>
     </qresource>
 </RCC>

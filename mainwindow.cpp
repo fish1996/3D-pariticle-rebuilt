@@ -171,9 +171,9 @@ void mainwindow::clearBuffer()
     viewWindow->updateImg();
     viewWindow->clearImg();
     showWindow->setNum(0);
-    showWindow->setPath("");
     toolWindow->slid->setNum(1);
     toolWindow->slid->setDisable();
+    state = Null;
     emit(clear());
 }
 

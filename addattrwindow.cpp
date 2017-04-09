@@ -7,12 +7,32 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <fstream>
+#include <QUrl>
+#include <QFileDialog>
 #include <qDebug>
+#include <QMessageBox>
+
+bool addattrwindow::isDigit(QString s)
+{
+    bool flag = false;
+    for(int i = 0; i < s.size();i++) {
+        if((s.at(i)<'0' || s.at(i)>'9')&& s.at(i)!='.') {
+            return false;
+        }
+        if(s.at(i)=='.'){
+            if(flag == false){
+                flag = true;
+            }
+            else return false;
+        }
+    }
+    return true;
+}
 
 addattrwindow::addattrwindow(QWidget* parent):
     QWidget(parent)
 {
-    setAttribute(Qt::WA_DeleteOnClose);
+   // setAttribute(Qt::WA_DeleteOnClose);
     layout();
 }
 
@@ -48,6 +68,7 @@ void addattrwindow::layout()
     d2Text = new QLineEdit();
     d3Text = new QLineEdit();
     pathText = new QLineEdit();
+    pathText->setDisabled(true);
 
     minRadiusText = new QSpinBox();
     maxRadiusText = new QSpinBox();
@@ -105,7 +126,7 @@ void addattrwindow::layout()
     vlayout[0]->addLayout(hlayout[9]);
     vlayout[0]->addLayout(hlayout[8]);
 
-    setWindowFlags(Qt::WindowStaysOnTopHint);
+  //  setWindowFlags(Qt::WindowStaysOnTopHint);
     setWindowModality(Qt::ApplicationModal);
     setWindowTitle(QStringLiteral("添加预设参数"));
 
@@ -113,6 +134,7 @@ void addattrwindow::layout()
 
     connect(okBtn,SIGNAL(clicked()),this,SLOT(addAttr()));
     connect(cancelBtn,SIGNAL(clicked()),this,SLOT(cancelAddAttr()));
+    connect(choosePathBtn,SIGNAL(clicked()),this,SLOT(choose()));
 }
 
 void addattrwindow::cancelAddAttr()
@@ -127,7 +149,6 @@ bool addattrwindow::isValid(const premessage_t& msg)
 
 void addattrwindow::addAttr()
 {
-
     premessage_t msg;
     msg.zmin = zminText->text();
     msg.zmax = zmaxText->text();
@@ -142,6 +163,27 @@ void addattrwindow::addAttr()
     msg.minRadius = minRadiusText->text();
     msg.maxRadius = maxRadiusText->text();
 
+    if(!isDigit(msg.zmin) || !isDigit(msg.zmax) || !isDigit(msg.detection1) ||
+            !isDigit(msg.detection2) || !isDigit(msg.detection3) ||
+            !isDigit(msg.dpix) || !isDigit(msg.lamda) || !isDigit(msg.interval)||
+            !isDigit(msg.plotnum)) {
+        QMessageBox::critical(NULL, "Error", QStringLiteral("输入格式错误"),
+                              QMessageBox::Yes);
+        return;
+    }
+    if(msg.zmin=="" || msg.zmax=="" ||msg.detection1=="" ||
+            msg.detection2=="" || msg.detection3=="" ||
+            msg.dpix=="" || msg.lamda=="" || msg.interval==""||
+            msg.plotnum==""||msg.path=="") {
+        QMessageBox::critical(NULL, "Error", QStringLiteral("请填写完整!"),
+                              QMessageBox::Yes);
+        return;
+    }
+    if(msg.zmin.toDouble()>=msg.zmax.toDouble()) {
+        QMessageBox::critical(NULL, "Error", QStringLiteral("重建终点应该大于重建起点!"),
+                              QMessageBox::Yes);
+        return;
+    }
     emit(updateAttr(nameText->text(),msg));
     std::ofstream out("data.txt",std::ios::app);
     out << nameText->text().toStdString() << " ";
@@ -159,7 +201,6 @@ void addattrwindow::addAttr()
     out << maxRadiusText->text().toStdString() << " ";
     out << plotnumText->text().toStdString() << " ";
 
-
     out<<"\n";
     out.close();
 
@@ -171,3 +212,11 @@ void addattrwindow::addAttr()
     close();
 }
 
+void addattrwindow::choose()
+{
+    QUrl url = QFileDialog::getExistingDirectoryUrl
+            (this);
+    QString path = url.toString().mid(8);
+    if(path!="")pathText->setText(path);
+
+}

@@ -40,6 +40,7 @@ private:
     QPushButton* choosePathBtn;
 
     void layout();
+    bool isDigit(QString s);
     bool isValid(const premessage_t& msg);
 public:
     QLineEdit* nameText;
@@ -63,10 +64,11 @@ public:
     QPushButton* cancelBtn;
     addattrwindow(QWidget* parent = 0);
 private slots:
+    void choose();
     void addAttr();
     void cancelAddAttr();
 signals:
-    void updateAttr(QString name,premessage_t msg);
+    void updateAttr(QString str,premessage_t msg);
 };
 
 #endif // ADDATTRWINDOW_H

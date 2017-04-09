@@ -24,7 +24,7 @@ void setupdialog::Add()
 {
     addattrWindow = new addattrwindow();
     addattrWindow->show();
-  //  connect(addattrWindow->okBtn,SIGNAL(clicked()),this,SLOT(addAttr()));
+    connect(addattrWindow,SIGNAL(updateAttr(QString,premessage_t)),this,SLOT(updateAttr(QString,premessage_t)));
    // connect(addattrWindow->cancelBtn,SIGNAL(clicked()),this,SLOT(cancelAddAttr()));
 
 }
@@ -88,6 +88,7 @@ void setupdialog::choose()
             (this);
     QString path = url.toString().mid(8);
     if(path!="")fileDirText->setText(path);
+
 }
 
 setupdialog::~setupdialog()
@@ -134,7 +135,7 @@ void setupdialog::layout()
     line2 = new QLineEdit();
     line3 = new QLineEdit();
     fileDirText = new QLineEdit();
-
+    fileDirText->setDisabled(true);
     intervalText = new QSpinBox();
     minRadiusText = new QSpinBox();
     maxRadiusText = new QSpinBox();
@@ -200,12 +201,11 @@ void setupdialog::layout()
     vlayout[0]->addLayout(hlayout[2]);
     vlayout[0]->addLayout(hlayout[3]);
     vlayout[0]->addLayout(hlayout[4]);
-
-    setWindowFlags(Qt::WindowStaysOnTopHint);
+    setWindowModality(Qt::ApplicationModal);
+    //setWindowFlags(Qt::WindowStaysOnTopHint);
     setWindowTitle(QStringLiteral("设置"));
 
     setLayout(vlayout[0]);
-    qDebug()<<"ok";
 }
 
 void setupdialog::setValue(int i)
@@ -218,6 +218,7 @@ void setupdialog::setValue(int i)
 
     maxRadiusText->setRange(0,100000);
     fileDirText->setText((*map)[name].path);
+
     minRadiusText->setValue((*map)[name].minRadius.toInt());
     maxRadiusText->setValue((*map)[name].maxRadius.toInt());
     intervalText->setValue((*map)[name].plotnum.toInt());

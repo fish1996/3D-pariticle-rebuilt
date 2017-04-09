@@ -29,16 +29,13 @@ void menu::layout()
     clearAction = new QAction(this);
     importBackgroundAction = new QAction(this);
 
-    setAction->setText(QStringLiteral("&设置"));
-   // saveAction->setText(QStringLiteral("&保存"));
-    importAction->setText(QStringLiteral("&导入原图"));
+   // importAction->setText(QStringLiteral("&导入原图"));
     importBackgroundAction->setText(QStringLiteral("&导入背景"));
-   // clearAction->setText(QStringLiteral("&清除缓存"));
 
     saveAction = fileMenu->addAction(QIcon(":/image/save.ico"),QStringLiteral("&保存"));
-    fileMenu->addAction(importAction);
+    importAction = fileMenu->addAction(QIcon(":/image/import.ico"),QStringLiteral("&导入原图"));
     fileMenu->addAction(importBackgroundAction);
-    editMenu->addAction(setAction);
+    setAction = editMenu->addAction(QIcon(":/image/config.ico"),QStringLiteral("&设置"));
     clearAction = editMenu->addAction(QIcon(":/image/editclear.ico"),QStringLiteral("&清除缓存"));
 
     saveAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
@@ -51,6 +48,8 @@ void menu::layout()
     toolBar->addSeparator();
     toolBar->addAction(saveAction);
     toolBar->addAction(clearAction);
+    toolBar->addAction(setAction);
+    toolBar->addAction(importAction);
 
     toolBar->setStyleSheet("background-color:rgb(235,235,235);");
 

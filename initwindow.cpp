@@ -91,8 +91,8 @@ void initwindow::layout()
 
     setLayout(hlayout[7]);
 
-    setWindowFlags(Qt::WindowStaysOnTopHint);
-   // setWindowModality(Qt::ApplicationModal);
+    //setWindowFlags(Qt::WindowStaysOnTopHint);
+    setWindowModality(Qt::ApplicationModal);
     setWindowTitle(QStringLiteral("设置"));
 
     connect(combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(setValue(int)));
