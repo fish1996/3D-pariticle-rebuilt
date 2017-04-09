@@ -60,8 +60,8 @@ private:
     bool isInverse;
 public:
     void setInverse(bool);
-    void saveImg(QString name,int);
-    void saveExcel(QString name,int);
+    void saveImg(QString name,int,bool);
+    void saveExcel(QString name,int,bool);
     void setIndex(int);
     bool isDraw;
     void setPlotNum(int n);

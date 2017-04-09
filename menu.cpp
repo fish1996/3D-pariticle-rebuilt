@@ -3,7 +3,8 @@
 #include <QMenuBar>
 #include <qDebug>
 #include <QAction>
-#include <QHBoxLayout>
+#include <QToolBar>
+#include <QVBoxLayout>
 
 menu::menu(QWidget *parent)
     : QWidget(parent)
@@ -13,7 +14,7 @@ menu::menu(QWidget *parent)
 
 void menu::layout()
 {
-    hlayout = new QHBoxLayout();
+    vlayout = new QVBoxLayout();
     menuBar = new QMenuBar();
 
     fileMenu = new QMenu(QStringLiteral("文件"));
@@ -29,26 +30,35 @@ void menu::layout()
     importBackgroundAction = new QAction(this);
 
     setAction->setText(QStringLiteral("&设置"));
-    saveAction->setText(QStringLiteral("&保存"));
+   // saveAction->setText(QStringLiteral("&保存"));
     importAction->setText(QStringLiteral("&导入原图"));
     importBackgroundAction->setText(QStringLiteral("&导入背景"));
-    clearAction->setText(QStringLiteral("&清除缓存"));
+   // clearAction->setText(QStringLiteral("&清除缓存"));
 
-    fileMenu->addAction(saveAction);
+    saveAction = fileMenu->addAction(QIcon(":/image/save.ico"),QStringLiteral("&保存"));
     fileMenu->addAction(importAction);
     fileMenu->addAction(importBackgroundAction);
     editMenu->addAction(setAction);
-    editMenu->addAction(clearAction);
+    clearAction = editMenu->addAction(QIcon(":/image/editclear.ico"),QStringLiteral("&清除缓存"));
 
-  //  openAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
     saveAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
     setAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_K));
-  //  exportAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_E));
     importAction->setShortcut(QKeySequence(Qt::CTRL + Qt:: Key_I));
     importBackgroundAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt:: Key_I));
 
-    hlayout->addWidget(menuBar);
-    hlayout->setMargin(0);
+    toolBar = new QToolBar(tr("&文件"));
 
-    setLayout(hlayout);
+    toolBar->addSeparator();
+    toolBar->addAction(saveAction);
+    toolBar->addAction(clearAction);
+
+    toolBar->setStyleSheet("background-color:rgb(235,235,235);");
+
+
+    vlayout->addWidget(menuBar);
+    vlayout->addWidget(toolBar);
+    vlayout->setSpacing(0);
+    vlayout->setMargin(0);
+
+    setLayout(vlayout);
 }

@@ -154,7 +154,7 @@ public:
     void zoomIn();
     void zoomOut();
     void reset();
-    void save(int,QString,QString);
+    void save(int,QString,QString,bool);
     void original();
     void setPath(QString);
     void fullScreen();
@@ -167,6 +167,7 @@ public:
     void setPlotNum(int n);
     void setWavelength(double w);
     void setPixelSize(double p);
+    void paintEvent(QPaintEvent *);
     QString getPath();
 
 public slots:

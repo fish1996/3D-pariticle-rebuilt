@@ -45,5 +45,7 @@
         <file>image/vline.glsl</file>
         <file>main.ico</file>
         <file>image/setting.ico</file>
+        <file>image/save.ico</file>
+        <file>image/editclear.ico</file>
     </qresource>
 </RCC>

@@ -111,7 +111,7 @@ setupdialog::~setupdialog()
     delete addAttrBtn;
     delete removeAttrBtn;
 
-    delete isInverse;
+   // delete isInverse;
 
     delete fileDir;
     delete interval;
@@ -140,7 +140,6 @@ void setupdialog::layout()
     maxRadiusText = new QSpinBox();
 
     attrBox = new QComboBox();
-  //  attrBox->addItem("",namelist->size());
     for(int i=0;i<namelist->size();i++){
         attrBox->addItem((*namelist)[i],i);
     }
@@ -151,7 +150,6 @@ void setupdialog::layout()
     okBtn = new QPushButton(QStringLiteral(" 确定 "));
     cancelBtn = new QPushButton(QStringLiteral(" 取消 "));
 
-    isInverse = new QCheckBox(QStringLiteral("反色"));
 
     detection = new QLabel(QStringLiteral("自适应阈值参数"));
     fileDir = new QLabel(QStringLiteral("用户文件夹"));
@@ -196,15 +194,11 @@ void setupdialog::layout()
     hlayout[4]->addWidget(okBtn);
     hlayout[4]->addWidget(cancelBtn);
 
-    hlayout[5]->addWidget(isInverse);
-    hlayout[5]->addWidget(interval);
-    hlayout[5]->addWidget(intervalText);
 
     vlayout[0]->addLayout(hlayout[0]);
     vlayout[0]->addLayout(hlayout[1]);
     vlayout[0]->addLayout(hlayout[2]);
     vlayout[0]->addLayout(hlayout[3]);
-    vlayout[0]->addLayout(hlayout[5]);
     vlayout[0]->addLayout(hlayout[4]);
 
     setWindowFlags(Qt::WindowStaysOnTopHint);
@@ -243,7 +237,4 @@ void setupdialog::setValue(int i)
     maxRadiusText->setValue((*map)[name].maxRadius.toInt());
     intervalText->setValue((*map)[name].plotnum.toInt());
 
-    if((*map)[name].isInverse==true){
-        isInverse->setChecked(true);
-    }
 }

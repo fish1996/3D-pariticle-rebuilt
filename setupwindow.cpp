@@ -311,7 +311,7 @@ void setupwindow::layout()
     zmax = new QLabel(QStringLiteral("重建终点"));
     interval = new QLabel(QStringLiteral("平面间距"));
     lamda = new QLabel(QStringLiteral("重建波长"));
-    Mag = new QLabel(QStringLiteral("放大倍数"));
+   // Mag = new QLabel(QStringLiteral("放大倍数"));
     dpix = new QLabel(QStringLiteral("像素尺寸"));
     cm[0] = new QLabel(QStringLiteral("cm"));
     cm[1] = new QLabel(QStringLiteral("cm"));
@@ -342,14 +342,13 @@ void setupwindow::layout()
     glayout->addWidget(interval,2,1);
     glayout->addWidget(intervalText,2,2);
     glayout->addWidget(mm,2,3);
-    glayout->addWidget(Mag,2,4);
-    glayout->addWidget(MagText,2,5);
+    glayout->addWidget(dpix,2,4);
+    glayout->addWidget(dpixText,2,5);
+    glayout->addWidget(um,2,6);
     glayout->addWidget(zmax,3,1);
     glayout->addWidget(zmaxText,3,2);
     glayout->addWidget(cm[1],3,3);
-    glayout->addWidget(dpix,3,4);
-    glayout->addWidget(dpixText,3,5);
-    glayout->addWidget(um,3,6);
+
     glayout->setMargin(10);
 
     glayout1->setMargin(10);

@@ -28,8 +28,6 @@ void toolwindow::set(double zmin,double interval)
 
 void toolwindow::layout()
 {
-    //setStyleSheet("background-color:rgb(200,200,200);");
-
     setFixedWidth(150);
 
     vlayout = new QVBoxLayout();

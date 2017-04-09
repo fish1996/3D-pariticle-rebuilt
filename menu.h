@@ -4,15 +4,16 @@
 #include<QWidget>
 class QMenu;
 class QMenuBar;
-class QHBoxLayout;
-
+class QVBoxLayout;
+class QToolBar;
 class menu: public QWidget{
         Q_OBJECT
 private:
     QMenuBar* menuBar;
+    QToolBar* toolBar;
     QMenu* fileMenu;//文件菜单
     QMenu* editMenu;//设置菜单
-    QHBoxLayout* hlayout;
+    QVBoxLayout* vlayout;
     void layout();
 
 public:

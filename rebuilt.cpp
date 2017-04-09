@@ -27,18 +27,8 @@ void reBuilt::start()
 {
     int count = 0;
     for(int i = 0;i < name.size();i++){
-
         Mat image2;
-        //Mat image3;
         image2=imread(name[i],CV_LOAD_IMAGE_GRAYSCALE);
-        qDebug()<<QString::fromStdString(name[i]);
-        /*try {
-            cvtColor(image2,image3, CV_BGR2GRAY); //灰度化
-        } catch(cv::Exception& ) {
-            count++;
-            errorIndex.push_back(i);
-            continue;
-        }*/
         emit(ok());
         image2.convertTo(image,CV_64F,1.0/255.0);
         imagereconstruct2_wavelet(tempfilename, image, zmin, zmax, lamda, pixelh, pixelv, precision);
@@ -85,10 +75,7 @@ void reBuilt::extreme(Mat &imageout, double &maxv, double &minv){
 //xgv -- 【输入】指定X输入范围 ygv -- 【输入】指定Y输入范围 X   -- 【输出】Mat Y   -- 【输出】Mat
 void reBuilt::meshgrid(int x1, int x2, int y1, int y2, Mat &X, Mat &Y, double x, double y)
 {
-   // qDebug()<<"meshgrid";
     vector<double> t_x, t_y;
-    //double p=0;
-   // double q=0;
     for(int i = x1; i <= x2; i++) t_x.push_back(i*x);
     for(int j = y1; j <= y2; j++) t_y.push_back(j*y);
 

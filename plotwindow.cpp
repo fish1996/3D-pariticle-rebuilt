@@ -83,7 +83,7 @@ void plotwindow::saveAsExcel()
     QString filepath = QFileDialog::getSaveFileName(this, tr("Save as..."),
             QString(), tr("EXCEL files (*.xls *.xlsx);;HTML-Files (*.htm *.html);;"));
     if(filepath=="")return;
-    saveExcel(filepath,index);
+    saveExcel(filepath,index,isInverse);
 }
 
 bool plotwindow::Rect::isOn(int x,int y)
@@ -285,7 +285,7 @@ void plotwindow::paintEvent(QPaintEvent* e)
     }
 }
 
-void plotwindow::saveImg(QString filename,int index)
+void plotwindow::saveImg(QString filename,int index,bool isInverse)
 {
     qDebug()<<"saveIMG";
     int _XMIN = 40,_XMAX = 500,_YMIN = 40,_YMAX = 400,_SIZEW = 580,_SIZEH = 480;
@@ -368,9 +368,8 @@ void plotwindow::saveImg(QString filename,int index)
     }
 }
 
-void plotwindow::saveExcel(QString filepath,int index)
+void plotwindow::saveExcel(QString filepath,int index,bool isInverse)
 {
-    qDebug()<<"saveExcel";
     QString Begin = QString::fromLocal8Bit("<html><head></head><body><table border=\"1\" >");
     QString end = QString::fromLocal8Bit("</table></body></html>");
     QList<QString> list;
@@ -385,9 +384,9 @@ void plotwindow::saveExcel(QString filepath,int index)
     header += "</tr>";
     list.push_back(header);
 
-    for(int i=0;i<pointnum[index];i++) {
-        QString rowStr = "<tr>";
-      //  for(int j=0;j<col;j++) {
+    if(!isInverse){
+        for(int i=0;i<pointnum[index];i++) {
+            QString rowStr = "<tr>";
             QString cel;
             cel = QString::number(i+1);
             rowStr += QString("<td>%1</td>").arg(cel);
@@ -403,9 +402,31 @@ void plotwindow::saveExcel(QString filepath,int index)
                 cel = QString::number(pointnum[index]);
                 rowStr += QString("<td>%1</td>").arg(cel);
             }
-      //  }
-        rowStr += "</tr>";
-        list.push_back(rowStr);
+            rowStr += "</tr>";
+            list.push_back(rowStr);
+        }
+    }
+    else {
+        for(int i=0;i<ipointnum[index];i++) {
+            QString rowStr = "<tr>";
+            QString cel;
+            cel = QString::number(i+1);
+            rowStr += QString("<td>%1</td>").arg(cel);
+            cel = QString::number(ipos[index][i].X);
+            rowStr += QString("<td>%1</td>").arg(cel);
+            cel = QString::number(ipos[index][i].Y);
+            rowStr += QString("<td>%1</td>").arg(cel);
+            cel = QString::number(ipos[index][i].Z);
+            rowStr += QString("<td>%1</td>").arg(cel);
+            cel = QString::number(ipos[index][i].D);
+            rowStr += QString("<td>%1</td>").arg(cel);
+            if(i == 0) {
+                cel = QString::number(ipointnum[index]);
+                rowStr += QString("<td>%1</td>").arg(cel);
+            }
+            rowStr += "</tr>";
+            list.push_back(rowStr);
+        }
     }
     QString text = Begin;
     for(int i=0;i<list.size();++i){
@@ -430,5 +451,5 @@ void plotwindow::saveAsImage()
     if(filename.isEmpty()) {
         return;
     }
-    saveImg(filename,index);
+    saveImg(filename,index,isInverse);
 }

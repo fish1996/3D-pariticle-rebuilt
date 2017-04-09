@@ -55,7 +55,7 @@ mainwindow::mainwindow(QWidget *parent)
     setupWindow->setPath("data/camera/");
     showWindow->setPath(msg.path);
     isInverse = new bool();
-    *isInverse = false;
+    *isInverse = true;
     showWindow->setI(isInverse);
 
 }
@@ -231,7 +231,8 @@ void mainwindow::saveAll(QString path,bool isOneKey)
 
         if(!isOneKey){
             qDebug()<<"no OneKey";
-            showWindow->save(i,path+"/"+prefix+"/location" + QString::number(i)+".xls",path+"/"+prefix+"location"+QString::number(i)+".jpg");
+            showWindow->save(i,path+"/"+prefix+"/location" + QString::number(i)+".xls",path+"/"+prefix+"location"+QString::number(i)+".jpg",false);
+            showWindow->save(i,path+"/"+prefix+"/ilocation" + QString::number(i)+".xls",path+"/"+prefix+"ilocation"+QString::number(i)+".jpg",true);
         }
     }
     QMessageBox::about(0,"Message",QStringLiteral("保存成功!自动命名前缀为：")+prefix);
@@ -241,6 +242,7 @@ void mainwindow::saveImg()
 {
     QUrl url = QFileDialog::getExistingDirectoryUrl
             (this);
+    if(url.toString().size()<=8)return;
 
     QString path = url.toString().mid(8);
     saveAll(path,false);
@@ -473,6 +475,7 @@ void mainwindow::layout()
     toolline = new toolLine();
     dock = new QDockWidget(QStringLiteral("工具"),this);
     dock->setWidget(toolWindow);
+    dock->setFeatures(QDockWidget::DockWidgetFloatable);
     showWindow->setPath("data/temp");
     showWindow->setPlotNum(map[namelist[0]].plotnum.toInt());
     for(int i=0;i<VMAX;i++){
@@ -499,6 +502,7 @@ void mainwindow::layout()
    // hlayout[1]->setSpacing(0);
 
     vlayout[1]->addWidget(menuWindow);
+    vlayout[1]->setSpacing(0);
     vlayout[1]->addLayout(hlayout[1]);
     vlayout[1]->setMargin(0);
 
@@ -649,7 +653,7 @@ void mainwindow::setupOk()
             setupDialog->maxRadiusText->text().toInt(),
             setupDialog->fileDirText->text(),
             setupDialog->intervalText->text().toInt(),
-            setupDialog->isInverse->isChecked());
+            0);
     showWindow->setPath(msg.path);
     showWindow->setPlotNum(setupDialog->intervalText->text().toInt());
   //  qDebug()<<"setupOk"<<setupDialog->intervalText->text().toInt();

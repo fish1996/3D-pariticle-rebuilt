@@ -722,7 +722,8 @@ void showtabwindow::initLocate(position** pos,position** ipos,int num,int size,
     if(isOneKey){
         isOneKey = false;
         for(int i = 0;i < num;i++) {
-            save(i,"data/user/"+prefix+"location" + QString::number(i)+".xls","data/user/"+prefix+"location"+QString::number(i)+".jpg");
+            save(i,"data/user/"+prefix+"location" + QString::number(i)+".xls","data/user/"+prefix+"location"+QString::number(i)+".jpg",false);
+            save(i,"data/user/"+prefix+"ilocation" + QString::number(i)+".xls","data/user/"+prefix+"ilocation"+QString::number(i)+".jpg",false);
         }
     }
 }
@@ -745,6 +746,14 @@ void showtabwindow::setIndex(int index)
     else if(Index == 3){
         detectWindow->setDetectIndex(index);
     }
+}
+
+void showtabwindow::paintEvent(QPaintEvent *)
+{
+    QPainter paint(this);
+    paint.setPen(QColor(255,255,255));
+    paint.setBrush(QColor(255,255,255));
+    paint.drawRect(rect());
 }
 
 scale* showtabwindow::getSca(){
@@ -779,7 +788,7 @@ void showtabwindow::setWavelength(double w)
     detectWindow->getSca()->setWavelength(w);
 }
 
-void showtabwindow::save(int index,QString name1,QString name2){
-    countwindow->saveExcel(name1,index);
-    countwindow->saveImg(name2,index);
+void showtabwindow::save(int index,QString name1,QString name2,bool is){
+    countwindow->saveExcel(name1,index,is);
+    countwindow->saveImg(name2,index,is);
 }
