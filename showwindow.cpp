@@ -19,24 +19,26 @@ void picture::closeEvent(QCloseEvent*)
     showwindow::isShow = false;
 }
 
+void framewindow::setState(int s){
+    state = s;
+}
+
 framewindow::framewindow(basewindow* p)
     :basewindow(p)
 {
-    qDebug()<<"framewindow";
-
     imgIndex = 0;
     index = -1;
     SIZEH = new int();
     SIZEW = new int();
     *SIZEW = rect().width();
     *SIZEH = rect().height();
+    path = "";
     showWindow = new showwindow(this,SIZEW,SIZEH);
     attrBox = new QComboBox(this);
     attrBox->addItem(QStringLiteral("重建结果"));
     attrBox->addItem(QStringLiteral("3D视图"));
     attrBox->addItem(QStringLiteral("景深扩展"));
     attrBox->addItem(QStringLiteral("颗粒探测"));
-
 
     menu = new QMenu();
 
@@ -51,17 +53,19 @@ framewindow::framewindow(basewindow* p)
 
 void framewindow::addItem(int index)
 {
-//    attrBox->setCurrentIndex(index);
+
 }
 
-void framewindow::setFigIndex(int index)
+void framewindow::setFigIndex(int i)
 {
-    showWindow->loadImg(path + "/img_fuse" + QString::number(index) + ".bmp");
+    index = i;
+    showWindow->loadImg(path + "/img_fuse" + QString::number(i) + ".bmp");
 }
 
-void framewindow::setDetectIndex(int index)
+void framewindow::setDetectIndex(int i)
 {
-    showWindow->loadImg(path + "/img_binaryzation" + QString::number(index) + ".jpg");
+    index = i;
+    showWindow->loadImg(path + "/img_binaryzation" + QString::number(i) + ".jpg");
 }
 
 QComboBox* framewindow::getBox()
@@ -76,8 +80,35 @@ void framewindow::save()
         return;
     }
     else {
-        QPixmap pixmap(path + "/temp_plane_" + QString::number(index)+".jpg");
-        qDebug() <<filename;
+        QPixmap pixmap;
+        switch(state){
+        case 0:
+            if(*isInverse){
+                pixmap.load(path + "/temp_plane_" + QString::number(index)+"i.jpg");
+            }
+            else {
+                pixmap.load(path + "/temp_plane_" + QString::number(index)+".jpg");
+            }
+            break;
+        case 1:
+            if(*isInverse){
+                pixmap.load(path + "/img_fuse" + QString::number(index)+"i.bmp");
+            }
+            else {
+                pixmap.load(path + "/img_fuse_" + QString::number(index)+".bmp");
+            }
+            break;
+        case 2:
+            if(*isInverse){
+                pixmap.load(path + "/img_binaryzation_" + QString::number(index)+"i.jpg");
+            }
+            else {
+                pixmap.load(path + "/img_binaryzation_" + QString::number(index)+".jpg");
+            }
+            break;
+        default:
+            return;
+        }
         QPainter paint(&pixmap);
         paint.setPen(QColor(255,255,255));
         if(showWindow->isCalculate){
@@ -162,7 +193,6 @@ void framewindow::setIndex(int i)
 void framewindow::setNum(int n)
 {
     index = n - 1;
-  //  qDebug()<<"imageindex="<<imgIndex<<" total="<<total;
     showWindow->loadImg(path + "/temp_plane_" + QString::number(imgIndex*total + n - 1)+".jpg");
 }
 
@@ -216,6 +246,7 @@ void framewindow::setTotalNum(int t)
 
 void framewindow::setI(bool* is)
 {
+    isInverse = is;
     showWindow->setI(is);
 }
 
@@ -231,6 +262,8 @@ QString framewindow::getPath()
 
 void framewindow::wheelEvent(QWheelEvent *event)
 {
+    if(path=="")return;
+   // qDebug()<<"WheelEvent";
     int &w = showWindow->w;
     int &h = showWindow->h;
     int numDegrees = event->delta()/8;
@@ -291,7 +324,6 @@ void showwindow::loadImg(QString p)
         pix.load(p.mid(0,p.size()-4) + "i"+p.mid(p.size()-4,4));
     }
     else pix.load(p);
-   // qDebug()<<"comejwofjiowf";
     w = pix.width();
     h = pix.height();
     if(w==0 && h==0){
@@ -329,6 +361,7 @@ void showwindow::setI(bool* is)
 
 void showwindow::paintEvent(QPaintEvent* )
 {
+    if(path=="")return;
     QPainter paint(this);
     paint.setPen(QColor(255,255,255));
     float length;
@@ -390,7 +423,7 @@ void showtabwindow::setPlotNum(int n)
 void showtabwindow::layout()
 {
     prefix = "";
-    isOneKey = true;
+    isOneKey = false;
     count = 0;
     Index = 0;
     isCalculate = false;
@@ -399,6 +432,11 @@ void showtabwindow::layout()
     figWindow = new framewindow();
     detectWindow = new framewindow();
     openglWindow = new OpenGLView();
+
+    frameWindow->setState(0);
+    figWindow->setState(1);
+    detectWindow->setState(2);
+
 
     addTab(frameWindow,QStringLiteral("视图"));
     addTab(countwindow,QStringLiteral("统计"));
@@ -437,8 +475,6 @@ bool showtabwindow::getCalculate(){
 void showtabwindow::indexChanged(int index)
 {
     Index = index;
-  //  reloadImg();
-    qDebug()<<"indexchange="<<index;
     if(index == 0) {
         removeTab(0);
         removeTab(1);
@@ -497,6 +533,7 @@ void showwindow::reloadImg()
 
 void showwindow::mouseMoveEvent(QMouseEvent *event)
 {
+    if(path=="")return;
     if (event->buttons()==Qt::LeftButton) {
         int x = event->pos().x();
         int y = event->pos().y();
@@ -514,6 +551,7 @@ void showwindow::mouseMoveEvent(QMouseEvent *event)
 
 void showwindow::mousePressEvent(QMouseEvent *event)
 {
+    if(path=="")return;
     if(event->button() == Qt::LeftButton) {
         int x = event->pos().x();
         int y = event->pos().y();
@@ -530,7 +568,7 @@ void showwindow::mousePressEvent(QMouseEvent *event)
 
 void showwindow::zoomIn()
 {
-
+    if(path == "")return;
     int prew = w;
     int preh = h;
     if(w<(*SIZEW)*10 && h<(*SIZEH)*10){
@@ -555,6 +593,7 @@ void showwindow::zoomIn()
 
 void showwindow::zoomOut()
 {
+    if(path == "")return;
     int prew = w;
     int preh = h;
     if(w>20 && h>20){
@@ -718,14 +757,14 @@ void showtabwindow::initLocate(position** pos,position** ipos,int num,int size,
     countwindow->setAttr(diameterfre,idiameterfre,diametermin,idiametermin,
                          diametermax,idiametermax,num,pos,ipos,
                          pointnum,ipointnum);
-    indexChanged(1);
     if(isOneKey){
         isOneKey = false;
         for(int i = 0;i < num;i++) {
             save(i,"data/user/"+prefix+"location" + QString::number(i)+".xls","data/user/"+prefix+"location"+QString::number(i)+".jpg",false);
-            save(i,"data/user/"+prefix+"ilocation" + QString::number(i)+".xls","data/user/"+prefix+"ilocation"+QString::number(i)+".jpg",false);
+            save(i,"data/user/"+prefix+"ilocation" + QString::number(i)+".xls","data/user/"+prefix+"ilocation"+QString::number(i)+".jpg",true);
         }
     }
+     indexChanged(1);
 }
 
 void showtabwindow::setIndex(int index)
@@ -741,9 +780,11 @@ void showtabwindow::setIndex(int index)
         openglWindow->updateIndex(index);
     }
     else if(Index == 2) {
+        figWindow->setIndex(index);
         figWindow->setFigIndex(index);
     }
     else if(Index == 3){
+        detectWindow->setIndex(index);
         detectWindow->setDetectIndex(index);
     }
 }
@@ -773,6 +814,8 @@ void showtabwindow::initIndex(int index)
 {
     indexChanged(0);
     frameWindow->setIndex(index - 1);
+    figWindow->setIndex(index - 1);
+    detectWindow->setIndex(index - 1);
 }
 
 void showtabwindow::reloadImg(){

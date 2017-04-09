@@ -6,11 +6,12 @@
 OpenGLView::OpenGLView()
 {
     pos = nullptr;
+    ipos = nullptr;
     number = 0;
     pointnum = 0;
     ipointnum = 0;
     index = 0;
-    isInverse = false;
+    isInverse = true;
 
     attrBox = new QComboBox(this);
     attrBox->addItem(QStringLiteral("重建结果"),0);
@@ -24,7 +25,6 @@ OpenGLView::OpenGLView()
 
 void OpenGLView::setPos(position** _pos,position** _ipos,int _num,int * _size,int* _isize)
 {
-
     if(pos!=nullptr) {
         for(int i=0;i<number;i++){
             delete[] pos[i];
@@ -32,7 +32,6 @@ void OpenGLView::setPos(position** _pos,position** _ipos,int _num,int * _size,in
         delete[] pointnum;
         delete[] pos;
     }
-
     if(ipos!=nullptr) {
         for(int i=0;i<number;i++){
             delete[] ipos[i];
@@ -40,15 +39,13 @@ void OpenGLView::setPos(position** _pos,position** _ipos,int _num,int * _size,in
         delete[] ipointnum;
         delete[] ipos;
     }
-
     ipos = _ipos;
     pos = _pos;
     number = _num;
     pointnum = _size;
     ipointnum = _isize;
-    reset(pos);
-    reset(ipos);
-
+    reset(pos,pointnum);qDebug()<<"setPos";
+    reset(ipos,ipointnum);qDebug()<<"setPos";
 }
 
 void OpenGLView::setInverse(bool is)
@@ -57,7 +54,7 @@ void OpenGLView::setInverse(bool is)
     update();
 }
 
-void OpenGLView::reset(position** pos)
+void OpenGLView::reset(position** pos,int* pointnum)
 {
     for(int i = 0;i<number;i++){
 
@@ -138,7 +135,6 @@ void OpenGLView::resizeGL(int width, int height)
 
 void OpenGLView::paintGL()
 {
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  //清除颜色缓存和深度缓存
     glLoadIdentity(); //初始化矩阵为单位矩阵
 
@@ -169,7 +165,7 @@ void OpenGLView::paintGL()
 
 void OpenGLView::drawScene()
 {
-
+//qDebug()<<"DRAW SCENE";
     GLfloat mat_ambient1[] = { 0.192250, 0.192250, 0.192250, 1.000000};
     GLfloat mat_diffuse1[] = { 0.507540, 0.507540, 0.507540, 1.000000};
     GLfloat mat_specular1[] = { 0.508273, 0.508273, 0.508273, 1.000000 };
@@ -221,7 +217,7 @@ void OpenGLView::drawScene()
         if(ipointnum == nullptr)return;
         for(int j = 0;j<ipointnum[index];j++) {
             glPushMatrix();
-            glTranslatef(ipos[index][j].Y,pos[index][j].Z,-pos[index][j].X);
+            glTranslatef(ipos[index][j].Y,ipos[index][j].Z,-ipos[index][j].X);
             glutSolidSphere(ipos[index][j].D/100,16,16);
             glPopMatrix();
         }

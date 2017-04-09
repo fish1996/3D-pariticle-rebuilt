@@ -528,7 +528,7 @@ void detection::adaptivethreshold(string tempfilename,double blocksize,double gl
         L1=Mat::zeros(imgbw.rows, imgbw.cols, CV_64F);
         int inum1;
         inum1=bwlabel(imgbw, L1, 8, ilabels);
-        qDebug()<<ilabels<<endl;
+        //qDebug()<<ilabels<<endl;
 
         normalize(imgbw,imgbw,0,255,NORM_MINMAX);
         char img_lname[1000];

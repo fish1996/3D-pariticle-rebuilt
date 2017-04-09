@@ -11,13 +11,6 @@
 #include <vector>
 #include <string>
 
-typedef enum{
-    Null,
-    Rebuilt,
-    Extend,
-    Detect,
-    Locate,
-}State;
 
 class threadA:public QThread
 {
@@ -31,7 +24,6 @@ private:
     extend* ext;
     progressbar* bar;
     mainwindow* window;
-    //Engine* ep;
     int size;
 protected:
     void run()override;
@@ -110,9 +102,8 @@ class thread:public QThread
 {
     Q_OBJECT
 private:
-  //  Engine* ep;
     int round(float x);
-    enum{NOPICTURE,NOPATH,NOCOMPLETE,OPENCVERR};
+    enum{NOPICTURE,NOPATH,NOCOMPLETE,OPENCVERR,SIZEERR,TOSMALL};
     State state;
     reBuilt* reb;
     mainwindow* window;
@@ -129,12 +120,12 @@ private:
     std::vector<std::string> filename;
     int imgnum;
     int size;
-
 public:
     thread();
 protected:
     void run();
 private slots:
+    void clear();
     void oneKey();
     void detect();
     void handle();

@@ -88,10 +88,13 @@ private:
     QAction* saveAction;
     scale* sca;
     QString path;
+    bool* isInverse;
     int imgIndex;
     int total;
+    int state;
     int index;
 public:
+    void setState(int);
     QComboBox* getBox();
     void setFigIndex(int);
     void setDetectIndex(int);

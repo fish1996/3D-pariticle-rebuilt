@@ -51,7 +51,7 @@ private:
     QMatrix4x4 m_camera;
     QMatrix4x4 m_world;
     void drawScene();
-    void reset(position** pos);
+    void reset(position** pos,int *);
 public:
     void setInverse(bool);
     void updateIndex(int);

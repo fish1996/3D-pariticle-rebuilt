@@ -22,8 +22,6 @@ savewindow::savewindow(QWidget* parent)
     cancelBtn = new QPushButton(QStringLiteral("取消"));
     chooseBtn = new QPushButton(".");
     pathLine = new QLineEdit();
-
-   // prefix = new QCombo
 }
 
 

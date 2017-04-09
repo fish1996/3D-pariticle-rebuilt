@@ -3,7 +3,7 @@
 #include <qDebug>
 location::location()
 {
-    qDebug()<<"location";
+    //qDebug()<<"location";
 }
 
 location::~location(){

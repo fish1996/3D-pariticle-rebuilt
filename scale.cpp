@@ -7,16 +7,13 @@ scale::scale(QWidget* parent):
     QWidget(parent)
 {
     id = cnt++;
-    qDebug()<<"new scale";
     length = 0;
-    //setFixedSize(SIZEW,SIZEH);
     move(200,10);
     update();
 }
 
 void scale::updateScale(float l)
 {
-
     length = l;
     update();
 }
@@ -36,7 +33,6 @@ void scale::paintEvent(QPaintEvent* )
     painter.drawLine(0,0,100,0);
 
     if(length!=0){
-       // qDebug()<<"id="<<id<<"updateScale"<<length;
         painter.drawText(rect(),QString::number(100.0*wavelength/length)+QString("um"));
     }
 }

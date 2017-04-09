@@ -24,8 +24,8 @@ void setupdialog::Add()
 {
     addattrWindow = new addattrwindow();
     addattrWindow->show();
-    connect(addattrWindow->okBtn,SIGNAL(clicked()),this,SLOT(addAttr()));
-    connect(addattrWindow->cancelBtn,SIGNAL(clicked()),this,SLOT(cancelAddAttr()));
+  //  connect(addattrWindow->okBtn,SIGNAL(clicked()),this,SLOT(addAttr()));
+   // connect(addattrWindow->cancelBtn,SIGNAL(clicked()),this,SLOT(cancelAddAttr()));
 
 }
 
@@ -202,7 +202,6 @@ void setupdialog::layout()
     vlayout[0]->addLayout(hlayout[4]);
 
     setWindowFlags(Qt::WindowStaysOnTopHint);
-  //  setWindowModality(Qt::ApplicationModal);
     setWindowTitle(QStringLiteral("设置"));
 
     setLayout(vlayout[0]);
@@ -210,21 +209,7 @@ void setupdialog::layout()
 }
 
 void setupdialog::setValue(int i)
-{/*
-    if(i==namelist->size()) {
-        line1->setText(QString::number(message->detection1));
-        line2->setText(QString::number(message->detection2));
-        line3->setText(QString::number(message->detection3));
-
-        maxRadiusText->setRange(0,100000);
-        fileDirText->setText(message->path);
-        minRadiusText->setValue(message->minRadius);
-        maxRadiusText->setValue(message->maxRadius);
-        intervalText->setValue(message->interval);
-        isInverse->setChecked(true);
-
-        return;
-    }*/
+{
     QString name = (*namelist)[i];
 
     line1->setText((*map)[name].detection1);

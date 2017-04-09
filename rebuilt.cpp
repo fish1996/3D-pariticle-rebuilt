@@ -25,7 +25,7 @@ reBuilt::reBuilt(string tempfilename1,vector<string>& filename,
 
 void reBuilt::start()
 {
-    int count = 0;
+ //   int count = 0;
     for(int i = 0;i < name.size();i++){
         Mat image2;
         image2=imread(name[i],CV_LOAD_IMAGE_GRAYSCALE);
@@ -33,17 +33,13 @@ void reBuilt::start()
         image2.convertTo(image,CV_64F,1.0/255.0);
         imagereconstruct2_wavelet(tempfilename, image, zmin, zmax, lamda, pixelh, pixelv, precision);
     }
-    QString str = "";
-    for(int i = 0;i < errorIndex.size();i++) {
-        str += QString::number(errorIndex[i] + 1);
-        if(i != errorIndex.size() - 1)str += "、";
-    }
     vector<double>::iterator biggest = max_element(begin(graymax), end(graymax));
     double graybig=*biggest;
     auto smallest = min_element(begin(graymin), end(graymin));
     double graysmall=*smallest;
     char filenamei[1000];
     char filename[1000];
+
 
     for(int i=0;i<renum;i++){
         sprintf(filename,"%s%d%s",tempfilename.c_str(),i,".jpg");
@@ -56,8 +52,8 @@ void reBuilt::start()
         sprintf(filenamei,"%s%d%s",tempfilename.c_str(),i,"i.jpg");
         imwrite(filenamei,planez);
     }
-    emit(allfinish(1));
 
+    emit(allfinish(1));
 }
 
 reBuilt::~reBuilt()

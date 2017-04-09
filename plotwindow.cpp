@@ -39,9 +39,8 @@ void plotwindow::setPlotNum(int n)
 
 void plotwindow::layout()
 {
-    isInverse = false;
+    isInverse = true;
     menu = new QMenu();
-  //  pixmap = new QPixmap();
     saveAsImageAction = new QAction(this);
     saveAsExcelAction = new QAction(this);
     QColor color1(0,255,255,230);
@@ -127,6 +126,7 @@ void plotwindow::setAttr(double** _diameterfre,double** _idiameterfre,
     idiameterfre =_idiameterfre;
     idiametermin = _idiametermin;
     idiametermax = _idiametermax;
+    qDebug()<<"plot setOk";
     update();
 }
 
@@ -137,9 +137,7 @@ void plotwindow::mousePressEvent(QMouseEvent *event)
     int _x = event->pos().x();
     int _y = event->pos().y();
     for(int i=0;i<x;i++){
-      //  qDebug()<<"i="<<i;
         if(rectVector[i].isOn(_x,_y)){
-        //    qDebug()<<"isOn"<<i;
             if(currentRect!=i){
                 currentRect = i;
                 update();
@@ -180,7 +178,6 @@ void plotwindow::paintEvent(QPaintEvent* e)
     YMAX = SIZEH - 30;
 
     if(!isInverse) {
-        qDebug()<<"noinverse";
         for(int i=0;i<x;i++){
             Rect r(XMIN + i*(XMAX-XMIN)/x,YMAX-(YMAX-YMIN)*diameterfre[index][i],(XMAX-XMIN)/x - 1,(YMAX-YMIN)*diameterfre[index][i]);
             rectVector[i] = r;
@@ -370,7 +367,9 @@ void plotwindow::saveImg(QString filename,int index,bool isInverse)
 
 void plotwindow::saveExcel(QString filepath,int index,bool isInverse)
 {
-    QString Begin = QString::fromLocal8Bit("<html><head></head><body><table border=\"1\" >");
+    qDebug()<<"saveExcel";
+    QString Begin =
+            QString::fromLocal8Bit("<html><head></head><body><table border=\"1\" >");
     QString end = QString::fromLocal8Bit("</table></body></html>");
     QList<QString> list;
 
@@ -383,8 +382,9 @@ void plotwindow::saveExcel(QString filepath,int index,bool isInverse)
     header += QString("<td>%1</td>").arg(QStringLiteral("颗粒总数"));
     header += "</tr>";
     list.push_back(header);
-
+qDebug()<<"saveExcel";
     if(!isInverse){
+        qDebug()<<"saveExcel";
         for(int i=0;i<pointnum[index];i++) {
             QString rowStr = "<tr>";
             QString cel;
@@ -406,7 +406,9 @@ void plotwindow::saveExcel(QString filepath,int index,bool isInverse)
             list.push_back(rowStr);
         }
     }
+
     else {
+        qDebug()<<"saveExcel";
         for(int i=0;i<ipointnum[index];i++) {
             QString rowStr = "<tr>";
             QString cel;
@@ -428,14 +430,19 @@ void plotwindow::saveExcel(QString filepath,int index,bool isInverse)
             list.push_back(rowStr);
         }
     }
+    qDebug()<<"4";
     QString text = Begin;
+        qDebug()<<"5";
     for(int i=0;i<list.size();++i){
         text.append(list.at(i));
     }
+        qDebug()<<"6";
     text.append(end);
+        qDebug()<<"7";
     QTextEdit textEdit;
+    qDebug()<<text;
     textEdit.setText(text);
-
+qDebug()<<"8";
     QFile file(filepath);
     if(file.open(QFile::WriteOnly | QIODevice::Text)) {
         QTextStream ts(&file);

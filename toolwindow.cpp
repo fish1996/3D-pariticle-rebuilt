@@ -44,6 +44,7 @@ void toolwindow::layout()
     calculateBtn->set(QStringLiteral("测量"),":/image/cal.ico");
 
     scaleBtn->setClicked(true);
+    inverseBtn->setClicked(true);
 
     zoomInBtn = new Button();
     zoomOutBtn = new Button();

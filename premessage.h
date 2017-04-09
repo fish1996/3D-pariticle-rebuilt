@@ -19,7 +19,7 @@ struct premessage_t{
     QString minRadius;
     QString maxRadius;
     QString plotnum;
-    bool isInverse;
+ //   bool isInverse;
 };
 
 typedef QMap<QString,premessage_t> map_t;

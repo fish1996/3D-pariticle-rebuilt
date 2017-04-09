@@ -24,7 +24,7 @@
 #define nullptr 0
 
 void message_t::set(double d1,double d2,double d3,double minr,double maxr,
-                        QString p,int in,bool is)
+                        QString p,int in)
 {
 
     detection1 = d1;
@@ -34,12 +34,13 @@ void message_t::set(double d1,double d2,double d3,double minr,double maxr,
     maxRadius = maxr;
     path = p;
     interval = in;
-    isInverse = is;
+
 }
 
 mainwindow::mainwindow(QWidget *parent)
     : QWidget(parent)
 {
+    state = Null;
     srand(time(nullptr));
     loadAttr();
     layout();
@@ -49,7 +50,7 @@ mainwindow::mainwindow(QWidget *parent)
     backgroundname = "";
 
     msg.set(128,0.5,0.6,2*setupWindow->dpixText->text().toDouble(),
-            INF,"data/temp",1,true);
+            INF,"data/temp",1);
 
     viewWindow->setPath(currentPath);
     setupWindow->setPath("data/camera/");
@@ -112,7 +113,6 @@ void mainwindow::loadAttr()
                 pmsg.minRadius = strlist[12];
                 pmsg.maxRadius = strlist[13];
                 pmsg.plotnum = strlist[14];
-                pmsg.isInverse = strlist[15].toInt();
                 map[name] = pmsg;
                 strlist.clear();
             }
@@ -122,6 +122,7 @@ void mainwindow::loadAttr()
             }
         }
     }
+    qDebug()<<"ok load";
     file.close();
     file.setFileName("name.txt");
     file.open(QIODevice::ReadOnly);
@@ -170,8 +171,10 @@ void mainwindow::clearBuffer()
     viewWindow->updateImg();
     viewWindow->clearImg();
     showWindow->setNum(0);
+    showWindow->setPath("");
     toolWindow->slid->setNum(1);
     toolWindow->slid->setDisable();
+    emit(clear());
 }
 
 bool mainwindow::copyFile(QString sourceDir ,QString toDir, bool coverFileIfExist)
@@ -200,6 +203,7 @@ bool mainwindow::copyFile(QString sourceDir ,QString toDir, bool coverFileIfExis
 
 void mainwindow::saveAll(QString path,bool isOneKey)
 {
+
     QChar* tmp = new QChar[6];
     tmp[0] = '[';
     tmp[1] = rand()%(123-41) + 41;
@@ -210,17 +214,27 @@ void mainwindow::saveAll(QString path,bool isOneKey)
     QString prefix(tmp);
     delete[] tmp;
 
+
     showWindow->setPrefix(prefix);
     for(int i = 0;i < imgnum;i++) {
-
         for(int j = 0; j < totalnum ;j++) {
-
             copyFile(msg.path+"/temp_plane_"+QString::number(i*totalnum + j)+".jpg" ,path+"/"+prefix+"temp_plane_"+QString::number(i*totalnum + j)+".jpg", true);
             copyFile(msg.path+"/temp_plane_"+QString::number(i*totalnum + j)+"i.jpg" ,path+"/"+prefix+"temp_plane_"+QString::number(i*totalnum + j)+"i.jpg", true);
         }
+    }
+    if(state == Rebuilt){
+        QMessageBox::about(0,"Message",QStringLiteral("保存成功!自动命名前缀为：")+prefix);
+        return;
+    }
+    for(int i = 0;i < imgnum;i++) {
         copyFile(msg.path+"/img_fuse"+QString::number(i)+".bmp" ,path+"/"+prefix+"img_fuse"+QString::number(i)+".bmp", true);
         copyFile(msg.path+"/img_fuse"+QString::number(i)+"i.bmp" ,path+"/"+prefix+"img_fuse"+QString::number(i)+"i.bmp", true);
-
+    }
+    if(state == Extend) {
+        QMessageBox::about(0,"Message",QStringLiteral("保存成功!自动命名前缀为：")+prefix);
+        return;
+    }
+    for(int i = 0;i < imgnum;i++) {
         copyFile(msg.path+"/img_binaryzation"+QString::number(i)+".bmp" ,path+"/"+prefix+"binaryzation"+QString::number(i)+".jpg", true);
         copyFile(msg.path+"/img_binaryzation"+QString::number(i)+"i.bmp" ,path+"/"+prefix+"binaryzation"+QString::number(i)+"i.jpg", true);
         copyFile(msg.path+"/map_highfrequency"+QString::number(i)+".tiff" ,path+"/"+prefix+"map_highfrequency"+QString::number(i)+".tiff", true);
@@ -228,18 +242,28 @@ void mainwindow::saveAll(QString path,bool isOneKey)
 
         copyFile(msg.path+"/map_lowfrequency"+QString::number(i)+".tiff" ,path+"/"+prefix+"map_lowfrequency"+QString::number(i)+".tiff", true);
         copyFile(msg.path+"/map_lowfrequency"+QString::number(i)+"i.tiff" ,path+"/"+prefix+"map_lowfrequency"+QString::number(i)+"i.tiff", true);
-
+   }
+    if(state == Detect){
+        QMessageBox::about(0,"Message",QStringLiteral("保存成功!自动命名前缀为：")+prefix);
+        return;
+    }
+    for(int i = 0;i < imgnum;i++) {
         if(!isOneKey){
-            qDebug()<<"no OneKey";
+
             showWindow->save(i,path+"/"+prefix+"/location" + QString::number(i)+".xls",path+"/"+prefix+"location"+QString::number(i)+".jpg",false);
             showWindow->save(i,path+"/"+prefix+"/ilocation" + QString::number(i)+".xls",path+"/"+prefix+"ilocation"+QString::number(i)+".jpg",true);
         }
     }
+
     QMessageBox::about(0,"Message",QStringLiteral("保存成功!自动命名前缀为：")+prefix);
 }
 
 void mainwindow::saveImg()
 {
+    if(state == Null){
+        QMessageBox::about(0,"Message",QStringLiteral("没有可以保存的图片"));
+        return;
+    }
     QUrl url = QFileDialog::getExistingDirectoryUrl
             (this);
     if(url.toString().size()<=8)return;
@@ -286,8 +310,6 @@ void mainwindow::setConnect()
     connect(toolline->clearBtn,SIGNAL(clicked()),viewWindow,SLOT(cancelBackground()));
     connect(toolline->allchooseBtn,SIGNAL(clicked()),viewWindow,SLOT(chooseAll()));
     connect(setupWindow->tabWindow->stopBtn,SIGNAL(clicked()),this,SLOT(updatePath()));
-  //  connect(setupWindow->tabWindow->stopBtn,SIGNAL(clicked()),viewWindow,SLOT(setPath("data/camera/temp_plane_")));
-
 }
 
 void mainwindow::updatePath()
@@ -499,7 +521,6 @@ void mainwindow::layout()
     hlayout[1]->addLayout(vlayout[0]);
     hlayout[1]->addWidget(setupWindow);
     hlayout[1]->setContentsMargins(10,0,10,10);
-   // hlayout[1]->setSpacing(0);
 
     vlayout[1]->addWidget(menuWindow);
     vlayout[1]->setSpacing(0);
@@ -538,8 +559,7 @@ void mainwindow::initOk()
             map[initWindow->combobox->currentText()].minRadius.toDouble(),
             map[initWindow->combobox->currentText()].maxRadius.toDouble(),
             map[initWindow->combobox->currentText()].path,
-            map[initWindow->combobox->currentText()].plotnum.toInt(),
-            map[initWindow->combobox->currentText()].isInverse);
+            map[initWindow->combobox->currentText()].plotnum.toInt());
     toolWindow->set(setupWindow->zminText->text().toDouble(),setupWindow->intervalText->text().toDouble());
 
     delete initWindow;
@@ -619,7 +639,6 @@ void mainwindow::importBackgroundImg()
     double gmax,gmin;
     minMaxIdx(hologram,&gmax,&gmin);
     hologram=(hologram-gmin)/(gmax-gmin);
-    //qDebug()<<QString::fromStdString(msg.path.toStdString()+"/" + vec[i].substr(0,vec[i].size()-5)+"r"+vec[i].substr(vec[i].size()-4));
     normalize(hologram,hologram,0.0,255.0,NORM_MINMAX);
 
     imwrite(p.substr(0,p.size()-4)+"r"+p.substr(p.size()-4),hologram);
@@ -652,13 +671,9 @@ void mainwindow::setupOk()
             setupDialog->minRadiusText->text().toInt(),
             setupDialog->maxRadiusText->text().toInt(),
             setupDialog->fileDirText->text(),
-            setupDialog->intervalText->text().toInt(),
-            0);
+            setupDialog->intervalText->text().toInt());
     showWindow->setPath(msg.path);
     showWindow->setPlotNum(setupDialog->intervalText->text().toInt());
-  //  qDebug()<<"setupOk"<<setupDialog->intervalText->text().toInt();
-    //setupWindow->inverseBox->setChecked(msg.isInverse);
-
     delete setupDialog;
 }
 

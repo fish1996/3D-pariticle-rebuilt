@@ -53,8 +53,6 @@ void addattrwindow::layout()
     maxRadiusText = new QSpinBox();
     plotnumText = new QSpinBox();
 
-    isInverse = new QCheckBox(QStringLiteral("反色"));
-
     okBtn = new QPushButton(QStringLiteral("确定"));
     cancelBtn = new QPushButton(QStringLiteral("取消"));
     choosePathBtn = new QPushButton(QStringLiteral("."));
@@ -96,7 +94,6 @@ void addattrwindow::layout()
 
     hlayout[9]->addWidget(plotnum);
     hlayout[9]->addWidget(plotnumText);
-    hlayout[9]->addWidget(isInverse);
 
     vlayout[0]->addLayout(hlayout[0]);
     vlayout[0]->addLayout(hlayout[1]);
@@ -130,6 +127,7 @@ bool addattrwindow::isValid(const premessage_t& msg)
 
 void addattrwindow::addAttr()
 {
+
     premessage_t msg;
     msg.zmin = zminText->text();
     msg.zmax = zmaxText->text();
@@ -139,38 +137,27 @@ void addattrwindow::addAttr()
     msg.dpix = dpixText->text();
     msg.lamda = lamdaText->text();
     msg.interval = intervalText->text();
-    msg.Mag = MagText->text();
-    msg.location = locationText->text();
     msg.path = pathText->text();
     msg.plotnum = plotnumText->text();
     msg.minRadius = minRadiusText->text();
     msg.maxRadius = maxRadiusText->text();
-    msg.isInverse = isInverse->isChecked();
 
     emit(updateAttr(nameText->text(),msg));
     std::ofstream out("data.txt",std::ios::app);
-
     out << nameText->text().toStdString() << " ";
     out << zminText->text().toStdString() << " ";
     out << zmaxText->text().toStdString() << " ";
     out << intervalText->text().toStdString() << " ";
     out << lamdaText->text().toStdString() << " ";
-    out << MagText->text().toStdString() << " ";
     out << dpixText->text().toStdString() << " ";
     out << d1Text->text().toStdString() << " ";
     out << d2Text->text().toStdString() << " ";
     out << d3Text->text().toStdString() << " ";
-    out << locationText->text().toStdString() <<" ";
     out << pathText->text().toStdString() << " ";
 
     out << minRadiusText->text().toStdString() << " ";
     out << maxRadiusText->text().toStdString() << " ";
     out << plotnumText->text().toStdString() << " ";
-
-    if(isInverse->isChecked()){
-        out << "1 ";
-    }
-    else out << "0 ";
 
 
     out<<"\n";
@@ -179,13 +166,6 @@ void addattrwindow::addAttr()
     std::ofstream nameout("name.txt",std::ios::app);
     nameout << nameText->text().toStdString() << " ";
 
-    /*QMessageBox message(QMessageBox::Question, "Message",
-                        QStringLiteral("添加预设参数\"")
-                        + addattrWindow->nameText->text()
-                        + QStringLiteral("\"成功！"),
-                        QMessageBox::Yes,addattrWindow);
-    message.setWindowFlags(Qt::WindowStaysOnTopHint);
-    message.exec();*/
     nameout.close();
 
     close();

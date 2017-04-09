@@ -212,26 +212,3 @@ QImage camera::cvMat2QImage(const cv::Mat& mat)
         return QImage();
     }
 }
-
-/*
-//CV_CAP_DSHOW
-CvCapture* capture1 = cvCreateCameraCapture(0);	//将图像文件加载进内存
-cvNamedWindow("lovely1", CV_WINDOW_AUTOSIZE);	//创建图像窗口，第一个参数作为与其他函数交互的索引
-
-IplImage* img;
-if (!capture1) {
-    qDebug()<<"capture failed";
-}
-while(1) {
-     img = cvQueryFrame(capture1);
-     cvShowImage("lovely1", img);	//把img图像显示在lovely的窗口中
-
-     char c = cvWaitKey(40);	//等待用户触发行为
-     if (c == 27) {
-         break;  //等待ESC键
-     }
-}
-cvReleaseImage(&img);	//释放img所占据的内存，“lovely”窗口图像不会消失
-
-cvDestroyWindow("lovely1");	//销毁lovely窗口，同时释放为img的一个副本图像所开辟的内存，图像消失
-*/

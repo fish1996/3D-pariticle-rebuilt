@@ -59,7 +59,6 @@ public:
     QSpinBox* maxRadiusText;
     QSpinBox* plotnumText;
 
-    QCheckBox* isInverse;
     QPushButton* okBtn;
     QPushButton* cancelBtn;
     addattrwindow(QWidget* parent = 0);

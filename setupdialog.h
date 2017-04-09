@@ -64,7 +64,7 @@ public:
     QSpinBox* intervalText;
     QSpinBox* minRadiusText;
     QSpinBox* maxRadiusText;
-    QCheckBox* isInverse;
+    //QCheckBox* isInverse;
     QVector<QString>* namelist;
     setupdialog(QString preattr,QVector<QString>* namelist,map_t* map,double size,message_t* msg,QWidget* parent = 0);
     ~setupdialog();

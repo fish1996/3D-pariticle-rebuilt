@@ -97,10 +97,6 @@ void removeattrwindow::removeAttr()
             << (*map)[(*namelist)[i]].minRadius.toStdString() << " "
             << (*map)[(*namelist)[i]].maxRadius.toStdString() << " "
             << (*map)[(*namelist)[i]].plotnum.toStdString() << " ";
-        if((*map)[(*namelist)[i]].isInverse){
-            out << "1 ";
-        }
-        else out << "0 ";
 
         out << "\n";
     }

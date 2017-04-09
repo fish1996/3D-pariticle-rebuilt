@@ -9,9 +9,9 @@ struct message_t{
     double maxRadius;
     QString path;
     int interval;
-    bool isInverse;
+ //   bool isInverse;
     void set(double d1,double d2,double d3,double minr,double maxr,
-             QString p,int in,bool is);
+             QString p,int in);
 };
 
 #endif // MESSAGE_H

@@ -12,7 +12,6 @@
 #include "toolline.h"
 #include "catalog.h"
 #include "attr.h"
-//#include "engine.h"
 #include "message.h"
 #include <QDockWidget>
 #include <QDir>
@@ -21,11 +20,18 @@
 
 class QVBoxLayout;
 class QHBoxLayout;
-
+typedef enum{
+    Null,
+    Rebuilt,
+    Extend,
+    Detect,
+    Locate,
+}State;
 class mainwindow : public QWidget
 {
     Q_OBJECT
 private:
+
     enum{
         HMAX = 2,
         VMAX = 2,
@@ -65,6 +71,7 @@ private:
     QDockWidget* dock;
     bool copyFile(QString sourceDir ,QString toDir, bool coverFileIfExist);
 public:
+    State state;
     QString name;
     message_t msg;
     int total;
@@ -116,6 +123,8 @@ protected:
     void closeEvent(QCloseEvent*);
     void keyReleaseEvent(QKeyEvent* );
     void keyPressEvent(QKeyEvent*);
+signals:
+    void clear();
 };
 
 #endif // MAINWINDOW_H

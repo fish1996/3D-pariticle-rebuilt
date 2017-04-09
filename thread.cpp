@@ -35,7 +35,6 @@ void threadA::run()
 
 void threadA::release()
 {
-   // window->toolWindow->slid->setNum(0,1);
     delete ext;
     emit(Next());
     emit(Next(Extend));
@@ -119,7 +118,6 @@ void threadC::release()
 void threadC::run(){
 
     Location = new location();
-    qDebug()<<"run herererere";
     connect(Location,SIGNAL(locateOk()),bar,SLOT(changeState()));
     connect(Location,SIGNAL(locateAll(position**,position**,int,int,double**,double**,double*,double*,double*,double*,int*,int*)),
             window->showWindow,SLOT(initLocate(position**,position**,int,int,double**,double**,double*,double*,double*,double*,int*,int*)));
@@ -139,7 +137,6 @@ thread::thread()
     thB = new threadB();
     thC = new threadC();
 
-  //  window->setupWindow->runBtn->setEnabled(false);
     window->setupWindow->figplotBtn->setEnabled(false);
     window->setupWindow->detectionBtn->setEnabled(false);
     window->setupWindow->locationBtn->setEnabled(false);
@@ -149,6 +146,7 @@ thread::thread()
     connect(window->setupWindow->detectionBtn,SIGNAL(clicked()),this,SLOT(detect()));
     connect(window->setupWindow->locationBtn,SIGNAL(clicked()),this,SLOT(locate()));
     connect(window->setupWindow->oneKeyBtn,SIGNAL(clicked()),this,SLOT(oneKey()));
+    connect(window,SIGNAL(clear()),this,SLOT(clear()));
     connect(this,SIGNAL(Next(State)),this,SLOT(changeState(State)));
     connect(thA,SIGNAL(Next(State)),this,SLOT(changeState(State)));
     connect(thB,SIGNAL(Next(State)),this,SLOT(changeState(State)));
@@ -170,7 +168,6 @@ void thread:: oneKey()
 
 void thread::complete()
 {
-   // window->saveAll("data/user");
     disconnect(this,SIGNAL(Next()),this,SLOT(figplot()));
     disconnect(thA,SIGNAL(Next()),this,SLOT(detect()));
     disconnect(thB,SIGNAL(Next()),this,SLOT(locate()));
@@ -226,6 +223,14 @@ void thread::errorMsg(int e)
         QMessageBox::critical(NULL, "Error", QStringLiteral("请填写完整的参数！"),
                               QMessageBox::Yes);
         break;
+    case SIZEERR:
+        QMessageBox::critical(NULL, "Error", QStringLiteral("重建起始结束位置出错！"),
+                              QMessageBox::Yes);
+        break;
+    case TOSMALL:
+        QMessageBox::critical(NULL, "Error", QStringLiteral("重建间距过小！"),
+                              QMessageBox::Yes);
+        break;
     }
 }
 
@@ -249,6 +254,7 @@ void thread::handle()
         return;
     }
 
+
     if(window->viewWindow->isEmpty()) {
         filename.push_back((window->name.toStdString()));
     }
@@ -264,6 +270,7 @@ void thread::handle()
         emit(send(NOCOMPLETE));
         return;
     }
+
     zmin1=window->setupWindow->zminText->text().toDouble();
     zmin1=zmin1*pow(10.0,-2);
     zmax1=window->setupWindow->zmaxText->text().toDouble();
@@ -274,6 +281,16 @@ void thread::handle()
     pixelsize=pixelsize*pow(10.0,-6);
     interval=window->setupWindow->intervalText->text().toDouble();
     interval=interval*pow(10.0,-3);
+
+    if(zmin1 > zmax1) {
+        emit(send(SIZEERR));
+        return;
+    }
+
+    if(interval <= 0) {
+        emit(send(TOSMALL));
+        return;
+    }
 
     bar = new progressbar(QStringLiteral("全息重建"));
 
@@ -299,9 +316,18 @@ void thread::release()
     emit(Next(Rebuilt));
 }
 
+void thread::clear()
+{
+    state = Null;
+    window->setupWindow->figplotBtn->setEnabled(false);
+    window->setupWindow->detectionBtn->setEnabled(false);
+    window->setupWindow->locationBtn->setEnabled(false);
+}
+
 void thread::changeState(State s)
 {
     state = s;
+    window->state = s;
     switch(state){
     case Null:
         break;
