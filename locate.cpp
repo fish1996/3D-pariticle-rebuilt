@@ -166,7 +166,7 @@ int location::round(float x)
 //image 目前图片,boxcoef输入的参数,planesumnumber第一步所用到的总张数
 //p1xyzd矩阵参数可以用于绘制三维图，共四列，分别是X,Y,Z,S(这里给的是直径）
 void location::p_location(string tempfilename,double boxcoef,int planesumnuber,int secnum,int imgnum){
-    qDebug()<<"p_location";
+    //qDebug()<<"p_location";
     p1xyzd=new Mat[imgnum]();
     diameterfre=new double *[imgnum];
     for(int i=0;i<imgnum;i++){
@@ -180,7 +180,7 @@ void location::p_location(string tempfilename,double boxcoef,int planesumnuber,i
 
 
     for(int imgn=0;imgn<imgnum;imgn++){
-        qDebug()<<"imgn = "<<imgn;
+        //qDebug()<<"imgn = "<<imgn;
         int row=p1xy[imgn].rows;
         pointnum[imgn]=row;
 
@@ -313,7 +313,7 @@ void location::p_location(string tempfilename,double boxcoef,int planesumnuber,i
     ipointnum=new int[imgnum];
 
     for(int imgn=0;imgn<imgnum;imgn++){
-        qDebug()<<"imgn = "<<imgn;
+        //qDebug()<<"imgn = "<<imgn;
         int row=ip1xy[imgn].rows;
         ipointnum[imgn]=row;
 

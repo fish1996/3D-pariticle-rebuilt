@@ -27,10 +27,16 @@ void menu::layout()
     saveAction = new QAction(this);
     importAction = new QAction(this);
     clearAction = new QAction(this);
+    changeAction1 = new QAction(this);
+    changeAction2 = new QAction(this);
     importBackgroundAction = new QAction(this);
 
    // importAction->setText(QStringLiteral("&导入原图"));
     importBackgroundAction->setText(QStringLiteral("&导入背景"));
+    changeAction1->setText(QStringLiteral("改变比例尺颜色"));
+    changeAction1->setIcon(QIcon(":/image/colorpick1.ico"));
+    changeAction2->setText(QStringLiteral("改变测量颜色"));
+    changeAction2->setIcon(QIcon(":/image/colorpick2.ico"));
 
     saveAction = fileMenu->addAction(QIcon(":/image/save.ico"),QStringLiteral("&保存"));
     importAction = fileMenu->addAction(QIcon(":/image/import.ico"),QStringLiteral("&导入原图"));
@@ -50,6 +56,8 @@ void menu::layout()
     toolBar->addAction(clearAction);
     toolBar->addAction(setAction);
     toolBar->addAction(importAction);
+    toolBar->addAction(changeAction1);
+    toolBar->addAction(changeAction2);
 
     toolBar->setStyleSheet("background-color:rgb(235,235,235);");
 

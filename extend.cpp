@@ -26,7 +26,7 @@ void extend::start()
         return;
     }*/
     for(int i = 0;i<num;i++) {
-        qDebug()<<"i="<<i;
+        //qDebug()<<"i="<<i;
         image_extend(i,size, zmin, zmax, precision);
         iimage_extend(i,size, zmin, zmax, precision);
     }
@@ -34,7 +34,7 @@ void extend::start()
 
     /*idwt22Terminate();
     dwt22Terminate();*/
-    qDebug()<<"allfinish hererere";
+   // qDebug()<<"allfinish hererere";
     emit(extendAll());
 }
 
@@ -328,7 +328,7 @@ Mat extend::wkeep2(Mat x,int siz[])
     }
 
     if(siz[0]<1||siz[1]<1){
-        qDebug()<<"error!";
+        //qDebug()<<"error!";
         return y;
     }
 
@@ -419,7 +419,7 @@ void extend::image_extend(int num,int size, double zmin, double zmax, double pre
 
     for(plane_ind=(num)*size;plane_ind<(num+1)*size;plane_ind++){
         sprintf(tempfilename_mat,"%s%s%d%s",tempfilename.c_str(),forefile.c_str(),plane_ind,".jpg"); //图像从1开始命名，假设文件名无／,不确定输入是否文件夹
-        qDebug()<<tempfilename_mat;
+        //qDebug()<<tempfilename_mat;
         temp_mat=imread(tempfilename_mat,CV_LOAD_IMAGE_GRAYSCALE);
         temp_mat.convertTo(Image,CV_64F);
         Mat NHOOD(15, 15, CV_64FC1, Scalar(1));

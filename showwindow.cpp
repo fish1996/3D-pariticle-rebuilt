@@ -51,6 +51,16 @@ framewindow::framewindow(basewindow* p)
     connect(showWindow,SIGNAL(send(float)),sca,SLOT(updateScale(float)));
 }
 
+bool framewindow::isShowWhite()
+{
+    return sca->isWhite;
+}
+
+void framewindow::isShowWhite(bool is)
+{
+    sca->isShowWhite(is);
+}
+
 void framewindow::addItem(int index)
 {
 
@@ -198,8 +208,9 @@ void framewindow::setNum(int n)
 
 void framewindow::paintEvent(QPaintEvent* e)
 {
+    //qDebug()<<"paint parent";
+    /*
     QPainter paint(this);
-
     *SIZEW = e->rect().width();
     *SIZEH = e->rect().height();
     paint.setPen(Qt::NoPen);
@@ -214,7 +225,7 @@ void framewindow::paintEvent(QPaintEvent* e)
             paint.drawRect(size*i+size/2+margin, size*j+margin, size/2, size/2);
             paint.drawRect(size*i+margin, size*j+size/2+margin, size/2, size/2);
         }
-    }
+    }*/
 }
 
 showwindow* framewindow::getshowwindow()
@@ -244,6 +255,16 @@ void framewindow::setTotalNum(int t)
     total = t;
 }
 
+bool framewindow::isDrawWhite()
+{
+    return showWindow->isDrawWhite();
+}
+
+void framewindow::isDrawWhite(bool is)
+{
+    showWindow->isDrawWhite(is);
+}
+
 void framewindow::setI(bool* is)
 {
     isInverse = is;
@@ -262,6 +283,7 @@ QString framewindow::getPath()
 
 void framewindow::wheelEvent(QWheelEvent *event)
 {
+    if(showWindow->isCalculate)return;
     if(path=="")return;
    // qDebug()<<"WheelEvent";
     int &w = showWindow->w;
@@ -270,14 +292,14 @@ void framewindow::wheelEvent(QWheelEvent *event)
     int numSteps=numDegrees/15;
     int prew = w;
     int preh = h;
-    if(w > 20 && h > 20 && numSteps<0 || numSteps>0 && w<*SIZEW*10 && h<*SIZEH*10){
+    if(w > 100 && h > 100 && numSteps<0 || numSteps>0 && w<*SIZEW*10 && h<*SIZEH*10){
         w=w*(1+numSteps*0.15);
-        h=h*(1+numSteps*0.15);
     }
+    h = 1.0*w/showWindow->original_w * showWindow->original_h;
     int x,y;
     x = showWindow->frameGeometry().topLeft().x();
     y = showWindow->frameGeometry().topLeft().y();
-    showWindow->ishold = true;
+
     showWindow->move(x+(prew-w)/2,y+(preh-h)/2);
     showWindow->ratio = 1.0*w/showWindow->width;
     showWindow->beginx *= 1.0*w/prew;
@@ -312,15 +334,17 @@ void showwindow::layout()
 {
     beginx = beginy = endx = endy;
     isCalculate = false;
+    ishold = true;
+    drawWhite = true;
     path = "";
 }
 
 void showwindow::loadImg(QString p)
 {
-    qDebug() << "loadimg " << p;
+    //qDebug() << "loadimg " << p;
     path = p;
     if(*isInverse){
-        qDebug()<<"yes";
+        //qDebug()<<"yes";
         pix.load(p.mid(0,p.size()-4) + "i"+p.mid(p.size()-4,4));
     }
     else pix.load(p);
@@ -353,29 +377,45 @@ void showwindow::loadImg(QString p)
     emit(send(ratio));
 }
 
+void showwindow::isDrawWhite(bool is)
+{
+    drawWhite = is;
+    update();
+}
+
 void showwindow::setI(bool* is)
 {
     isInverse = is;
 }
 
+bool showwindow::isDrawWhite()
+{
+    return drawWhite;
+}
 
 void showwindow::paintEvent(QPaintEvent* )
 {
+    //qDebug()<<"paint children";
     if(path=="")return;
     QPainter paint(this);
-    paint.setPen(QColor(255,255,255));
+    if(drawWhite)
+        paint.setPen(QColor(255,255,255));
+    else
+        paint.setPen(QColor(0,0,0));
     float length;
     static float len;
-
+   // bool flag = false;
     if(path!="")paint.drawPixmap(0,0,w,h,pix);
     if(isCalculate){
         paint.drawLine(beginx,beginy,endx,endy);
         length = sqrt((beginx-endx)*(beginx-endx) + (beginy-endy)*(beginy-endy));
         if(ishold) {
+
             paint.drawText((int)((beginx+endx)/2)-10,
                    (int)((beginy+endy)/2)-10,
                    QString::number(len)+"um");
             ishold = false;
+
         }
         else {
             length = sqrt((beginx-endx)*(beginx-endx) + (beginy-endy)*(beginy-endy));
@@ -385,9 +425,13 @@ void showwindow::paintEvent(QPaintEvent* )
                        (int)((beginy+endy)/2)-10,
                        QString::number(len)+"um");
             }
+
         }
     }
-    parent->update();
+    else {
+   //     parent->update();
+    }
+
 }
 
 showtabwindow::showtabwindow(QTabWidget* parent)
@@ -568,6 +612,7 @@ void showwindow::mousePressEvent(QMouseEvent *event)
 
 void showwindow::zoomIn()
 {
+    if(isCalculate)return;
     if(path == "")return;
     int prew = w;
     int preh = h;
@@ -578,7 +623,7 @@ void showwindow::zoomIn()
     int x,y;
     x = frameGeometry().topLeft().x();
     y = frameGeometry().topLeft().y();
-    ishold = true;
+
     move(x+(prew-w)/2,y+(preh-h)/2);
     ratio = 1.0*w/width;
     beginx *= 1.0*w/prew;
@@ -593,17 +638,18 @@ void showwindow::zoomIn()
 
 void showwindow::zoomOut()
 {
+    if(isCalculate)return;
     if(path == "")return;
     int prew = w;
     int preh = h;
-    if(w>20 && h>20){
+    if(w>100 && h>100){
         w=w*0.95;
         h=h*0.95;
     }
     int x,y;
     x = frameGeometry().topLeft().x();
     y = frameGeometry().topLeft().y();
-    ishold = true;
+
     move(x+(prew-w)/2,y+(preh-h)/2);
     ratio = 1.0*w/width;
     beginx *= 1.0*w/prew;
@@ -618,9 +664,10 @@ void showwindow::zoomOut()
 
 void showwindow::original()
 {
+    if(isCalculate)return;
     int prew = w;
     int preh = h;
-    float r = 1.0 * w/h;
+    float r = 1.0 * original_w/original_h;
     if(1.0*w/h > 1.0* (*SIZEW)/(*SIZEH)){
         w = *SIZEW;
         h = 1.0*w/r;
@@ -831,7 +878,27 @@ void showtabwindow::setWavelength(double w)
     detectWindow->getSca()->setWavelength(w);
 }
 
+void showtabwindow::isShowWhite(bool is)
+{
+    frameWindow->isShowWhite(is);
+}
+
+bool showtabwindow::isShowWhite()
+{
+    return frameWindow->isShowWhite();
+}
+
 void showtabwindow::save(int index,QString name1,QString name2,bool is){
     countwindow->saveExcel(name1,index,is);
     countwindow->saveImg(name2,index,is);
+}
+
+void showtabwindow::isDrawWhite(bool is)
+{
+    frameWindow->isDrawWhite(is);
+}
+
+bool showtabwindow::isDrawWhite()
+{
+    return frameWindow->isDrawWhite();
 }

@@ -18,7 +18,7 @@ OpenGLView::OpenGLView()
     attrBox->addItem(QStringLiteral("3D视图"),1);
     attrBox->addItem(QStringLiteral("景深扩展"),2);
     attrBox->addItem(QStringLiteral("颗粒探测"),3);
-    attrBox->setCurrentIndex(1);qDebug()<<"OpenGLView";
+    attrBox->setCurrentIndex(1);//qDebug()<<"OpenGLView";
 
 }
 
@@ -44,8 +44,8 @@ void OpenGLView::setPos(position** _pos,position** _ipos,int _num,int * _size,in
     number = _num;
     pointnum = _size;
     ipointnum = _isize;
-    reset(pos,pointnum);qDebug()<<"setPos";
-    reset(ipos,ipointnum);qDebug()<<"setPos";
+    reset(pos,pointnum);//qDebug()<<"setPos";
+    reset(ipos,ipointnum);//qDebug()<<"setPos";
 }
 
 void OpenGLView::setInverse(bool is)
@@ -108,7 +108,7 @@ void OpenGLView::updateIndex(int _index)
 
 void OpenGLView::initializeGL()
 {
-    qDebug()<<"initialize";
+    //qDebug()<<"initialize";
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
     //initializeOpenGLFunctions();
 

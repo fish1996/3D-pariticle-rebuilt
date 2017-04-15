@@ -114,6 +114,8 @@ private slots:
     void setPath(QString);
     void updatePath(QString);
     void chooseBackground();
+    void changeColor1();
+    void changeColor2();
     void clearBuffer();
     void saveImg();
 public:

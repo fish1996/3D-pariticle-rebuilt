@@ -6,6 +6,7 @@ static int cnt = 0;
 scale::scale(QWidget* parent):
     QWidget(parent)
 {
+    isWhite = false;
     id = cnt++;
     length = 0;
     move(200,10);
@@ -18,6 +19,12 @@ void scale::updateScale(float l)
     update();
 }
 
+void scale::isShowWhite(bool is)
+{
+    isWhite = is;
+    update();
+}
+
 void scale::setWavelength(double w)
 {
     wavelength = w;
@@ -27,9 +34,14 @@ void scale::paintEvent(QPaintEvent* )
 {
 
     QPainter painter(this);
-
-    painter.setPen(QColor(0,0,0));
-    painter.setBrush(QColor(0,0,0));
+    if(!isWhite) {
+        painter.setPen(QColor(0,0,0));
+        painter.setBrush(QColor(0,0,0));
+    }
+    else {
+        painter.setPen(QColor(255,255,255));
+        painter.setPen(QColor(255,255,255));
+    }
     painter.drawLine(0,0,100,0);
 
     if(length!=0){

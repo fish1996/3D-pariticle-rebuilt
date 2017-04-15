@@ -362,7 +362,7 @@ void detection::adaptivethreshold(string tempfilename,double blocksize,double gl
     ip1box=new Mat[imgnum]();
 
     for(int imgn=0;imgn<imgnum;imgn++){
-        qDebug()<<"imgn="<<imgn;
+        //qDebug()<<"imgn="<<imgn;
         char img_fname[1000];
         sprintf(img_fname,"%s%s%d%s",tempfilename.c_str(),"\\img_fuse",imgn,".bmp");//需要根据实际改
         Mat imgtotal;
@@ -550,7 +550,7 @@ void detection::adaptivethreshold(string tempfilename,double blocksize,double gl
     }
 
 
-    qDebug()<<"detectAll";
+    //qDebug()<<"detectAll";
     emit(detectAll());
 
 }

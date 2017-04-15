@@ -1,6 +1,7 @@
 ﻿#include "catalog.h"
 #include "button.h"
 #include <QLineEdit>
+#include <QMessageBox>
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -64,5 +65,7 @@ void catalog::choose()
     path = url.toString().mid(8);
 
     if(path == "")return;
+    QMessageBox::critical(NULL, "Error",path,
+                          QMessageBox::Yes);
     emit(updatePath(path));
 }

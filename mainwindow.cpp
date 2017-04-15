@@ -97,7 +97,7 @@ void mainwindow::loadAttr()
             }
             else if(str[i]=='\n'){
                 QString name = strlist[0];
-                qDebug()<<"name="<<name;
+                //qDebug()<<"name="<<name;
                 premessage_t pmsg;
                 pmsg.zmin = strlist[1];
                 pmsg.zmax = strlist[2];
@@ -122,7 +122,7 @@ void mainwindow::loadAttr()
             }
         }
     }
-    qDebug()<<"ok load";
+    //qDebug()<<"ok load";
     file.close();
     file.setFileName("name.txt");
     file.open(QIODevice::ReadOnly);
@@ -283,6 +283,8 @@ void mainwindow::setConnect()
     connect(menuWindow->importBackgroundAction,SIGNAL(triggered()),this,SLOT(importBackgroundImg()));
     connect(menuWindow->setAction,SIGNAL(triggered()),this,SLOT(setup()));
     connect(menuWindow->clearAction,SIGNAL(triggered()),this,SLOT(clearBuffer()));
+    connect(menuWindow->changeAction1,SIGNAL(triggered()),this,SLOT(changeColor1()));
+    connect(menuWindow->changeAction2,SIGNAL(triggered()),this,SLOT(changeColor2()));
 
     connect(toolWindow->zoomInBtn,SIGNAL(clicked()),this,SLOT(zoomIn()));
     connect(toolWindow->zoomOutBtn,SIGNAL(clicked()),this,SLOT(zoomOut()));
@@ -309,7 +311,30 @@ void mainwindow::setConnect()
     connect(toolline->chooseBackgroundBtn,SIGNAL(clicked()),this,SLOT(chooseBackground()));
     connect(toolline->clearBtn,SIGNAL(clicked()),viewWindow,SLOT(cancelBackground()));
     connect(toolline->allchooseBtn,SIGNAL(clicked()),viewWindow,SLOT(chooseAll()));
+
+    connect(setupWindow->tabWindow->came,SIGNAL(changePath(QString)),
+            viewWindow,SLOT(setPath(QString)));
     connect(setupWindow->tabWindow->stopBtn,SIGNAL(clicked()),this,SLOT(updatePath()));
+}
+
+void mainwindow::changeColor1()
+{
+    if(showWindow->isShowWhite()){
+        showWindow->isShowWhite(false);
+    }
+    else {
+        showWindow->isShowWhite(true);
+    }
+}
+
+void mainwindow::changeColor2()
+{
+    if(showWindow->isDrawWhite()) {
+        showWindow->isDrawWhite(false);
+    }
+    else {
+        showWindow->isDrawWhite(true);
+    }
 }
 
 void mainwindow::updatePath()

@@ -147,7 +147,7 @@ int round(float x)
 
 void reBuilt::imagereconstruct2_wavelet(string tempfilename, Mat &image, double zmin, double zmax, double lamda, double pixelh, double pixelv, double precision)//不知道后面那个参数干嘛用, int &all_light)
 {
-    qDebug()<<"come here";
+    //qDebug()<<"come here";
 
     float M_PI = 3.14159f;
     normalize(image, image, 0.0,255.0,NORM_MINMAX);//归一化
@@ -252,6 +252,6 @@ void reBuilt::imagereconstruct2_wavelet(string tempfilename, Mat &image, double 
         emit(finish());
     }
 
-    qDebug()<<renum;
+    //qDebug()<<renum;
 
 }

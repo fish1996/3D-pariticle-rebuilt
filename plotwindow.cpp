@@ -126,7 +126,7 @@ void plotwindow::setAttr(double** _diameterfre,double** _idiameterfre,
     idiameterfre =_idiameterfre;
     idiametermin = _idiametermin;
     idiametermax = _idiametermax;
-    qDebug()<<"plot setOk";
+    //qDebug()<<"plot setOk";
     update();
 }
 
@@ -228,7 +228,7 @@ void plotwindow::paintEvent(QPaintEvent* e)
         }
     }
     else if(isInverse) {
-        qDebug()<<"inverse";
+        //qDebug()<<"inverse";
         for(int i=0;i<x;i++){
             Rect r(XMIN + i*(XMAX-XMIN)/x,YMAX-(YMAX-YMIN)*idiameterfre[index][i],(XMAX-XMIN)/x - 1,(YMAX-YMIN)*idiameterfre[index][i]);
             rectVector[i] = r;
@@ -284,7 +284,7 @@ void plotwindow::paintEvent(QPaintEvent* e)
 
 void plotwindow::saveImg(QString filename,int index,bool isInverse)
 {
-    qDebug()<<"saveIMG";
+    //qDebug()<<"saveIMG";
     int _XMIN = 40,_XMAX = 500,_YMIN = 40,_YMAX = 400,_SIZEW = 580,_SIZEH = 480;
     QPixmap* pixmap = new QPixmap(_SIZEW,_SIZEH);
 
@@ -367,7 +367,7 @@ void plotwindow::saveImg(QString filename,int index,bool isInverse)
 
 void plotwindow::saveExcel(QString filepath,int index,bool isInverse)
 {
-    qDebug()<<"saveExcel";
+    //qDebug()<<"saveExcel";
     QString Begin =
             QString::fromLocal8Bit("<html><head></head><body><table border=\"1\" >");
     QString end = QString::fromLocal8Bit("</table></body></html>");
@@ -382,9 +382,9 @@ void plotwindow::saveExcel(QString filepath,int index,bool isInverse)
     header += QString("<td>%1</td>").arg(QStringLiteral("颗粒总数"));
     header += "</tr>";
     list.push_back(header);
-qDebug()<<"saveExcel";
+//qDebug()<<"saveExcel";
     if(!isInverse){
-        qDebug()<<"saveExcel";
+        //qDebug()<<"saveExcel";
         for(int i=0;i<pointnum[index];i++) {
             QString rowStr = "<tr>";
             QString cel;
@@ -408,7 +408,7 @@ qDebug()<<"saveExcel";
     }
 
     else {
-        qDebug()<<"saveExcel";
+        //qDebug()<<"saveExcel";
         for(int i=0;i<ipointnum[index];i++) {
             QString rowStr = "<tr>";
             QString cel;
@@ -430,19 +430,19 @@ qDebug()<<"saveExcel";
             list.push_back(rowStr);
         }
     }
-    qDebug()<<"4";
+
     QString text = Begin;
-        qDebug()<<"5";
+
     for(int i=0;i<list.size();++i){
         text.append(list.at(i));
     }
-        qDebug()<<"6";
+
     text.append(end);
-        qDebug()<<"7";
+
     QTextEdit textEdit;
-    qDebug()<<text;
+
     textEdit.setText(text);
-qDebug()<<"8";
+
     QFile file(filepath);
     if(file.open(QFile::WriteOnly | QIODevice::Text)) {
         QTextStream ts(&file);

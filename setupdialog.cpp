@@ -31,7 +31,7 @@ void setupdialog::Add()
 
 void setupdialog::closeEvent(QCloseEvent*)
 {
-    qDebug()<<"isClose";
+    //qDebug()<<"isClose";
     isCreate = false;
 }
 

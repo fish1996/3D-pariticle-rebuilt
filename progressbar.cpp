@@ -50,16 +50,16 @@ void progressbar::paintEvent(QPaintEvent* )
     float size = 1.0*(SIZEW - 60)/total;
     painter.drawRoundedRect(QRect(30,80,size*count,SIZEH-160),5,5);
     if(total==count){
-        qDebug() <<"allfinish";
+
        // emit(allfinish(1));
         close();
     }
-    qDebug()<<"finish"<<count;
+    //qDebug()<<"finish"<<count;
 }
 
 void progressbar::changeState()
 {
-    qDebug()<<"changeState";
+
     count++;
     update();
 }

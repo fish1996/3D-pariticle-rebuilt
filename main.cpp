@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     /*Engine *ep;
     if (!(ep=engOpen(NULL))) //测试是否启动Matlab引擎成功。
     {
-        qDebug() <<"Can't start Matlab engine!" <<endl;
+        //qDebug() <<"Can't start Matlab engine!" <<endl;
         exit(1);
     }
     qDebug()<<"Open Matlab Engine!" <<endl;*/

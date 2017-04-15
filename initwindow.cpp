@@ -18,7 +18,7 @@ initwindow::initwindow(QVector<QString>* n,map_t* m, QWidget* parent)
 
 void initwindow::layout()
 {
-    qDebug()<<"layout";
+    //qDebug()<<"layout";
     for(int i=0;i<HMAX;i++){
         hlayout[i] = new QHBoxLayout();
     }
@@ -98,7 +98,7 @@ void initwindow::layout()
     connect(combobox,SIGNAL(currentIndexChanged(int)),this,SLOT(setValue(int)));
     connect(plusBtn,SIGNAL(clicked()),this,SLOT(plus()));
     connect(minusBtn,SIGNAL(clicked()),this,SLOT(minus()));
-    qDebug()<<"finish";
+    //qDebug()<<"finish";
 }
 
 void initwindow::plus()

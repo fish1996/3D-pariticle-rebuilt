@@ -57,7 +57,7 @@ void removeattrwindow::cancelRemoveAttr()
 
 void removeattrwindow::removeAttr()
 {
-    qDebug()<<"removeAttr";
+    //qDebug()<<"removeAttr";
     QString name = attrBox->currentText();
 
     for(int i=0;i<namelist->size();i++){
@@ -75,7 +75,7 @@ void removeattrwindow::removeAttr()
     QMap<QString,premessage_t>::iterator it;
     it = map->find(name);
     if(it!=map->end()){
-        qDebug()<<"erase";
+        //qDebug()<<"erase";
         map->erase(it);
     }
 

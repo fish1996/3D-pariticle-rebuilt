@@ -54,6 +54,8 @@ public slots:
     void updatePrefix(QString);
     void multishot();
     void stopshot();
+signals:
+    void changePath(QString p);
 };
 
 #endif // CAMERA_H

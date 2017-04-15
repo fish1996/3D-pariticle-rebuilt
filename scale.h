@@ -15,6 +15,8 @@ private:
   //  float SIZEW = 100*rebuilt::scale;
  //   float SIZEH = 50*rebuilt::scale;
 public:
+    bool isWhite;
+    void isShowWhite(bool is);
     void setWavelength(double w);
     scale(QWidget* parent = 0);
 protected:

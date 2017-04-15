@@ -38,10 +38,12 @@ private:
     float x;
 
     void layout();
-    int original_w;
-    int original_h;
+    bool drawWhite;
+
     picture* pic;
 public:
+    int original_w;
+    int original_h;
     bool ishold;
     float pixelSize;
     bool isCalculate;
@@ -59,6 +61,9 @@ public:
     QString path;
     void reloadImg();
     QPoint point;
+    bool isDrawWhite();
+    void isDrawWhite(bool);
+
     void setPixelSize(float s);
     void reset();
     void setI(bool*);
@@ -88,6 +93,7 @@ private:
     QAction* saveAction;
     scale* sca;
     QString path;
+
     bool* isInverse;
     int imgIndex;
     int total;
@@ -95,6 +101,10 @@ private:
     int index;
 public:
     void setState(int);
+    bool isDrawWhite();
+    void isDrawWhite(bool);
+    bool isShowWhite();
+    void isShowWhite(bool);
     QComboBox* getBox();
     void setFigIndex(int);
     void setDetectIndex(int);
@@ -129,7 +139,6 @@ private slots:
 
 signals:
     void send(float);
-
 };
 
 class showtabwindow : public QTabWidget
@@ -154,11 +163,15 @@ public:
     OpenGLView* openglWindow;
     showtabwindow(QTabWidget* parent = 0);
     void addItem(int);
+    bool isDrawWhite();
+    bool isShowWhite();
     void zoomIn();
     void zoomOut();
     void reset();
     void save(int,QString,QString,bool);
     void original();
+    void isShowWhite(bool);
+    void isDrawWhite(bool);
     void setPath(QString);
     void fullScreen();
     void setTotalNum(int);

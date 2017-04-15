@@ -251,7 +251,6 @@ QString setupwindow::getPath()
 
 void setupwindow::setPath(QString path)
 {
-
     tabWindow->came->setPath(path);
 }
 
@@ -357,11 +356,11 @@ void setupwindow::layout()
     glayout1->addWidget(runBtn,1,3,1,1);
     runBtn->setFixedWidth(80);
     glayout1->addWidget(figplotBtn,1,4,1,1);
-    figplotBtn->setFixedSize(80,25);
+    figplotBtn->setFixedWidth(80);
     glayout1->addWidget(detectionBtn,2,3,1,1);
-    figplotBtn->setFixedSize(80,25);
+    figplotBtn->setFixedWidth(80);
     glayout1->addWidget(locationBtn,2,4,1,1);
-    figplotBtn->setFixedSize(80,25);
+    figplotBtn->setFixedWidth(80);
 
     vlayout[1]->addLayout(glayout);
     vlayout[1]->addLayout(glayout1);

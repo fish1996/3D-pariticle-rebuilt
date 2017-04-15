@@ -49,5 +49,7 @@
         <file>image/editclear.ico</file>
         <file>image/config.ico</file>
         <file>image/import.ico</file>
+        <file>image/colorpick1.ico</file>
+        <file>image/colorpick2.ico</file>
     </qresource>
 </RCC>

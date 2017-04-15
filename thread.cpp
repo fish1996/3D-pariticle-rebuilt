@@ -110,7 +110,7 @@ void threadC::get(Mat* _p1xy,Mat* _p1area,Mat* _p1box,Mat* _ip1xy,Mat* _ip1area,
 void threadC::release()
 {
     delete Location;
-    qDebug()<<"location release";
+    ///qDebug()<<"location release";
     emit(Next());
     emit(Next(Locate));
 }
