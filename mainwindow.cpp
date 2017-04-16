@@ -40,19 +40,23 @@ void message_t::set(double d1,double d2,double d3,double minr,double maxr,
 mainwindow::mainwindow(QWidget *parent)
     : QWidget(parent)
 {
+    qDebug()<<"lalala";
     state = Null;
     srand(time(nullptr));
+    qDebug()<<"lalala";
     loadAttr();
+    qDebug()<<"lalala";
     layout();
     setConnect();
     preAttr = "";
     name = "";
     backgroundname = "";
-
+qDebug()<<"lalala";
     msg.set(128,0.5,0.6,2*setupWindow->dpixText->text().toDouble(),
             INF,"data/temp",1);
 
     viewWindow->setPath(currentPath);
+    showWindow->setRadius(&msg.minRadius,&msg.maxRadius);
     setupWindow->setPath("data/camera/");
     showWindow->setPath(msg.path);
     isInverse = new bool();
@@ -97,23 +101,26 @@ void mainwindow::loadAttr()
             }
             else if(str[i]=='\n'){
                 QString name = strlist[0];
-                //qDebug()<<"name="<<name;
+                qDebug()<<"name="<<name;
                 premessage_t pmsg;
                 pmsg.zmin = strlist[1];
                 pmsg.zmax = strlist[2];
                 pmsg.interval = strlist[3];
                 pmsg.lamda = strlist[4];
-                pmsg.Mag = strlist[5];
-                pmsg.dpix = strlist[6];
-                pmsg.detection1 = strlist[7];
-                pmsg.detection2 = strlist[8];
-                pmsg.detection3 = strlist[9];
-                pmsg.location = strlist[10];
-                pmsg.path = strlist[11];
-                pmsg.minRadius = strlist[12];
-                pmsg.maxRadius = strlist[13];
-                pmsg.plotnum = strlist[14];
-                map[name] = pmsg;
+                qDebug()<<"name="<<name;
+               // pmsg.Mag = strlist[5];
+                pmsg.dpix = strlist[5];
+                pmsg.detection1 = strlist[6];
+                pmsg.detection2 = strlist[7];
+                pmsg.detection3 = strlist[8];
+                qDebug()<<"name="<<name;
+              //  pmsg.location = strlist[10];
+                pmsg.path = strlist[9];
+                pmsg.minRadius = strlist[10];
+                qDebug()<<"name="<<name;
+                pmsg.maxRadius = strlist[11];
+                pmsg.plotnum = strlist[12];qDebug()<<"name="<<name;
+                map[name] = pmsg;qDebug()<<"name="<<name;
                 strlist.clear();
             }
             else if(str[i]==' '){
@@ -140,13 +147,14 @@ void mainwindow::loadAttr()
         }
     }
     file.close();
-
+qDebug()<<"here";
 
 }
 
 
 void mainwindow::clearBuffer()
 {
+
     QDir dir(msg.path);
     QFileInfoList fileList;
     QFileInfo curFile;
@@ -285,6 +293,7 @@ void mainwindow::setConnect()
     connect(menuWindow->clearAction,SIGNAL(triggered()),this,SLOT(clearBuffer()));
     connect(menuWindow->changeAction1,SIGNAL(triggered()),this,SLOT(changeColor1()));
     connect(menuWindow->changeAction2,SIGNAL(triggered()),this,SLOT(changeColor2()));
+    connect(menuWindow->startAction,SIGNAL(triggered()),setupWindow,SLOT(play()));
 
     connect(toolWindow->zoomInBtn,SIGNAL(clicked()),this,SLOT(zoomIn()));
     connect(toolWindow->zoomOutBtn,SIGNAL(clicked()),this,SLOT(zoomOut()));
@@ -697,6 +706,14 @@ void mainwindow::setupOk()
             setupDialog->maxRadiusText->text().toInt(),
             setupDialog->fileDirText->text(),
             setupDialog->intervalText->text().toInt());
+    preAttr = setupDialog->attrBox->currentText();
+    setupWindow->zminText->setText(map[preAttr].zmin);
+    setupWindow->zmaxText->setText(map[preAttr].zmax);
+    setupWindow->dpixText->setText(map[preAttr].dpix);
+    setupWindow->lamdaText->setText(map[preAttr].lamda);
+
+  //  setupWindow->MagText->setText(initWindow->planeBox->text());
+    setupWindow->intervalText->setText(map[preAttr].interval);
     showWindow->setPath(msg.path);
     showWindow->setPlotNum(setupDialog->intervalText->text().toInt());
     delete setupDialog;
@@ -731,4 +748,5 @@ void mainwindow::keyPressEvent(QKeyEvent* event)
 
 void mainwindow::closeEvent(QCloseEvent*)
 {
+    exit(1);
 }

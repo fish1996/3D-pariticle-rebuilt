@@ -399,3 +399,8 @@ void setupwindow::paintEvent(QPaintEvent*)
     paint.setBrush(QColor(255,255,255));
     paint.drawRect(rect());
 }
+
+void setupwindow::play()
+{
+    tabWindow->came->open();
+}

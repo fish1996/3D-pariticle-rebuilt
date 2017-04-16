@@ -123,7 +123,7 @@ void initwindow::setValue(int i)
     pixelBox->setText((*map)[name].dpix);
     startBox->setText((*map)[name].zmin);
     endBox->setText((*map)[name].zmax);
-    planeBox->setText((*map)[name].Mag);
+    planeBox->setText((*map)[name].interval);
 }
 
 void initwindow::updateStyle()

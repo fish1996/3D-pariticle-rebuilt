@@ -208,16 +208,21 @@ void framewindow::setNum(int n)
 
 void framewindow::paintEvent(QPaintEvent* e)
 {
-    //qDebug()<<"paint parent";
-    /*
     QPainter paint(this);
-    *SIZEW = e->rect().width();
-    *SIZEH = e->rect().height();
+    *SIZEW = rect().width();
+    *SIZEH = rect().height();
+  //  qDebug()<<"framewindow"<<*SIZEW<<*SIZEH;
+  //  paint.setPen(QColor(100,100,100));
+  //  paint.setBrush(QColor(222,222,222));
+  //  paint.drawRect(rect());
+    //qDebug()<<"paint parent";
+
+
     paint.setPen(Qt::NoPen);
     int margin = 0;
     const int size = 10;
-    for(int i=0;i<e->rect().width()/size;i++){
-        for(int j=0;j<e->rect().height()/size;j++){
+    for(int i=0;i<rect().width()/size;i++){
+        for(int j=0;j<rect().height()/size;j++){
             paint.setBrush(QColor(222,222,222));
             paint.drawRect(size*i+margin, size*j+margin, size/2, size/2);
             paint.drawRect(size*i + size/2+margin, size*j+size/2+margin, size/2, size/2);
@@ -225,7 +230,7 @@ void framewindow::paintEvent(QPaintEvent* e)
             paint.drawRect(size*i+size/2+margin, size*j+margin, size/2, size/2);
             paint.drawRect(size*i+margin, size*j+size/2+margin, size/2, size/2);
         }
-    }*/
+    }
 }
 
 showwindow* framewindow::getshowwindow()
@@ -428,9 +433,7 @@ void showwindow::paintEvent(QPaintEvent* )
 
         }
     }
-    else {
-   //     parent->update();
-    }
+
 
 }
 
@@ -664,11 +667,13 @@ void showwindow::zoomOut()
 
 void showwindow::original()
 {
+    //parent->update();
+    qDebug()<<"original"<<*SIZEW<<*SIZEH;
     if(isCalculate)return;
     int prew = w;
     int preh = h;
     float r = 1.0 * original_w/original_h;
-    if(1.0*w/h > 1.0* (*SIZEW)/(*SIZEH)){
+    if(1.0*original_w/original_h > 1.0* (*SIZEW)/(*SIZEH)){
         w = *SIZEW;
         h = 1.0*w/r;
     }
@@ -901,4 +906,9 @@ void showtabwindow::isDrawWhite(bool is)
 bool showtabwindow::isDrawWhite()
 {
     return frameWindow->isDrawWhite();
+}
+
+void showtabwindow::setRadius(double* min,double* max)
+{
+    countwindow->setRadius(min,max);
 }

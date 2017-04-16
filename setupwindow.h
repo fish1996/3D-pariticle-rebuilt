@@ -137,6 +137,7 @@ public:
     tabwindow* tabWindow;
     void setPath(QString);
     QString getPath();
+    void play();
     void loadImg(QString path);
     setupwindow(QWidget* parent = 0);
     void paintEvent(QPaintEvent*);

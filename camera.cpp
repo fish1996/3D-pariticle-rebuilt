@@ -72,7 +72,7 @@ camera::camera(QWidget* parent) :QWidget(parent)
     count1 = 0;
     total = 2;
     connect(timer,SIGNAL(timeout()),this,SLOT(changeState()));
-    open();
+ //   open();
 
 }
 

@@ -34,21 +34,17 @@ viewwindow::viewwindow(QWidget* parent)
 
 QFileInfoList viewwindow::loadFile(QString path)
 {
+
+
     QDir dir(path);
     QFileInfoList file_list =  dir.entryInfoList(QStringList() << "*.jpg" << "*.png" << "*.bmp" );
     QFileInfoList folder_list = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
-    if(flag) {
+    if(count >= 1) {
+
         return file_list;
     }
-    if(count >= 2) {
-        return file_list;
-    }
-    if(count>10) {
-        QMessageBox::critical(NULL, "Error", QStringLiteral("文件夹图片过多，仅加载部分\n请选择更小的文件夹"),
-                              QMessageBox::Yes);
-        flag = true;
-        return file_list;
-    }
+
+    //message.exec();
     for(int i = 0; i != folder_list.size(); i++) {
         QString name = folder_list.at(i).absoluteFilePath();
         count++;
@@ -56,6 +52,7 @@ QFileInfoList viewwindow::loadFile(QString path)
         count--;
         file_list.append(child_file_list);
     }
+
     return file_list;
 }
 
@@ -136,10 +133,9 @@ void viewwindow::updateImg()
     for(int i =0;i<fileList.size();i++) {
         isRmBackground.push_back(false);
     }
-    if(!flag) {
-        std::ofstream out("path.txt",std::ios::trunc);
-        out << path.toStdString();
-    }
+
+
+
     update();
 }
 

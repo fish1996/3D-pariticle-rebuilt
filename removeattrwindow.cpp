@@ -17,6 +17,7 @@ removeattrwindow::removeattrwindow(map_t* m,QVector<QString>* n,QWidget* parent)
 
 void removeattrwindow::layout()
 {
+    qDebug()<<"here";
     okBtn = new QPushButton(QStringLiteral("删除"));
     cancelBtn = new QPushButton(QStringLiteral("退出"));
     tips = new QLabel(QStringLiteral("请选择需删除的预设项目："));
@@ -39,11 +40,14 @@ void removeattrwindow::layout()
     vlayout[0]->addWidget(attrBox);
     vlayout[0]->addLayout(hlayout[0]);
 
-    setWindowFlags(Qt::WindowStaysOnTopHint);
-  //  setWindowModality(Qt::ApplicationModal);
+  //  setWindowFlags(Qt::WindowStaysOnTopHint);
+    setWindowModality(Qt::ApplicationModal);
     setWindowTitle(QStringLiteral("删除预设参数"));
 
     setLayout(vlayout[0]);
+    okBtn->setEnabled(true);
+    cancelBtn->setEnabled(true);
+    attrBox->setEnabled(true);
 
     connect(okBtn,SIGNAL(clicked()),this,SLOT(removeAttr()));
     connect(cancelBtn,SIGNAL(clicked()),this,SLOT(cancelRemoveAttr()));

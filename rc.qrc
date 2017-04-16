@@ -51,5 +51,6 @@
         <file>image/import.ico</file>
         <file>image/colorpick1.ico</file>
         <file>image/colorpick2.ico</file>
+        <file>image/camera.ico</file>
     </qresource>
 </RCC>

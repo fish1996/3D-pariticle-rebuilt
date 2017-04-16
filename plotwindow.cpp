@@ -152,6 +152,7 @@ void plotwindow::mousePressEvent(QMouseEvent *event)
 
 void plotwindow::contextMenuEvent(QContextMenuEvent* event)
 {
+    if(!isDraw)return;
     menu->clear();
     menu->addAction(saveAsImageAction);
     menu->addAction(saveAsExcelAction);
@@ -284,7 +285,6 @@ void plotwindow::paintEvent(QPaintEvent* e)
 
 void plotwindow::saveImg(QString filename,int index,bool isInverse)
 {
-    //qDebug()<<"saveIMG";
     int _XMIN = 40,_XMAX = 500,_YMIN = 40,_YMAX = 400,_SIZEW = 580,_SIZEH = 480;
     QPixmap* pixmap = new QPixmap(_SIZEW,_SIZEH);
 
@@ -449,6 +449,12 @@ void plotwindow::saveExcel(QString filepath,int index,bool isInverse)
         ts.setCodec("UTF-8");
         ts<<textEdit.document()->toHtml("UTF-8");
     }
+}
+
+void plotwindow::setRadius(double* _min,double* _max)
+{
+    min = _min;
+    max = _max;
 }
 
 void plotwindow::saveAsImage()

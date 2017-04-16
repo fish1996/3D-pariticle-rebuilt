@@ -184,6 +184,7 @@ public:
     void setWavelength(double w);
     void setPixelSize(double p);
     void paintEvent(QPaintEvent *);
+    void setRadius(double* min,double* max);
     QString getPath();
 
 public slots:

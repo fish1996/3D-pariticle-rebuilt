@@ -48,6 +48,8 @@ private:
     int imgnum;
     int index;
     int* pointnum;
+    double* min;
+    double* max;
     double** diameterfre;
     double* diametermin;
     double* diametermax;
@@ -59,6 +61,7 @@ private:
     position** ipos;
     bool isInverse;
 public:
+    void setRadius(double* _min,double* _max);
     void setInverse(bool);
     void saveImg(QString name,int,bool);
     void saveExcel(QString name,int,bool);

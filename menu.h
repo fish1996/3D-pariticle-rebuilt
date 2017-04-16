@@ -19,6 +19,7 @@ private:
 public:
     menu(QWidget *parent = 0);
     QAction* importAction;
+    QAction* startAction;
     QAction* changeAction1;
     QAction* changeAction2;
     QAction* importBackgroundAction;
