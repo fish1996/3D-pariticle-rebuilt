@@ -9,6 +9,7 @@
 #include <QPainter>
 #include <QWaitCondition>
 
+
 #define nullptr 0
 void test();
 using namespace cv;
@@ -28,7 +29,7 @@ void camera::shot()
 
 void camera::saveImage()
 {
-    pixmap->save(path + "1." + prefix);
+    pixmap->save(path + "photo." + prefix);
 }
 
 void camera::setPath(QString p)
@@ -38,12 +39,16 @@ void camera::setPath(QString p)
 
 void camera::multishot()
 {
+
     multiflag = true;
     timer->stop();
+
     capture.set(CV_CAP_PROP_EXPOSURE,time);
     capture.set(CV_CAP_PROP_FPS,fps);
+
     //20fps = 每秒20次，1次1/20秒，即1/20*1000 = 50ms
     timer->start(1000/fps);
+
 }
 
 void camera::stopshot()
@@ -62,56 +67,53 @@ void camera::setTime(int num)
 camera::camera(QWidget* parent) :QWidget(parent)
 {
     flag = false;
+    isOpen = false;
     multiflag = false;
     fps = 1;
     time = 20;
     prefix = "jpg";
+    index = 0;
     timer = new QTimer();
     pixmap = nullptr;
     count = 1;
     count1 = 0;
     total = 2;
+    updateDeviceNum();
     connect(timer,SIGNAL(timeout()),this,SLOT(changeState()));
- //   open();
+}
 
+void camera::updateDeviceNum()
+{
+    index = 0;
+    deviceNum = 0;
+    while(1) {
+        if(!capture.open(deviceNum)) {
+            break;
+        }
+        deviceNum++;
+        capture.release();
+    }
 }
 
 void camera::changeState()
 {
-    if(capture.isOpened()) {
+    if(isOpen) {
+        Mat image;
         if(multiflag){
             QString str = path + QString::number(count1) + "." + prefix;
             count1++;
             capture >> image;
-            if(image.empty()) {
+            if(image.empty() || !image.data) {
                 timer->stop();
-            }
-            imwrite(str.toStdString(),image);
-            int index1[] = {0,1,2,3,4,5,6,7,
-                            image.rows-1,image.rows-2,image.rows-3,image.rows-4,
-                           image.rows-5,image.rows-6,image.rows-7,image.rows-8};
-            int index2[] = {0,1,2,3,4,5,6,7,
-                            image.cols-1,image.cols-2,image.cols-3,image.cols-4,
-                           image.cols-5,image.cols-6,image.cols-7,image.cols-8};
-            for(int i=0;i<image.rows;i++){
-                for(int j=0;j<16;j++){
-                    image.at<Vec3b>(i,index2[j])[0] = 30;
-                    image.at<Vec3b>(i,index2[j])[1] = 30;
-                    image.at<Vec3b>(i,index2[j])[2] = 230;
-                }
-            }
-            for(int i=0;i<image.cols;i++){
-                for(int j=0;j<16;j++){
-                    image.at<Vec3b>(index1[j],i)[0] = 30;
-                    image.at<Vec3b>(index1[j],i)[1] = 30;
-                    image.at<Vec3b>(index1[j],i)[2] = 230;
-                }
+                return;
             }
 
             setImage(cvMat2QImage(image));
             update();
+            pixmap->save(str);
         }
         else if(flag){
+
             Mat tmp(image.rows, image.cols, CV_8UC3);
             for(int i=0;i<image.rows;i++){
                 for(int j=0;j<image.cols;j++){
@@ -151,23 +153,37 @@ void camera::paintEvent(QPaintEvent*)
     if(pixmap!=nullptr) {
         painter.drawPixmap(rect(),*pixmap);
     }
+    if(multiflag) {
+        painter.setPen(QColor(240,40,40));
+        painter.setBrush(QColor(240,40,40));
+
+        painter.drawEllipse(10,10,10,10);
+    }
 }
 
 void camera::close()
 {
+   // capture.
+    isOpen = false;
+    pixmap = nullptr;
     capture.release();
     timer->stop();
 }
 
-void camera::open()
+bool camera::open()
 {
-    capture.open(0);
+    isOpen = true;
+
  //   fps = capture.get(CV_CAP_PROP_FPS);
     timer->start(300);
+    return capture.open(index);
 }
 
 void camera::setImage(QImage img)
 {
+    if(pixmap){
+        delete pixmap;
+    }
     pixmap = new QPixmap(QPixmap::fromImage(img));
 }
 

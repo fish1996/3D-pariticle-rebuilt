@@ -30,6 +30,7 @@ void menu::layout()
     changeAction1 = new QAction(this);
     startAction = new QAction(this);
     changeAction2 = new QAction(this);
+    findCamera = new QAction(this);
     importBackgroundAction = new QAction(this);
 
    // importAction->setText(QStringLiteral("&导入原图"));
@@ -40,6 +41,8 @@ void menu::layout()
     changeAction2->setIcon(QIcon(":/image/colorpick2.ico"));
     startAction->setText(QStringLiteral("开启/关闭相机"));
     startAction->setIcon(QIcon(":/image/camera.ico"));
+    findCamera->setText(QStringLiteral("查找相机"));
+    findCamera->setIcon(QIcon(":/image/search.ico"));
 
     saveAction = fileMenu->addAction(QIcon(":/image/save.ico"),QStringLiteral("&保存"));
     importAction = fileMenu->addAction(QIcon(":/image/import.ico"),QStringLiteral("&导入原图"));
@@ -62,6 +65,7 @@ void menu::layout()
     toolBar->addAction(changeAction1);
     toolBar->addAction(changeAction2);
     toolBar->addAction(startAction);
+    toolBar->addAction(findCamera);
 
     toolBar->setStyleSheet("background-color:rgb(235,235,235);");
 

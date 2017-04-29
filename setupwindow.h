@@ -50,7 +50,7 @@ private:
     void setConnect();
     enum{
         VMAX = 4,
-        HMAX = 5
+        HMAX = 6
     };
     imgAttr_t imgAttr;
     Button* playBtn;
@@ -67,6 +67,7 @@ private:
     QLabel* fps;
     QLabel* exposureTime;
     QLabel* cameraPicture;
+    QLabel* chooseCamera;
 
     QLineEdit* pathText;
 
@@ -80,13 +81,16 @@ public:
     Button* stopBtn;
     camera* came;
     QComboBox* prefixText;
+    QComboBox* chooseCameraText;
     QString path;
     QString status;
     QLabel* filePicture;
     QLabel* imgMessage;
+    void updateTitle();
     tabwindow(QTabWidget* parent = 0);
 private slots:
     void setPath();
+    void updateIndex(int in);
 };
 
 class setupwindow : public QWidget
@@ -95,6 +99,8 @@ class setupwindow : public QWidget
 private:
     float SIZEW;
     float SIZEH;
+    bool isOpen;
+    bool isHide;
     enum{
         VMAX = 5,
         HMAX = 5,
@@ -137,10 +143,16 @@ public:
     tabwindow* tabWindow;
     void setPath(QString);
     QString getPath();
-    void play();
+
     void loadImg(QString path);
     setupwindow(QWidget* parent = 0);
     void paintEvent(QPaintEvent*);
+    void closeCamera();
+private slots:
+    void play();
+    void indexChanged(int index);
+public slots:
+    void findCamera();
 };
 
 #endif // SETUPWINDOW_H

@@ -10,10 +10,12 @@
 #include <QImage>
 #include <QWidget>
 #include <QThread>
-
+#include <string>
+#include <vector>
 class QLabel;
 class QHBoxLayout;
 using namespace cv;
+using namespace std;
 
 
 class camera : public QWidget
@@ -34,15 +36,20 @@ private:
     double fps;
     double time;
     bool multiflag;
+
     void setImage(QImage img);
     void saveImage();
 protected:
     void paintEvent(QPaintEvent *event);
 public:
+    int index;
+    bool isOpen;
+    int deviceNum;
+    void updateDeviceNum();
     QImage cvMat2QImage(const cv::Mat& mat);
     void setPath(QString p);
     camera(QWidget* parent = 0);
-    void open();
+    bool open();
     void close();
 
 private slots:

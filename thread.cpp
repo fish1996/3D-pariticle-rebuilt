@@ -123,7 +123,7 @@ void threadC::run(){
             window->showWindow,SLOT(initLocate(position**,position**,int,int,double**,double**,double*,double*,double*,double*,int*,int*)));
     connect(Location,SIGNAL(locateAll()),this,SLOT(release()));
     Location->set(p1xy,p1area,p1box,ip1xy,ip1area,ip1box);
-    Location->p_location(tempfilename1,boxcoef,planesumnuber,secnum,imgnum,5,40);
+    Location->p_location(tempfilename1,boxcoef,planesumnuber,secnum,imgnum,window->msg.minRadius,window->msg.maxRadius);
 }
 
 thread::thread()

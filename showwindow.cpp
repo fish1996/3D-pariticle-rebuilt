@@ -885,12 +885,29 @@ void showtabwindow::setWavelength(double w)
 
 void showtabwindow::isShowWhite(bool is)
 {
-    frameWindow->isShowWhite(is);
+    if(Index == 0) {
+        frameWindow->isShowWhite(is);
+    }
+    else if(Index == 2) {
+        figWindow->isShowWhite(is);
+    }
+    else if(Index == 3){
+        detectWindow->isShowWhite(is);
+    }
 }
 
 bool showtabwindow::isShowWhite()
 {
-    return frameWindow->isShowWhite();
+    if(Index == 0) {
+        return frameWindow->isShowWhite();
+    }
+    else if(Index == 2) {
+        return figWindow->isShowWhite();
+    }
+    else if(Index == 3){
+        return detectWindow->isShowWhite();
+    }
+    return true;
 }
 
 void showtabwindow::save(int index,QString name1,QString name2,bool is){
@@ -900,12 +917,29 @@ void showtabwindow::save(int index,QString name1,QString name2,bool is){
 
 void showtabwindow::isDrawWhite(bool is)
 {
-    frameWindow->isDrawWhite(is);
+    if(Index == 0) {
+        frameWindow->isDrawWhite(is);
+    }
+    else if(Index == 2) {
+        figWindow->isDrawWhite(is);
+    }
+    else if(Index == 3){
+        detectWindow->isDrawWhite(is);
+    }
 }
 
 bool showtabwindow::isDrawWhite()
 {
-    return frameWindow->isDrawWhite();
+    if(Index == 0) {
+        return frameWindow->isDrawWhite();
+    }
+    else if(Index == 2) {
+        return figWindow->isDrawWhite();
+    }
+    else if(Index == 3){
+        return detectWindow->isDrawWhite();
+    }
+    return true;
 }
 
 void showtabwindow::setRadius(double* min,double* max)

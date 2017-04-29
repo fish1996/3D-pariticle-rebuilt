@@ -40,18 +40,15 @@ void message_t::set(double d1,double d2,double d3,double minr,double maxr,
 mainwindow::mainwindow(QWidget *parent)
     : QWidget(parent)
 {
-    qDebug()<<"lalala";
     state = Null;
     srand(time(nullptr));
-    qDebug()<<"lalala";
     loadAttr();
-    qDebug()<<"lalala";
     layout();
     setConnect();
     preAttr = "";
     name = "";
     backgroundname = "";
-qDebug()<<"lalala";
+
     msg.set(128,0.5,0.6,2*setupWindow->dpixText->text().toDouble(),
             INF,"data/temp",1);
 
@@ -119,8 +116,8 @@ void mainwindow::loadAttr()
                 pmsg.minRadius = strlist[10];
                 qDebug()<<"name="<<name;
                 pmsg.maxRadius = strlist[11];
-                pmsg.plotnum = strlist[12];qDebug()<<"name="<<name;
-                map[name] = pmsg;qDebug()<<"name="<<name;
+                pmsg.plotnum = strlist[12];//qDebug()<<"name="<<name;
+                map[name] = pmsg;//qDebug()<<"name="<<name;
                 strlist.clear();
             }
             else if(str[i]==' '){
@@ -147,7 +144,6 @@ void mainwindow::loadAttr()
         }
     }
     file.close();
-qDebug()<<"here";
 
 }
 
@@ -294,6 +290,7 @@ void mainwindow::setConnect()
     connect(menuWindow->changeAction1,SIGNAL(triggered()),this,SLOT(changeColor1()));
     connect(menuWindow->changeAction2,SIGNAL(triggered()),this,SLOT(changeColor2()));
     connect(menuWindow->startAction,SIGNAL(triggered()),setupWindow,SLOT(play()));
+    connect(menuWindow->findCamera,SIGNAL(triggered()),setupWindow,SLOT(findCamera()));
 
     connect(toolWindow->zoomInBtn,SIGNAL(clicked()),this,SLOT(zoomIn()));
     connect(toolWindow->zoomOutBtn,SIGNAL(clicked()),this,SLOT(zoomOut()));
@@ -748,5 +745,6 @@ void mainwindow::keyPressEvent(QKeyEvent* event)
 
 void mainwindow::closeEvent(QCloseEvent*)
 {
-    exit(1);
+    setupWindow->closeCamera();
+    exit(0);
 }

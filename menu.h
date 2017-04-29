@@ -26,6 +26,7 @@ public:
     QAction* saveAction;
     QAction* setAction;
     QAction* clearAction;
+    QAction* findCamera;
 
 };
 

@@ -11,6 +11,7 @@
 #include <QFileDialog>
 #include <qDebug>
 #include <QComboBox>
+#include <QMessageBox>
 
 void imgAttr_t::setSize(int s)
 {
@@ -82,7 +83,7 @@ tabwindow::tabwindow(QTabWidget* parent):
 void tabwindow::layout()
 {
 
-    status = "connected";
+    status = "disconnected";
     imgAttr.setSize(0);
     imgAttr.setWidth(0);
     imgAttr.setHeight(0);
@@ -135,9 +136,11 @@ void tabwindow::cameralayout()
     prefix = new QLabel(QStringLiteral("后缀"));
     fps = new QLabel(QStringLiteral("帧率"));
     exposureTime = new QLabel(QStringLiteral("曝光时间"));
+    chooseCamera = new QLabel(QStringLiteral("选择相机"));
 
     cameraGroupBox = new QGroupBox();
     prefixText = new QComboBox();
+    chooseCameraText = new QComboBox();
 
     fpsBox = new QSpinBox();
     timeBox = new QSpinBox();
@@ -149,6 +152,10 @@ void tabwindow::cameralayout()
 
     timeBox->setRange(0,30);
     timeBox->setValue(20);
+
+    for(int i = 0;i < came->deviceNum;i++){
+        chooseCameraText->addItem(QString::number(i+1));
+    }
 
     prefixText->addItem(QStringLiteral("jpg"));
     prefixText->addItem(QStringLiteral("bmp"));
@@ -163,11 +170,15 @@ void tabwindow::cameralayout()
     hlayout[3]->addWidget(exposureTime);
     hlayout[3]->addWidget(timeBox);
 
-    hlayout[4]->addStretch();
-    hlayout[4]->addWidget(playBtn);
-    hlayout[4]->addWidget(multiPlayBtn);
-    hlayout[4]->addWidget(stopBtn);
-    hlayout[4]->addStretch();
+    hlayout[4]->addWidget(chooseCamera);
+    hlayout[4]->addWidget(chooseCameraText);
+
+
+    hlayout[5]->addStretch();
+    hlayout[5]->addWidget(playBtn);
+    hlayout[5]->addWidget(multiPlayBtn);
+    hlayout[5]->addWidget(stopBtn);
+    hlayout[5]->addStretch();
 
     vlayout[0]->addWidget(came);
     vlayout[0]->addLayout(hlayout[1]);
@@ -180,6 +191,11 @@ void tabwindow::cameralayout()
     vlayout[1]->addWidget(cameraGroupBox);
     cameraWindow->setLayout(vlayout[1]);
 
+}
+
+void tabwindow::updateTitle()
+{
+    cameraGroupBox->setTitle(QStringLiteral("camera:") + status);
 }
 
 void tabwindow::filelayout()
@@ -221,6 +237,15 @@ void tabwindow::setConnect()
     connect(multiPlayBtn,SIGNAL(clicked()),came,SLOT(multishot()));
     connect(stopBtn,SIGNAL(clicked()),came,SLOT(stopshot()));
     connect(prefixText,SIGNAL(currentIndexChanged(QString)),came,SLOT(updatePrefix(QString)));
+    connect(chooseCameraText,SIGNAL(currentIndexChanged(int)),this,SLOT(updateIndex(int)));
+}
+
+void tabwindow::updateIndex(int in)
+{
+    came->index = in;
+    if(came->isOpen) {
+        came->open();
+    }
 }
 
 void tabwindow::setPath()
@@ -289,9 +314,11 @@ void setupwindow::loadImg(QString path)
 
 void setupwindow::layout()
 {
+    isOpen = false;
+    isHide = false;
     SIZEW = 400*rebuilt::scale;
     SIZEH = 600*rebuilt::scale;
-    setFixedWidth(SIZEW);
+    setFixedWidth(350);
 
     for(int i=0;i<HMAX;i++){
         hlayout[i] = new QHBoxLayout();
@@ -389,6 +416,9 @@ void setupwindow::layout()
 
     intervalText->setText("1");
 
+
+    connect(tabWindow,SIGNAL(currentChanged(int)),
+            this,SLOT(indexChanged(int)));
     setLayout(vlayout[0]);
 }
 
@@ -400,7 +430,50 @@ void setupwindow::paintEvent(QPaintEvent*)
     paint.drawRect(rect());
 }
 
+void setupwindow::indexChanged(int index)
+{
+    if(index == 1) {
+        isHide = true;
+    }
+    else if(index == 0) {
+        isHide = false;
+    }
+    if(isHide && isOpen) {
+        tabWindow->came->close();
+    }
+    if(!isHide && isOpen) {
+        tabWindow->came->open();
+    }
+}
+
+
 void setupwindow::play()
 {
-    tabWindow->came->open();
+    if(!isOpen) {
+        isOpen = true;
+        tabWindow->status = "connected";
+        if(tabWindow->came->open()){
+            tabWindow->updateTitle();
+        }
+    }
+    else {
+        isOpen = false;
+        tabWindow->status = "disconnected";
+        tabWindow->came->close();
+        tabWindow->updateTitle();
+    }
+
+}
+
+void setupwindow::findCamera()
+{
+    tabWindow->came->updateDeviceNum();
+    QMessageBox::about(0,"Message",QStringLiteral("当前检测到的相机个数为：")+
+                       QString::number(tabWindow->came->deviceNum));
+}
+
+void setupwindow::closeCamera(){
+    if(isOpen) {
+        tabWindow->came->close();
+    }
 }

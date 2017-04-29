@@ -198,6 +198,7 @@ void plotwindow::paintEvent(QPaintEvent* e)
         paint.drawLine(XMIN,YMIN,XMIN,YMAX);
         paint.drawLine(XMIN,YMAX,XMAX,YMAX);
         paint.drawText(20,YMAX + 20,QString::number(0));
+    //    paint.drawText(QStringLiteral("平均粒径为:"));
         for(int i = 1;i<=num;i++){
             paint.drawText(20,YMAX-i*length,QString::number(step*(i)));
         }
