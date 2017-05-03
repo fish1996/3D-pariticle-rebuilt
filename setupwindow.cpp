@@ -185,6 +185,7 @@ void tabwindow::cameralayout()
     vlayout[0]->addLayout(hlayout[2]);
     vlayout[0]->addLayout(hlayout[3]);
     vlayout[0]->addLayout(hlayout[4]);
+    vlayout[0]->addLayout(hlayout[5]);
 
     cameraGroupBox->setLayout(vlayout[0]);
     cameraGroupBox->setTitle(QStringLiteral("camera:") + status);
@@ -449,6 +450,10 @@ void setupwindow::indexChanged(int index)
 
 void setupwindow::play()
 {
+    qDebug()<<"num = "<<tabWindow->came->deviceNum;
+    if(tabWindow->came->deviceNum == 0){
+        return;
+    }
     if(!isOpen) {
         isOpen = true;
         tabWindow->status = "connected";
@@ -462,7 +467,6 @@ void setupwindow::play()
         tabWindow->came->close();
         tabWindow->updateTitle();
     }
-
 }
 
 void setupwindow::findCamera()
@@ -473,6 +477,7 @@ void setupwindow::findCamera()
 }
 
 void setupwindow::closeCamera(){
+    if(tabWindow->came->deviceNum == 0)return;
     if(isOpen) {
         tabWindow->came->close();
     }

@@ -94,15 +94,6 @@ OBJECTS_DIR=temp/obj
 DESTDIR=bin
 
 
-# Matlab Engine
-INCLUDEPATH += G:\matlabx86\extern\include
-
-LIBS += G:\matlabx86\extern\lib\win32\microsoft\libeng.lib
-LIBS += G:\matlabx86\extern\lib\win32\microsoft\libmat.lib
-LIBS += G:\matlabx86\extern\lib\win32\microsoft\libmex.lib
-LIBS += G:\matlabx86\extern\lib\win32\microsoft\libmx.lib
-LIBS += G:\matlabx86\extern\lib\win32\microsoft\mclmcrrt.lib
-LIBS += G:\matlabx86\extern\lib\win32\microsoft\mclmcr.lib
 
 INCLUDEPATH+=H:/opencv/opencv/build/include/opencv \
         H:/opencv/opencv/build/include/opencv2 \

@@ -17,7 +17,7 @@ removeattrwindow::removeattrwindow(map_t* m,QVector<QString>* n,QWidget* parent)
 
 void removeattrwindow::layout()
 {
-    qDebug()<<"here";
+
     okBtn = new QPushButton(QStringLiteral("删除"));
     cancelBtn = new QPushButton(QStringLiteral("退出"));
     tips = new QLabel(QStringLiteral("请选择需删除的预设项目："));
@@ -91,12 +91,12 @@ void removeattrwindow::removeAttr()
             << (*map)[(*namelist)[i]].zmax.toStdString() << " "
             << (*map)[(*namelist)[i]].interval.toStdString() << " "
             << (*map)[(*namelist)[i]].lamda.toStdString() << " "
-            << (*map)[(*namelist)[i]].Mag.toStdString() << " "
+           // << (*map)[(*namelist)[i]].Mag.toStdString() << " "
             << (*map)[(*namelist)[i]].dpix.toStdString() << " "
             << (*map)[(*namelist)[i]].detection1.toStdString() << " "
             << (*map)[(*namelist)[i]].detection2.toStdString() << " "
             << (*map)[(*namelist)[i]].detection3.toStdString() << " "
-            << (*map)[(*namelist)[i]].location.toStdString() << " "
+           // << (*map)[(*namelist)[i]].location.toStdString() << " "
             << (*map)[(*namelist)[i]].path.toStdString() << " "
             << (*map)[(*namelist)[i]].minRadius.toStdString() << " "
             << (*map)[(*namelist)[i]].maxRadius.toStdString() << " "

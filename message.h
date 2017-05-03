@@ -8,6 +8,9 @@ struct message_t{
     double minRadius;
     double maxRadius;
     QString path;
+    int size;
+    int placex;
+    int placey;
     int interval;
  //   bool isInverse;
     void set(double d1,double d2,double d3,double minr,double maxr,

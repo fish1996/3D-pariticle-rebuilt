@@ -28,7 +28,7 @@ public:
     location();
     virtual ~location();
     void set(Mat *p1xy0,Mat *p1area0,Mat *p1box0,Mat *ip1xy0,Mat *ip1area0,Mat *ip1box0);
-    void p_location(string tempfilename,double boxcoef,int planesumnuber,int secnum,int imgnum,double sectionmin,double sectionmax);
+    void p_location(string tempfilename,double boxcoef,int planesumnuber,int *secnum,int imgnum,double *sectionmin,double *sectionmax);
 
 private:
     int round(float x);
@@ -61,11 +61,18 @@ public:
     struct position **pos;
     int *pointnum;
     int *ipointnum;
+    bool flag;
+    bool iflag;
+    double *meandiameter;
+    double *imeandiameter;
+    int *_secnum;
+    double *_sectionmin;
+    double *_sectionmax;
 
 signals:
     void locateOk();
     void locateAll();
-    void locateAll(position**,position**,int,int,double**,double**,double*,double*,double*,double*,int*,int*);
+    void locateAll(position**,position**,int,int,double**,double**,double*,double*,double*,double*,int*,int*,bool,bool,double*,double*);
 /*private:
     string tempfilename;
     double boxcoef;

@@ -22,6 +22,7 @@ void camera::updatePrefix(QString str)
 
 void camera::shot()
 {
+    if(!isOpen)return;
     saveImage();
     flag = true;
     emit(changePath(path));
@@ -39,7 +40,7 @@ void camera::setPath(QString p)
 
 void camera::multishot()
 {
-
+    if(!isOpen)return;
     multiflag = true;
     timer->stop();
 
@@ -164,6 +165,7 @@ void camera::paintEvent(QPaintEvent*)
 void camera::close()
 {
    // capture.
+    if(!isOpen)return;
     isOpen = false;
     pixmap = nullptr;
     capture.release();

@@ -100,6 +100,10 @@ private:
     int state;
     int index;
 public:
+   // void setMsg(message_t& msg);
+    int sizeX();
+    int sizeY();
+    void setPlace(int,int);
     void setState(int);
     bool isDrawWhite();
     void isDrawWhite(bool);
@@ -129,6 +133,7 @@ public:
     void reloadImg();
     void setPixelSize(double p);
     void setI(bool*);
+    void setScale(int*);
     framewindow(basewindow* parent = 0);
 protected:
     void wheelEvent(QWheelEvent *event);
@@ -153,8 +158,11 @@ private:
     QString prefix;
 
 public:
-
+  //  void setMsg(message_t& msg);
+    void setPlace(int x,int y);
     void setPrefix(QString);
+    int sizeX();
+    int sizeY();
     bool isOneKey;
     plotwindow* countwindow;
     framewindow* frameWindow;
@@ -178,6 +186,7 @@ public:
     void reloadImg();
     void setI(bool*);
     void setInverse(bool);
+    void setScale(int*);
     void setCalculate(bool);
     bool getCalculate();
     void setPlotNum(int n);
@@ -195,7 +204,7 @@ public slots:
                                    double**diameterfre,double** idiameterfre,
                                    double*diametermin,double*idiametermin,
                                    double*diametermax,double*idiametermax,
-                                   int* pointnum,int * ipointnum);
+                                   int* pointnum,int * ipointnum,bool maxflag,bool imaxflag,double*meandiameter,double*imeandiameter);
     void indexChanged(int);
     void setIndex(int);
     void initIndex(int);

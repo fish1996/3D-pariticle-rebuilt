@@ -277,7 +277,22 @@ void viewwindow::paintEvent(QPaintEvent* e)
         paint.drawPixmap(10+(SIZEW/4)*(i-front),0,w,h,image);
 
         paint.setPen(QColor(255,255,255));
-        paint.drawText(10+(SIZEW/4)*(i-front),sizeh,fileList.at(i).fileName());
+        int s = fileList.at(i).fileName().size();
+        if(s < 10) {
+            paint.drawText(10+(SIZEW/4)*(i-front),sizeh,fileList.at(i).fileName());
+            s = 0;
+        }
+        int k = 0;
+        const int step = 18;
+        while(s >= step) {
+         //   qDebug()<<fileList.at(i).fileName().mid(k,step);
+            paint.drawText(step+(SIZEW/4)*(i-front),sizeh + k/step * 10,fileList.at(i).fileName().mid(k,step));
+            s -= step;
+            k += step;
+        }
+        if(s!=0) {
+            paint.drawText(step+(SIZEW/4)*(i-front),sizeh + k/step * 10,fileList.at(i).fileName().mid(k,s%step));
+        }
     }
 }
 

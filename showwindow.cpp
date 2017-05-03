@@ -2,7 +2,6 @@
 #include "tablewindow.h"
 #include "plotwindow.h"
 #include <math.h>
-
 #include <QComboBox>
 #include <QPaintEvent>
 #include <QPainter>
@@ -61,6 +60,7 @@ void framewindow::isShowWhite(bool is)
     sca->isShowWhite(is);
 }
 
+
 void framewindow::addItem(int index)
 {
 
@@ -81,6 +81,11 @@ void framewindow::setDetectIndex(int i)
 QComboBox* framewindow::getBox()
 {
     return attrBox;
+}
+
+void framewindow::setScale(int *s)
+{
+    sca->size = s;
 }
 
 void framewindow::save()
@@ -135,6 +140,7 @@ void framewindow::save()
                            QString::number(length*showWindow->pixelSize
                                            /showWindow->ratio)+"um");
         }
+
         pixmap.save(filename);
     }
 }
@@ -286,6 +292,13 @@ QString framewindow::getPath()
     return showWindow->path;
 }
 
+
+void framewindow::setPlace(int x ,int y)
+{
+    sca->move(x,y);
+}
+
+
 void framewindow::wheelEvent(QWheelEvent *event)
 {
     if(showWindow->isCalculate)return;
@@ -337,6 +350,7 @@ float showwindow::getRatio()
 
 void showwindow::layout()
 {
+
     beginx = beginy = endx = endy;
     isCalculate = false;
     ishold = true;
@@ -415,12 +429,10 @@ void showwindow::paintEvent(QPaintEvent* )
         paint.drawLine(beginx,beginy,endx,endy);
         length = sqrt((beginx-endx)*(beginx-endx) + (beginy-endy)*(beginy-endy));
         if(ishold) {
-
             paint.drawText((int)((beginx+endx)/2)-10,
                    (int)((beginy+endy)/2)-10,
                    QString::number(len)+"um");
             ishold = false;
-
         }
         else {
             length = sqrt((beginx-endx)*(beginx-endx) + (beginy-endy)*(beginy-endy));
@@ -638,7 +650,6 @@ void showwindow::zoomIn()
 
     emit(send(ratio));
 }
-
 void showwindow::zoomOut()
 {
     if(isCalculate)return;
@@ -699,6 +710,18 @@ void showwindow::fullScreen()
     pic = new picture();
     pic->setPixmap(pix);
     pic->show();
+}
+
+int framewindow::sizeX()
+{
+ //   qDebug() << "here sizex = " <<showWindow->rect().x();
+    return rect().width();
+}
+
+int framewindow::sizeY()
+{
+    qDebug() << "here sizey = " <<showWindow->rect().height();
+    return rect().height();
 }
 
 void showtabwindow::zoomIn()
@@ -802,13 +825,13 @@ void showtabwindow::initLocate(position** pos,position** ipos,int num,int size,
                                                   double**diameterfre,double** idiameterfre,
                                                   double*diametermin,double*idiametermin,
                                                   double*diametermax,double*idiametermax,
-                                                  int* pointnum,int * ipointnum)
+                                                  int* pointnum,int * ipointnum,bool maxflag,bool imaxflag,double*meandiameter,double*imeandiameter)
 {
     openglWindow->setPos(pos,ipos,num,pointnum,ipointnum);
     countwindow->isDraw = true;
     countwindow->setAttr(diameterfre,idiameterfre,diametermin,idiametermin,
                          diametermax,idiametermax,num,pos,ipos,
-                         pointnum,ipointnum);
+                         pointnum,ipointnum,maxflag,imaxflag,meandiameter,imeandiameter);
     if(isOneKey){
         isOneKey = false;
         for(int i = 0;i < num;i++) {
@@ -942,7 +965,32 @@ bool showtabwindow::isDrawWhite()
     return true;
 }
 
+void showtabwindow::setScale(int *s)
+{
+    frameWindow->setScale(s);
+    figWindow->setScale(s);
+    detectWindow->setScale(s);
+}
+
+void showtabwindow::setPlace(int x,int y)
+{
+    frameWindow->setPlace(x,y);
+    figWindow->setPlace(x,y);
+    detectWindow->setPlace(x,y);
+}
+
 void showtabwindow::setRadius(double* min,double* max)
 {
     countwindow->setRadius(min,max);
+}
+
+int showtabwindow::sizeX()
+{
+        return frameWindow->sizeX();
+}
+
+int showtabwindow::sizeY()
+{
+     return frameWindow->sizeY();
+
 }

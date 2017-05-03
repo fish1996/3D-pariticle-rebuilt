@@ -67,4 +67,5 @@ void catalog::choose()
     if(path == "")return;
 
     emit(updatePath(path));
+    close();
 }

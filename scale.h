@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include "attr.h"
-
+#include "message.h"
 class scale : public QWidget
 {
     Q_OBJECT
@@ -15,7 +15,9 @@ private:
   //  float SIZEW = 100*rebuilt::scale;
  //   float SIZEH = 50*rebuilt::scale;
 public:
+    int* size;
     bool isWhite;
+   // void setMsg(message_t& msg);
     void isShowWhite(bool is);
     void setWavelength(double w);
     scale(QWidget* parent = 0);

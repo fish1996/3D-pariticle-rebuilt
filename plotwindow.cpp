@@ -26,7 +26,6 @@ plotwindow::plotwindow(basewindow* parent)
     x = 0;
     num = 10;
     for(int i=0;i<x;i++){
-
         Rect r(XMIN + i*(XMAX-XMIN)/x,YMAX-(YMAX-YMIN)*diameterfre[index][i],(XMAX-XMIN)/x - 1,(YMAX-YMIN)*diameterfre[index][i]);
         rectVector[i] = r;
     }
@@ -112,21 +111,24 @@ plotwindow::Rect::Rect(int bx,int by,int sx,int sy):
 void plotwindow::setAttr(double** _diameterfre,double** _idiameterfre,
                          double* _diametermin,double* _idiametermin,
                          double* _diametermax,double* _idiametermax,
-                         int n,position** p,position** ip,int* num,int* inum)
+                         int n,position** p,position** ip,int* num,int* inum,bool _maxflag,bool _imaxflag,double*_meandiameter,double*_imeandiameter)
 {
 
     pos = p;
     pointnum = num;
     imgnum = n;
-    diameterfre =_diameterfre;
+    diameterfre = _diameterfre;
     diametermin = _diametermin;
     diametermax = _diametermax;
     ipos = ip;
     ipointnum = inum;
-    idiameterfre =_idiameterfre;
+    idiameterfre = _idiameterfre;
     idiametermin = _idiametermin;
     idiametermax = _idiametermax;
-    //qDebug()<<"plot setOk";
+    maxflag = _maxflag;
+    imaxflag = _imaxflag;
+    meandiameter = _meandiameter;
+    imeandiameter = _imeandiameter;
     update();
 }
 
@@ -197,15 +199,27 @@ void plotwindow::paintEvent(QPaintEvent* e)
         paint.drawText(40,YMAX + 20,QStringLiteral("频率"));
         paint.drawLine(XMIN,YMIN,XMIN,YMAX);
         paint.drawLine(XMIN,YMAX,XMAX,YMAX);
-        paint.drawText(20,YMAX + 20,QString::number(0));
-    //    paint.drawText(QStringLiteral("平均粒径为:"));
+        //paint.drawText(20,YMAX + 20,QString::number(0));
+        paint.drawText(XMAX - 100,24,QStringLiteral("平均粒径为:") + QString::number(meandiameter[index]) + QStringLiteral("um"));
         for(int i = 1;i<=num;i++){
             paint.drawText(20,YMAX-i*length,QString::number(step*(i)));
         }
-        double s = (diametermax[index] - diametermin[index])/(x);
-        for(int i=0;i<=x;i++){
-
-            paint.drawText(XMIN + i*(XMAX-XMIN)/x,YMAX+10,QString::number((int)(diametermin[index]+i*s)));
+        if(!maxflag) {
+            double s = 1.0*(diametermax[index] - diametermin[index])/ x;
+            for(int i=0;i<=x;i++){
+                QString str = QString("%1").arg((diametermin[index]+i*s));
+                str = str.mid(0,5);
+                paint.drawText(XMIN + i*(XMAX-XMIN)/x,YMAX+10,str);
+            }
+        }
+        else {
+            double s = 1.0*(diametermax[index] - diametermin[index])/(x - 1);
+            for(int i=0;i<=x-1;i++){
+                QString str = QString("%1").arg((diametermin[index]+i*s));
+                str = str.mid(0,5);
+                paint.drawText(XMIN + i*(XMAX-XMIN)/(x),YMAX+10,str);
+            }
+            paint.drawText(XMAX,YMAX+10,QStringLiteral("∞"));
         }
 
         paint.setPen(QColor(100,100,100));
@@ -247,15 +261,30 @@ void plotwindow::paintEvent(QPaintEvent* e)
         paint.drawText(XMAX/2,24,QStringLiteral("粒径分布直方图"));
         paint.drawText(XMAX/2,YMAX + 20,QStringLiteral("粒径区间/um"));
         paint.drawText(40,YMAX + 20,QStringLiteral("频率"));
+        paint.drawText(XMAX - 100,24,QStringLiteral("平均粒径为:") + QString::number(imeandiameter[index]) + QStringLiteral("um")) ;
         paint.drawLine(XMIN,YMIN,XMIN,YMAX);
         paint.drawLine(XMIN,YMAX,XMAX,YMAX);
-        paint.drawText(20,YMAX + 20,QString::number(0));
-        for(int i = 1;i<=num;i++){
+
+
+        for(int i = 1;i<=num;i++) {
             paint.drawText(20,YMAX-i*length,QString::number(step*(i)));
         }
-        double s = (idiametermax[index] - idiametermin[index])/(x);
-        for(int i=0;i<=x;i++){
-            paint.drawText(XMIN + i*(XMAX-XMIN)/x,YMAX+10,QString::number((int)(idiametermin[index]+i*s)));
+        if(!imaxflag) {
+            double s = 1.0*(idiametermax[index] - idiametermin[index])/ x;
+            for(int i=0;i<=x;i++){
+                QString str = QString("%1").arg((idiametermin[index]+i*s));
+                str = str.mid(0,5);
+                paint.drawText(XMIN + i*(XMAX-XMIN)/x,YMAX+10,str);
+            }
+        }
+        else {
+            double s = 1.0*(idiametermax[index] - idiametermin[index])/(x - 1);
+            for(int i=0;i<=x-1;i++){
+                QString str = QString("%1").arg((idiametermin[index]+i*s));
+                str = str.mid(0,5);
+                paint.drawText(XMIN + i*(XMAX-XMIN)/(x),YMAX+10,str);
+            }
+            paint.drawText(XMAX,YMAX + 10,QStringLiteral("∞"));
         }
 
         paint.setPen(QColor(100,100,100));
@@ -302,17 +331,33 @@ void plotwindow::saveImg(QString filename,int index,bool isInverse)
     paint.drawText(_XMAX/2,24,QStringLiteral("粒径分布直方图"));
     paint.drawText(_XMAX/2,_YMAX + 20,QStringLiteral("粒径区间/um"));
     paint.drawText(40,_YMAX + 20,QStringLiteral("频率"));
+
     paint.drawLine(_XMIN,_YMIN,_XMIN,_YMAX);
     paint.drawLine(_XMIN,_YMAX,_XMAX,_YMAX);
-    paint.drawText(20,_YMAX + 20,QString::number(0));
+    //paint.drawText(20,_YMAX + 20,QString::number(0));
     for(int i = 1;i<=num;i++){
         paint.drawText(20,_YMAX-i*length,QString::number(step*(i)));
     }
     if(!isInverse) {
-        double s = (diametermax[index] - diametermin[index])/(x);
-        for(int i=0;i<x;i++){
-            paint.drawText(_XMIN + i*(_XMAX-_XMIN)/x,_YMAX+10,QString::number((int)(diametermin[index]+i*s)));
+        paint.drawText(_XMAX - 100,24,QStringLiteral("平均粒径为:") + QString::number(meandiameter[index]) + QStringLiteral("um")) ;
+        if(!maxflag) {
+            double s = 1.0*(diametermax[index] - diametermin[index])/ x;
+            for(int i=0;i<=x;i++){
+                QString str = QString("%1").arg((diametermin[index]+i*s));
+                str = str.mid(0,5);
+                paint.drawText(_XMIN + i*(_XMAX-_XMIN)/x,_YMAX+10,str);
+            }
         }
+        else {
+            double s = 1.0*(diametermax[index] - diametermin[index])/(x - 1);
+            for(int i=0;i<=x-1;i++){
+                QString str = QString("%1").arg((diametermin[index]+i*s));
+                str = str.mid(0,5);
+                paint.drawText(_XMIN + i*(_XMAX-_XMIN)/(x),_YMAX+10,str);
+            }
+            paint.drawText(_XMAX,_YMAX+10,QStringLiteral("∞"));
+        }
+
 
          paint.setPen(QColor(100,100,100));
         for(int i = 1;i<=num;i++){
@@ -337,12 +382,27 @@ void plotwindow::saveImg(QString filename,int index,bool isInverse)
         pixmap->save(filename);
     }
     else {
-        double s = (idiametermax[index] - idiametermin[index])/(x);
-        for(int i=0;i<x;i++){
-            paint.drawText(_XMIN + i*(_XMAX-_XMIN)/x,_YMAX+10,QString::number((int)(idiametermin[index]+i*s)));
+        paint.drawText(_XMAX - 100,24,QStringLiteral("平均粒径为:") + QString::number(imeandiameter[index]) + QStringLiteral("um")) ;
+        if(!maxflag) {
+            double s = 1.0*(idiametermax[index] - idiametermin[index])/ x;
+            for(int i=0;i<=x;i++){
+                QString str = QString("%1").arg((diametermin[index]+i*s));
+                str = str.mid(0,5);
+                paint.drawText(_XMIN + i*(_XMAX-_XMIN)/x,_YMAX+10,str);
+            }
+        }
+        else {
+            double s = 1.0*(idiametermax[index] - idiametermin[index])/(x - 1);
+            for(int i=0;i<=x-1;i++){
+                QString str = QString("%1").arg((diametermin[index]+i*s));
+                str = str.mid(0,5);
+                paint.drawText(_XMIN + i*(_XMAX-_XMIN)/(x),_YMAX+10,str);
+            }
+            paint.drawText(_XMAX,_YMAX+10,QStringLiteral("∞"));
         }
 
-         paint.setPen(QColor(100,100,100));
+
+        paint.setPen(QColor(100,100,100));
         for(int i = 1;i<=num;i++){
             paint.drawLine(_XMIN,_YMAX-i*length,_XMAX,_YMAX-i*length);
         }

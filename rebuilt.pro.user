@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 3.0.1, 2017-04-29T19:41:24. -->
+<!-- Written by QtCreator 3.0.1, 2017-05-04T00:53:39. -->
 <qtcreator>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
@@ -58,7 +58,7 @@
    <value type="int" key="ProjectExplorer.Target.ActiveDeployConfiguration">0</value>
    <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">0</value>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.0">
-    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">G:/BaiduYunDownload/rebuilt/build3</value>
+    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">G:/BaiduYunDownload/rebuilt/build-rebuilt-Desktop_Qt_5_2_1_MSVC2010_32bit_OpenGL-Debug</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
       <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>
@@ -156,9 +156,7 @@
     </valuemap>
     <value type="int" key="ProjectExplorer.BuildConfiguration.BuildStepListCount">2</value>
     <value type="bool" key="ProjectExplorer.BuildConfiguration.ClearSystemEnvironment">false</value>
-    <valuelist type="QVariantList" key="ProjectExplorer.BuildConfiguration.UserEnvironmentChanges">
-     <value type="QString">PATH=G:\qt5.2.1\5.2.1\msvc2010_opengl\bin;c:\Program Files (x86)\Microsoft F#\v4.0\;G:\vs2010\VSTSDB\Deploy;G:\vs2010\Common7\IDE\;G:\vs2010\VC\BIN;G:\vs2010\Common7\Tools;c:\Windows\Microsoft.NET\Framework\v4.0.30319;c:\Windows\Microsoft.NET\Framework\v3.5;G:\vs2010\VC\VCPackages;C:\Program Files (x86)\HTML Help Workshop;C:\Program Files (x86)\HTML Help Workshop;G:\vs2010\Team Tools\Performance Tools;c:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\NETFX 4.0 Tools;c:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin;C:\Program Files (x86)\Common Files\Microsoft Shared\Windows Live;F:\python\Lib\site-packages\PyQt4;C:\ProgramData\Oracle\Java\javapath;C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Windows\system32\config\systemprofile\.dnx\bin;C:\Program Files\Microsoft DNX\Dnvm\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\;C:\Python27;C:\Python27\DLLs;C:\Python27\Scripts;F:\python\gnuplot\binary;C:\Program Files (x86)\pythonxy\SciTE-3.5.1-4;C:\Program Files (x86)\pythonxy\console;F:\opencv\opencv\build\x86\vc11\bin;F:\opencv\opencv\build\x86\vc11\bin;F:\opencv\opencv\build\x86\vc11\bin;F:\opencv\opencv\build\x86\vc12;F:\opencv\opencv\build\x86\vc11\bin;F:\opencv\opencv\build\x86\vc11\bin;F:\opencv\opencv\build\x64\vc11\bin;F:\opencv\opencv\build\x64\vc12\lib\bin;F:\opencv\opencv\build\x86\vc11\bin;F:\opencv\opencv\build\x86\vc11\bin;F:\opencv\opencv\build\x86\vc11\bin;F:\opencv\opencv\build\x86\vc12;F:\opencv\opencv\build\x86\vc11\bin;F:\opencv\opencv\build\x86\vc11\bin;F:\opencv\opencv\build\x64\vc11\bin;F:\opencv\opencv\build\x64\vc12\bin;F:\node.js\;F:\matlab\runtime\win64;F:\matlab\bin;F:\matlab\polyspace\bin;C:\Program Files\Microsoft\Web Platform Installer\;C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Pages\v1.0\;C:\Program Files\Microsoft SQL Server\110\Tools\Binn\;G:\matlabx86\runtime\win32;G:\matlabx86\bin;G:\matlabx86\polyspace\bin;C:\Program Files (x86)\GtkSharp\2.12\bin;C:\Users\Administrator\AppData\Roaming\npm;G:\matlabx86\bin\win32</value>
-    </valuelist>
+    <valuelist type="QVariantList" key="ProjectExplorer.BuildConfiguration.UserEnvironmentChanges"/>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Release</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4BuildConfiguration</value>

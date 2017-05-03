@@ -274,85 +274,92 @@ void detection::fillHole(const Mat srcBw, Mat &dstBw)
 
 void detection::getarea(Mat &dst,Mat &src,int num)
 {
-    for(int n=1;n<=num;n++){
-        int totalnum=0;
+    int *totalnum=new int[num]();
         for(int i=0;i<src.rows;i++)
         {
             for(int j=0;j<src.cols;j++)
             {
-                if(src.at<double>(i,j)==n){
-                    totalnum++;
+                int n=src.at<double>(i,j);
+                if(n){
+                    totalnum[n-1]++;
                 }
             }
         }
-        dst.at<double>(n-1,0)=totalnum;
-    }
+        for(int n=1;n<=num;n++){
+            dst.at<double>(n-1,0)=totalnum[n-1];
+        }
 }
 
 void detection::getcenter(Mat &dst,Mat &src,int num)
 {
-    for(int n=1;n<=num;n++){
-        int totalnum=0;
-        int sumx=0;
-        int sumy=0;
+    int *totalnum=new int[num]();
+        int *sumx=new int[num]();
+        int *sumy=new int[num]();
         for(int i=0;i<src.rows;i++)
         {
             for(int j=0;j<src.cols;j++)
             {
-                if(src.at<double>(i,j)==n){
-                    totalnum++;
-                    sumx=sumx+j;
-                    sumy=sumy+i;
+                int n=src.at<double>(i,j);
+                if(n){
+                    totalnum[n-1]++;
+                    sumx[n-1]+=j;
+                    sumy[n-1]+=i;
                 }
             }
         }
-        dst.at<double>(n-1,0)=sumx*1.0/totalnum+1;
-        dst.at<double>(n-1,1)=sumy*1.0/totalnum+1;
-    }
+
+        for(int n=1;n<=num;n++){
+            dst.at<double>(n-1,0)=sumx[n-1]*1.0/totalnum[n-1]+1;
+            dst.at<double>(n-1,1)=sumy[n-1]*1.0/totalnum[n-1]+1;
+        }
 }
 
 void detection::getbox(Mat &dst,Mat &src,int num)
 {
-    for(int n=1;n<=num;n++){
-        int x1,x2,y1,y2;
-        x1=x2=y1=y2=0;
-        int totalnum=0;
+    int *x1=new int[num]();
+        int *x2=new int[num]();
+        int *y1=new int[num]();
+        int *y2=new int[num]();
+        int *totalnum=new int[num]();
+
         for(int i=0;i<src.rows;i++)
         {
             for(int j=0;j<src.cols;j++)
             {
-                if(src.at<double>(i,j)==n){
-                    if(totalnum==0){
-                        x1=x2=j;
-                        y1=y2=i;
+                int n=src.at<double>(i,j);
+                if(n){
+                    if(totalnum[n-1]==0){
+                        x1[n-1]=x2[n-1]=j;
+                        y1[n-1]=y2[n-1]=i;
                     }
                     else{
-                        if(j<x1){
-                            x1=j;
+                        if(j<x1[n-1]){
+                            x1[n-1]=j;
                         }
-                        if(j>x2){
-                            x2=j;
+                        if(j>x2[n-1]){
+                            x2[n-1]=j;
                         }
-                        if(i<y1){
-                            y1=i;
+                        if(i<y1[n-1]){
+                            y1[n-1]=i;
                         }
-                        if(i>y2){
-                            y2=i;
+                        if(i>y2[n-1]){
+                            y2[n-1]=i;
                         }
                     }
-                    totalnum++;
+                    totalnum[n-1]++;
                 }
             }
         }
-        dst.at<double>(n-1,0)=x1+0.5;
-        dst.at<double>(n-1,1)=y1+0.5;
-        dst.at<double>(n-1,2)=x2-x1+1;
-        dst.at<double>(n-1,3)=y2-y1+1;
-    }
+        for(int n=1;n<=num;n++){
+            dst.at<double>(n-1,0)=x1[n-1]+0.5;
+            dst.at<double>(n-1,1)=y1[n-1]+0.5;
+            dst.at<double>(n-1,2)=x2[n-1]-x1[n-1]+1;
+            dst.at<double>(n-1,3)=y2[n-1]-y1[n-1]+1;
+        }
 }
 
 
-void detection::adaptivethreshold(string tempfilename,double blocksize,double globalgraythreshhold,double globalgraythreshold2,int imgnum)
+void detection::adaptivethreshold(string tempfilename,double blocksize,double globalgraythreshhold,double globalgraythreshold2,int imgnum,int *total)
 {
     p1xy=new Mat[imgnum]();
     p1area=new Mat[imgnum]();
@@ -360,7 +367,10 @@ void detection::adaptivethreshold(string tempfilename,double blocksize,double gl
     ip1xy=new Mat[imgnum]();
     ip1area=new Mat[imgnum]();
     ip1box=new Mat[imgnum]();
+    *total = 0;
+    *total += 6*imgnum;
 
+//qDebug()<<"total="<<*total;
     for(int imgn=0;imgn<imgnum;imgn++){
         //qDebug()<<"imgn="<<imgn;
         char img_fname[1000];
@@ -419,7 +429,7 @@ void detection::adaptivethreshold(string tempfilename,double blocksize,double gl
                 num1=bwlabel(imbw1, L1, 8, labels);
 
                 L1.copyTo(imgbw(Range(i-1, imax), Range(j-1, jmax)));
-
+               // emit(detectOk());
             }
 
         }
@@ -443,14 +453,18 @@ void detection::adaptivethreshold(string tempfilename,double blocksize,double gl
         p1area[imgn]=Mat::zeros(inum1,1,CV_64FC1);
         p1box[imgn]=Mat::zeros(inum1,4,CV_64FC1);
 
+
         getarea(p1area[imgn],L1,inum1);
+         emit(detectOk());
         getcenter(p1xy[imgn],L1,inum1);
+         emit(detectOk());
         getbox(p1box[imgn],L1,inum1);
+         emit(detectOk());
 
         bwFill.release();
         bw.release();
         imbw1.release();
-        emit(detectOk());
+
     }
 
 
@@ -476,7 +490,6 @@ void detection::adaptivethreshold(string tempfilename,double blocksize,double gl
         imgbw=Mat::zeros(ny, nx, CV_64F);
 
         for(int i=1;i<=ny;i=i+blocksize){
-
             for(int j=1;j<=nx;j=j+blocksize){
                 int jmax=j+blocksize-1<nx?j+blocksize-1:nx;
                 int imax=i+blocksize-1<ny?i+blocksize-1:ny;
@@ -515,6 +528,7 @@ void detection::adaptivethreshold(string tempfilename,double blocksize,double gl
                 num1=bwlabel(imbw1, L1, 8, labels);
 
                 L1.copyTo(imgbw(Range(i-1, imax), Range(j-1, jmax)));
+             //   emit(detectOk());
             }
 
         }
@@ -528,7 +542,7 @@ void detection::adaptivethreshold(string tempfilename,double blocksize,double gl
         L1=Mat::zeros(imgbw.rows, imgbw.cols, CV_64F);
         int inum1;
         inum1=bwlabel(imgbw, L1, 8, ilabels);
-        //qDebug()<<ilabels<<endl;
+
 
         normalize(imgbw,imgbw,0,255,NORM_MINMAX);
         char img_lname[1000];
@@ -540,13 +554,16 @@ void detection::adaptivethreshold(string tempfilename,double blocksize,double gl
         ip1box[imgn]=Mat::zeros(inum1,4,CV_64FC1);
 
         getarea(ip1area[imgn],L1,inum1);
+        emit(detectOk());
         getcenter(ip1xy[imgn],L1,inum1);
+        emit(detectOk());
         getbox(ip1box[imgn],L1,inum1);
+        emit(detectOk());
 
         bwFill.release();
         bw.release();
         imbw1.release();
-        emit(detectOk());
+
     }
 
 

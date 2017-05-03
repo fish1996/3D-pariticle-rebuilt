@@ -165,12 +165,12 @@ int location::round(float x)
 
 //image 目前图片,boxcoef输入的参数,planesumnumber第一步所用到的总张数
 //p1xyzd矩阵参数可以用于绘制三维图，共四列，分别是X,Y,Z,S(这里给的是直径）
-void location::p_location(string tempfilename,double boxcoef,int planesumnuber,int secnum,int imgnum,double  sectionmin,double  sectionmax){
+void location::p_location(string tempfilename,double boxcoef,int planesumnuber,int* secnum,int imgnum,double* sectionmin,double* sectionmax){
     //qDebug()<<"p_location";
     p1xyzd=new Mat[imgnum]();
     diameterfre=new double *[imgnum];
     for(int i=0;i<imgnum;i++){
-        diameterfre[i]=new double[secnum]();
+        diameterfre[i]=new double[*secnum]();
     }
     diametermin=new double [imgnum];
     diametermax=new double [imgnum];
@@ -178,6 +178,11 @@ void location::p_location(string tempfilename,double boxcoef,int planesumnuber,i
     pos=new struct position*[imgnum]();
     pointnum=new int[imgnum];
 
+    meandiameter=new double [imgnum];
+
+    _secnum=secnum;
+    _sectionmax=sectionmax;
+    _sectionmin=sectionmin;
 
     for(int imgn=0;imgn<imgnum;imgn++){
         //qDebug()<<"imgn = "<<imgn;
@@ -265,40 +270,51 @@ void location::p_location(string tempfilename,double boxcoef,int planesumnuber,i
 
         double max,min;
         int secponum; //表示区间内的粒子总数
+        flag=false; //表示区间最大值不大于实际
         extreme(p2area,max,min);
 
-        if(max>sectionmax){
-            max=sectionmax;
+        if(max>*sectionmax){
+            max=*sectionmax;
+            flag=true;
         }
-        if(min<sectionmin){
-            min=sectionmin;
+        if(min<*sectionmin){
+            min=*sectionmin;
         }
+
         diametermin[imgn]=min;
         diametermax[imgn]=max;
+        meandiameter[imgn]=0;
 
-        int* frenum=new int[secnum];
+        int* frenum=new int[*secnum];
         memset(frenum,0,sizeof(frenum));
-        for(int i=0;i<secnum;i++){
+        for(int i=0;i<*secnum;i++){
             frenum[i] = 0;
         }
         secponum=0;
-        double secdis=(max-min)/secnum;
+        double secdis=(max-min)/(*secnum);
+
+        if(flag){
+            secdis=(max-min)/(*secnum-1);
+        }
+
         for(int ni=0;ni<p2area.rows;ni++){
-            if(p2area.at<double>(ni,0)>=min&&p2area.at<double>(ni,0)<=max){
+            if(p2area.at<double>(ni,0)>=min){
                 double factdis=p2area.at<double>(ni,0)-min;
                 int factfre=floor(factdis/secdis);
-                if(factfre>=10)factfre=9;
+                if(factfre>*secnum-1)factfre=*secnum-1;
                 frenum[factfre]++;
                 secponum++;
+                meandiameter[imgn]+=p2area.at<double>(ni,0);
             }
         }
 
-        double *fre=new double[secnum];
-        memset(fre,0,secnum*sizeof(double));
-        for(int i=0;i<secnum;i++){
+        double *fre=new double[*secnum];
+        memset(fre,0,*secnum*sizeof(double));
+        for(int i=0;i<*secnum;i++){
             fre[i]=frenum[i]*1.0/(secponum);
             diameterfre[imgn][i]=fre[i];
         }
+        meandiameter[imgn]/=secponum;
 
         img1temp.release();
         tenv1.release();
@@ -315,13 +331,15 @@ void location::p_location(string tempfilename,double boxcoef,int planesumnuber,i
     ip1xyzd=new Mat[imgnum]();
     idiameterfre=new double *[imgnum];
     for(int i=0;i<imgnum;i++){
-        idiameterfre[i]=new double[secnum]();
+        idiameterfre[i]=new double[*secnum]();
     }
     idiametermin=new double [imgnum];
     idiametermax=new double [imgnum];
 
     ipos=new struct position*[imgnum]();
     ipointnum=new int[imgnum];
+
+    imeandiameter=new double [imgnum];
 
     for(int imgn=0;imgn<imgnum;imgn++){
         //qDebug()<<"imgn = "<<imgn;
@@ -411,42 +429,50 @@ void location::p_location(string tempfilename,double boxcoef,int planesumnuber,i
 
         double max,min;
         extreme(p2area,max,min);
+        iflag=false;
         int secponum;
 
-        if(max>sectionmax){
-            max=sectionmax;
+        if(max>*sectionmax){
+            max=*sectionmax;
+            iflag=true;
         }
-        if(min<sectionmin){
-            min=sectionmin;
+        if(min<*sectionmin){
+            min=*sectionmin;
         }
+
 
         idiametermin[imgn]=min;
         idiametermax[imgn]=max;
-
+        imeandiameter[imgn]=0;
         secponum=0;
 
-        int* frenum=new int[secnum];
+        int* frenum=new int[*secnum];
         memset(frenum,0,sizeof(frenum));
-        for(int i=0;i<secnum;i++){
+        for(int i=0;i<*secnum;i++){
             frenum[i] = 0;
         }
-        double secdis=(max-min)/secnum;
+        double secdis=(max-min)/(*secnum);
+        if(iflag){
+            secdis=(max-min)/(*secnum-1);
+        }
         for(int ni=0;ni<p2area.rows;ni++){
-            if(p2area.at<double>(ni,0)>=min&&p2area.at<double>(ni,0)<=max){
+            if(p2area.at<double>(ni,0)>=min){
                 double factdis=p2area.at<double>(ni,0)-min;
                 int factfre=floor(factdis/secdis);
-                if(factfre>=10)factfre=9;
+                if(factfre>*secnum-1)factfre=*secnum-1;
                 frenum[factfre]++;
                 secponum++;
+                imeandiameter[imgn]+=p2area.at<double>(ni,0);
             }
         }
 
-        double *fre=new double[secnum];
-        memset(fre,0,secnum*sizeof(double));
-        for(int i=0;i<secnum;i++){
+        double *fre=new double[*secnum];
+        memset(fre,0,*secnum*sizeof(double));
+        for(int i=0;i<*secnum;i++){
             fre[i]=frenum[i]*1.0/(secponum);
             idiameterfre[imgn][i]=fre[i];
         }
+        imeandiameter[imgn]/=secponum;
 
         img1temp.release();
         tenv1.release();
@@ -462,7 +488,5 @@ void location::p_location(string tempfilename,double boxcoef,int planesumnuber,i
     emit(locateAll());
     emit(locateAll(pos,ipos,imgnum,planesumnuber,diameterfre,idiameterfre,
             diametermin,idiametermin,diametermax,idiametermax,
-                   pointnum,ipointnum));
+                   pointnum,ipointnum,flag,iflag,meandiameter,imeandiameter));
 }
-
-

@@ -100,7 +100,7 @@ void slider::setNum(int n)
     count = n;
     label->setText(QString::number(count));
     slid->setValue(count);
-    location->setText(QString::number(zmin+(count-1)*interval)+"mm");
+    location->setText(QString::number(zmin+0.1*(count-1)*interval)+"cm");
 }
 
 void slider::setDisable()

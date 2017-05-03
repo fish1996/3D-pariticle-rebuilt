@@ -31,16 +31,17 @@ void progressbar::closeEvent(QCloseEvent *)
 
 void progressbar::paintEvent(QPaintEvent* )
 {
+    qDebug()<<"total"<<total;
     QPainter painter(this);
 
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(QColor(0,0,0));
-    painter.drawText(150,30,
+  /*  painter.drawText(150,30,
                      QStringLiteral("第")
                      + QString::number(count)
                      + QStringLiteral("张，共")
                      + QString::number(total)
-                     + QStringLiteral("张"));
+                     + QStringLiteral("张"));*/
     painter.setPen(QColor(0,0,0));
     painter.setBrush(Qt::NoBrush);
     painter.drawRoundedRect(QRect(30,80,SIZEW-60,SIZEH-160),5,5);

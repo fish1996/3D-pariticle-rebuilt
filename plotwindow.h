@@ -60,6 +60,11 @@ private:
     double* idiametermax;
     position** ipos;
     bool isInverse;
+    bool maxflag;
+    bool imaxflag;
+    double* meandiameter;
+    double* imeandiameter;
+
 public:
     void setRadius(double* _min,double* _max);
     void setInverse(bool);
@@ -69,7 +74,7 @@ public:
     bool isDraw;
     void setPlotNum(int n);
     void setAttr(double** diameterfre,double** idiameterfre,double* diametermin,double* idiametermin,
-                 double* diametermax,double* idiametermax,int,position**,position**,int*,int*);
+                 double* diametermax,double* idiametermax,int,position**,position**,int*,int*,bool,bool,double*,double*);
     void loadTable(int row,int col);
     plotwindow(basewindow* parent = 0);
 protected:

@@ -42,6 +42,7 @@ class threadB : public QThread
 {
     Q_OBJECT
 private:
+    int * total;
     detection* detect;
     progressbar* bar;
     double blocks;
@@ -56,7 +57,7 @@ public:
     Mat* getP1xy();
     Mat* getP1Area();
     Mat* getP1Box();
-    void set(mainwindow* window,progressbar* bar,int num);
+    void set(mainwindow* window,progressbar* bar,int num,int *);
 protected:
     void run();
 signals:

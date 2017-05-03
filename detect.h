@@ -25,9 +25,10 @@ class detection : public QObject
 {
     Q_OBJECT
 public:
+    int* total;
     detection();
     virtual ~detection();
-    void adaptivethreshold(string tempfilename,double blocksize,double globalgraythreshhold,double globalgraythreshold2,int imgnum); //另外seg保存所有数据
+    void adaptivethreshold(string tempfilename,double blocksize,double globalgraythreshhold,double globalgraythreshold2,int imgnum,int*); //另外seg保存所有数据
 
 private:
     int find( int set[], int x );

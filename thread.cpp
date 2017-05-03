@@ -49,9 +49,9 @@ void threadB::release()
 
 }
 
-void threadB::set(mainwindow* _window,progressbar* _bar,int num)
+void threadB::set(mainwindow* _window,progressbar* _bar,int num,int *_total)
 {
-
+    total = _total;
     window = _window;
     blocks = window->msg.detection1;
     gray1 = window->msg.detection2;
@@ -68,7 +68,7 @@ void threadB::run()
     connect(detect,SIGNAL(detectAll()),window->showWindow,SLOT(initDetect()));
     connect(detect,SIGNAL(detectAll()),this,SLOT(release()));
 
-    detect->adaptivethreshold(tempfilename1,blocks,gray1,gray2,imgnum);
+    detect->adaptivethreshold(tempfilename1,blocks,gray1,gray2,imgnum,total);
 }
 
 Mat* threadB::getP1xy()
@@ -119,11 +119,11 @@ void threadC::run(){
 
     Location = new location();
     connect(Location,SIGNAL(locateOk()),bar,SLOT(changeState()));
-    connect(Location,SIGNAL(locateAll(position**,position**,int,int,double**,double**,double*,double*,double*,double*,int*,int*)),
-            window->showWindow,SLOT(initLocate(position**,position**,int,int,double**,double**,double*,double*,double*,double*,int*,int*)));
+    connect(Location,SIGNAL(locateAll(position**,position**,int,int,double**,double**,double*,double*,double*,double*,int*,int*,bool,bool,double*,double*)),
+            window->showWindow,SLOT(initLocate(position**,position**,int,int,double**,double**,double*,double*,double*,double*,int*,int*,bool,bool,double*,double*)));
     connect(Location,SIGNAL(locateAll()),this,SLOT(release()));
     Location->set(p1xy,p1area,p1box,ip1xy,ip1area,ip1box);
-    Location->p_location(tempfilename1,boxcoef,planesumnuber,secnum,imgnum,window->msg.minRadius,window->msg.maxRadius);
+    Location->p_location(tempfilename1,boxcoef,planesumnuber,&window->msg.interval,imgnum,&window->msg.minRadius,&window->msg.maxRadius);
 }
 
 thread::thread()
@@ -190,7 +190,7 @@ void thread::detect()
     bar = new progressbar(QStringLiteral("颗粒探测"));
     bar->total = 2*imgnum;
     bar->display();
-    thB->set(window,bar,imgnum);
+    thB->set(window,bar,imgnum,&bar->total);
     thB->start();
 }
 
@@ -241,6 +241,7 @@ int thread::round(float x)
 
 void thread::handle()
 {
+    filename.clear();
     if((window->msg).path.isEmpty()) {
         emit(send(NOPATH));
         return;
@@ -249,16 +250,15 @@ void thread::handle()
         tempfilename = (window->msg).path.toStdString();
     }
 
-    if((window->name).isEmpty() && window->viewWindow->isEmpty()) {
+    if((window->fromFileImg).isEmpty() && window->viewWindow->isEmpty()) {
         emit(send(NOPICTURE));
         return;
     }
 
-
-    if(window->viewWindow->isEmpty()) {
-        filename.push_back((window->name.toStdString()));
+    if(window->fromFileImg.compare("")!=0) {
+        filename.push_back((window->fromFileImg.toStdString()));
     }
-    else {
+    else{
         filename = window->viewWindow->getFilename();
     }
 
@@ -300,6 +300,7 @@ void thread::handle()
     size = window->totalnum = window->total= (((zmax1-zmin1)/interval)) + 1;
     window->imgnum = filename.size();
     window->showWindow->setTotalNum(((zmax1-zmin1)/interval)+1);
+    window->toolWindow->set(zmin1*10000,interval*1000000);
 
     window->toolWindow->slid->setNum(0,(zmax1-zmin1)/interval + 1);
     window->showWindow

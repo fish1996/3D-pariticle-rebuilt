@@ -40,6 +40,7 @@ void message_t::set(double d1,double d2,double d3,double minr,double maxr,
 mainwindow::mainwindow(QWidget *parent)
     : QWidget(parent)
 {
+    fromFileImg = "";
     state = Null;
     srand(time(nullptr));
     loadAttr();
@@ -51,6 +52,8 @@ mainwindow::mainwindow(QWidget *parent)
 
     msg.set(128,0.5,0.6,2*setupWindow->dpixText->text().toDouble(),
             INF,"data/temp",1);
+    msg.size = 100;
+    showWindow->setScale(&msg.size);
 
     viewWindow->setPath(currentPath);
     showWindow->setRadius(&msg.minRadius,&msg.maxRadius);
@@ -111,13 +114,12 @@ void mainwindow::loadAttr()
                 pmsg.detection2 = strlist[7];
                 pmsg.detection3 = strlist[8];
                 qDebug()<<"name="<<name;
-              //  pmsg.location = strlist[10];
                 pmsg.path = strlist[9];
                 pmsg.minRadius = strlist[10];
                 qDebug()<<"name="<<name;
                 pmsg.maxRadius = strlist[11];
-                pmsg.plotnum = strlist[12];//qDebug()<<"name="<<name;
-                map[name] = pmsg;//qDebug()<<"name="<<name;
+                pmsg.plotnum = strlist[12];
+                map[name] = pmsg;
                 strlist.clear();
             }
             else if(str[i]==' '){
@@ -126,7 +128,6 @@ void mainwindow::loadAttr()
             }
         }
     }
-    //qDebug()<<"ok load";
     file.close();
     file.setFileName("name.txt");
     file.open(QIODevice::ReadOnly);
@@ -196,7 +197,7 @@ bool mainwindow::copyFile(QString sourceDir ,QString toDir, bool coverFileIfExis
         if(coverFileIfExist){
             createfile->remove(toDir);
         }
-    }//end if
+    }
 
     if(!QFile::copy(sourceDir, toDir))
     {
@@ -248,7 +249,7 @@ void mainwindow::saveAll(QString path,bool isOneKey)
         copyFile(msg.path+"/map_lowfrequency"+QString::number(i)+"i.tiff" ,path+"/"+prefix+"map_lowfrequency"+QString::number(i)+"i.tiff", true);
    }
     if(state == Detect){
-        QMessageBox::about(0,"Message",QStringLiteral("保存成功!自动命名前缀为：")+prefix);
+      //  QMessageBox::about(0,"Message",QStringLiteral("保存成功!自动命名前缀为：")+prefix);
         return;
     }
     for(int i = 0;i < imgnum;i++) {
@@ -259,7 +260,7 @@ void mainwindow::saveAll(QString path,bool isOneKey)
         }
     }
 
-    QMessageBox::about(0,"Message",QStringLiteral("保存成功!自动命名前缀为：")+prefix);
+  //  QMessageBox::about(0,"Message",QStringLiteral("保存成功!自动命名前缀为：")+prefix);
 }
 
 void mainwindow::saveImg()
@@ -380,12 +381,27 @@ void mainwindow::chooseBackground()
     else{
         QMessageBox::about(0,"Message",QStringLiteral("导入成功!是否与选中图片进行去背景操作?"));
     }
+
     viewWindow->setBackground(path);
 
-    Mat background=imread(path.toStdString(),CV_LOAD_IMAGE_GRAYSCALE);
+    path.replace('/','\\');
+    Mat background;
+
+    try{
+        background=imread(path.toStdString(),CV_LOAD_IMAGE_GRAYSCALE);
+    }
+    catch( cv::Exception& e )
+    {
+        const char* err_msg = e.what();
+        QMessageBox::critical(NULL, "Error", QString::fromLatin1(err_msg),
+                          QMessageBox::Yes);
+        return;
+    }
+
     background.convertTo(background,CV_64F,1.0/255.0);
 
     std::vector<std::string> vec = viewWindow->getFilename();
+
     for(int i = 0;i < vec.size(); i++) {
         Mat hologram=imread(vec[i],CV_LOAD_IMAGE_GRAYSCALE);
         hologram.convertTo(hologram,CV_64F,1.0/255.0);
@@ -395,9 +411,11 @@ void mainwindow::chooseBackground()
                               QMessageBox::Yes);
             return;
         }
+
         hologram=hologram-background;
         double gmax,gmin;
         minMaxIdx(hologram,&gmax,&gmin);
+
         hologram=(hologram-gmin)/(gmax-gmin);
         normalize(hologram,hologram,0.0,255.0,NORM_MINMAX);
 
@@ -529,6 +547,10 @@ void mainwindow::layout()
     dock = new QDockWidget(QStringLiteral("工具"),this);
     dock->setWidget(toolWindow);
     dock->setFeatures(QDockWidget::DockWidgetFloatable);
+    msg.placex = 200;
+    msg.placey = 20;
+//    showWindow->setMsg(msg);
+    showWindow->setPlace(msg.placex,msg.placey);
     showWindow->setPath("data/temp");
     showWindow->setPlotNum(map[namelist[0]].plotnum.toInt());
     for(int i=0;i<VMAX;i++){
@@ -537,8 +559,6 @@ void mainwindow::layout()
     for(int i=0;i<HMAX;i++){
         vlayout[i] = new QVBoxLayout();
     }
-
-
     hlayout[0]->addWidget(dock);
     hlayout[0]->addWidget(showWindow);
     hlayout[0]->setContentsMargins(0,0,0,0);
@@ -557,7 +577,6 @@ void mainwindow::layout()
     vlayout[1]->setSpacing(0);
     vlayout[1]->addLayout(hlayout[1]);
     vlayout[1]->setMargin(0);
-
 
     initWindow->show();
     setLayout(vlayout[1]);
@@ -578,8 +597,6 @@ void mainwindow::initOk()
     setupWindow->zmaxText->setText(initWindow->endBox->text());
     setupWindow->dpixText->setText(initWindow->pixelBox->text());
     setupWindow->lamdaText->setText(initWindow->waveBox->text());
-
-  //  setupWindow->MagText->setText(initWindow->planeBox->text());
     setupWindow->intervalText->setText(initWindow->planeBox->text());
 
     msg.minRadius = 2*initWindow->pixelBox->text().toDouble();
@@ -591,7 +608,7 @@ void mainwindow::initOk()
             map[initWindow->combobox->currentText()].maxRadius.toDouble(),
             map[initWindow->combobox->currentText()].path,
             map[initWindow->combobox->currentText()].plotnum.toInt());
-    toolWindow->set(setupWindow->zminText->text().toDouble(),setupWindow->intervalText->text().toDouble());
+
 
     delete initWindow;
 
@@ -626,12 +643,14 @@ void mainwindow::importImg()
     }
     else{
         setupWindow->loadImg(name);
+        fromFileImg = name;
     }
 
 }
 
 void mainwindow::setPath(QString p)
 {
+    fromFileImg = "";
     name = p;
     setupWindow->loadImg(p);
 }
@@ -680,8 +699,7 @@ void mainwindow::setup()
 {
     if(setupDialog->isCreate)return;
 
-
-    setupDialog = new setupdialog(preAttr,&namelist,&map,setupWindow->dpixText->text().toDouble(),&msg);
+    setupDialog = new setupdialog(showWindow->sizeX(),showWindow->sizeY(),preAttr,&namelist,&map,setupWindow->dpixText->text().toDouble(),&msg);
     setupDialog->show();
     connect(setupDialog->okBtn,SIGNAL(clicked()),this,SLOT(setupOk()));
     connect(setupDialog->cancelBtn,SIGNAL(clicked()),this,SLOT(setupCancel()));
@@ -703,16 +721,23 @@ void mainwindow::setupOk()
             setupDialog->maxRadiusText->text().toInt(),
             setupDialog->fileDirText->text(),
             setupDialog->intervalText->text().toInt());
+    msg.size = setupDialog->scaleLengthText->text().toInt();
     preAttr = setupDialog->attrBox->currentText();
-    setupWindow->zminText->setText(map[preAttr].zmin);
-    setupWindow->zmaxText->setText(map[preAttr].zmax);
-    setupWindow->dpixText->setText(map[preAttr].dpix);
-    setupWindow->lamdaText->setText(map[preAttr].lamda);
+    if(setupDialog->isChange) {
+        setupWindow->zminText->setText(map[preAttr].zmin);
+        setupWindow->zmaxText->setText(map[preAttr].zmax);
+        setupWindow->dpixText->setText(map[preAttr].dpix);
+        setupWindow->lamdaText->setText(map[preAttr].lamda);
+        setupWindow->intervalText->setText(map[preAttr].interval);
+    }
+    msg.placex = setupDialog->placeXText->text().toInt();
+    msg.placey = setupDialog->placeYText->text().toInt();
 
-  //  setupWindow->MagText->setText(initWindow->planeBox->text());
-    setupWindow->intervalText->setText(map[preAttr].interval);
+    showWindow->setPlace(msg.placex,msg.placey);
     showWindow->setPath(msg.path);
     showWindow->setPlotNum(setupDialog->intervalText->text().toInt());
+  //  setupWindow->MagText->setText(initWindow->planeBox->text());
+
     delete setupDialog;
 }
 

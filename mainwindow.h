@@ -71,6 +71,7 @@ private:
     QDockWidget* dock;
     bool copyFile(QString sourceDir ,QString toDir, bool coverFileIfExist);
 public:
+    QString fromFileImg;
     State state;
     QString name;
     message_t msg;

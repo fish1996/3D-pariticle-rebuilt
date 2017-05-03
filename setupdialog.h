@@ -23,6 +23,8 @@ private:
         VMAX = 1,
         HMAX = 7,
     };
+    int sizex;
+    int sizey;
 
     QPushButton* chooseDir;
     QPushButton* addAttrBtn;
@@ -33,6 +35,10 @@ private:
     QLabel* interval;
     QLabel* minRadius;
     QLabel* maxRadius;
+    QLabel* scaleLength;
+    QLabel* place;
+    QLabel* place_x;
+    QLabel* place_y;
     message_t* message;
 
     QLabel* preAttr;
@@ -49,6 +55,7 @@ private:
     void setConnect();
 public:
 
+    bool isChange;
     static bool isCreate;
     QString preattr;
     QComboBox* attrBox;
@@ -62,11 +69,14 @@ public:
     QLineEdit* fileDirText;
 
     QSpinBox* intervalText;
+    QSpinBox* scaleLengthText;
     QSpinBox* minRadiusText;
     QSpinBox* maxRadiusText;
+    QSpinBox* placeXText;
+    QSpinBox* placeYText;
     //QCheckBox* isInverse;
     QVector<QString>* namelist;
-    setupdialog(QString preattr,QVector<QString>* namelist,map_t* map,double size,message_t* msg,QWidget* parent = 0);
+    setupdialog(int sizex,int sizey,QString preattr,QVector<QString>* namelist,map_t* map,double size,message_t* msg,QWidget* parent = 0);
     ~setupdialog();
 protected:
     void closeEvent(QCloseEvent* event);

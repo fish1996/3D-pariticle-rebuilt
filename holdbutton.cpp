@@ -6,8 +6,8 @@ imageButton::imageButton() { }
 
 void imageButton::set(QString text,QString path)
 {
-    QPixmap pixmap(path);
-    setIcon(pixmap);
+   // QPixmap pixmap(path);
+    //setIcon(pixmap);
     setText(text);
     setFlat(true);
 }
@@ -56,8 +56,8 @@ void holdButton::set(QString text,QString path)
     setStyleSheet("background-color: qconicalgradient(cx:0.5, cy:0.522909, angle:179.9, stop:0.494318 rgba(214, 214, 214, 255), stop:0.5 rgba(236, 236, 236, 255));"
                   "border: 1px solid rgb(124, 124, 124);"
                   "border-radius:5px;");
-    setIcon(pixmap);
-    setIconSize(QSize(20,20));
+   // setIcon(pixmap);
+   // setIconSize(QSize(20,20));
     setFixedSize(130, 40);
     setText(text);
    // setFlat(true);
