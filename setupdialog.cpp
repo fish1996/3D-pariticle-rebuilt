@@ -97,9 +97,9 @@ setupdialog::~setupdialog()
 //    disconnect(addAttrBtn,0,this,0);
 //    disconnect(removeAttrBtn,0,this,0);
 
-    qDebug()<<"~setupdialog";
+    //qDebug()<<"~setupdialog";
     isCreate = false;
-    delete line1;
+/*    delete line1;
     delete line2;
     delete line3;
     delete fileDirText;
@@ -126,7 +126,7 @@ setupdialog::~setupdialog()
     }
     for(int i=0;i<VMAX;i++){
         delete vlayout[i];
-    }
+    }*/
 }
 
 void setupdialog::layout()
@@ -192,6 +192,7 @@ void setupdialog::layout()
     maxRadiusText->setValue(message->maxRadius);
     intervalText->setValue(message->interval);
     attrBox->setCurrentText(preattr);
+
 /*
     if(preattr=="")setValue(0);
     else {
@@ -240,6 +241,7 @@ void setupdialog::layout()
     vlayout[0]->addLayout(hlayout[4]);
     vlayout[0]->addLayout(hlayout[5]);
     vlayout[0]->addLayout(hlayout[6]);
+    //qDebug()<<"fffffff";
     setWindowModality(Qt::ApplicationModal);
     //setWindowFlags(Qt::WindowStaysOnTopHint);
     setWindowTitle(QStringLiteral("设置"));

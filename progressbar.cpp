@@ -31,7 +31,7 @@ void progressbar::closeEvent(QCloseEvent *)
 
 void progressbar::paintEvent(QPaintEvent* )
 {
-    qDebug()<<"total"<<total;
+    qDebug()<<"count"<<count<<"total"<<total;
     QPainter painter(this);
 
     painter.setRenderHint(QPainter::Antialiasing, true);
@@ -60,7 +60,7 @@ void progressbar::paintEvent(QPaintEvent* )
 
 void progressbar::changeState()
 {
-
+    qDebug()<<"here change count = "<<count;
     count++;
     update();
 }

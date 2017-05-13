@@ -179,7 +179,7 @@ void plotwindow::paintEvent(QPaintEvent* e)
     XMAX = SIZEW - 50;
     YMIN = 30;
     YMAX = SIZEH - 30;
-
+//qDebug()<< "max="<<diametermin[index]<< idiametermin[index];
     if(!isInverse) {
         for(int i=0;i<x;i++){
             Rect r(XMIN + i*(XMAX-XMIN)/x,YMAX-(YMAX-YMIN)*diameterfre[index][i],(XMAX-XMIN)/x - 1,(YMAX-YMIN)*diameterfre[index][i]);
@@ -208,7 +208,7 @@ void plotwindow::paintEvent(QPaintEvent* e)
             double s = 1.0*(diametermax[index] - diametermin[index])/ x;
             for(int i=0;i<=x;i++){
                 QString str = QString("%1").arg((diametermin[index]+i*s));
-                str = str.mid(0,5);
+                str = str.mid(0,4);
                 paint.drawText(XMIN + i*(XMAX-XMIN)/x,YMAX+10,str);
             }
         }
@@ -216,7 +216,7 @@ void plotwindow::paintEvent(QPaintEvent* e)
             double s = 1.0*(diametermax[index] - diametermin[index])/(x - 1);
             for(int i=0;i<=x-1;i++){
                 QString str = QString("%1").arg((diametermin[index]+i*s));
-                str = str.mid(0,5);
+                str = str.mid(0,4);
                 paint.drawText(XMIN + i*(XMAX-XMIN)/(x),YMAX+10,str);
             }
             paint.drawText(XMAX,YMAX+10,QStringLiteral("∞"));
@@ -273,7 +273,7 @@ void plotwindow::paintEvent(QPaintEvent* e)
             double s = 1.0*(idiametermax[index] - idiametermin[index])/ x;
             for(int i=0;i<=x;i++){
                 QString str = QString("%1").arg((idiametermin[index]+i*s));
-                str = str.mid(0,5);
+                str = str.mid(0,4);
                 paint.drawText(XMIN + i*(XMAX-XMIN)/x,YMAX+10,str);
             }
         }
@@ -281,7 +281,7 @@ void plotwindow::paintEvent(QPaintEvent* e)
             double s = 1.0*(idiametermax[index] - idiametermin[index])/(x - 1);
             for(int i=0;i<=x-1;i++){
                 QString str = QString("%1").arg((idiametermin[index]+i*s));
-                str = str.mid(0,5);
+                str = str.mid(0,4);
                 paint.drawText(XMIN + i*(XMAX-XMIN)/(x),YMAX+10,str);
             }
             paint.drawText(XMAX,YMAX + 10,QStringLiteral("∞"));
@@ -344,7 +344,7 @@ void plotwindow::saveImg(QString filename,int index,bool isInverse)
             double s = 1.0*(diametermax[index] - diametermin[index])/ x;
             for(int i=0;i<=x;i++){
                 QString str = QString("%1").arg((diametermin[index]+i*s));
-                str = str.mid(0,5);
+                str = str.mid(0,4);
                 paint.drawText(_XMIN + i*(_XMAX-_XMIN)/x,_YMAX+10,str);
             }
         }
@@ -352,7 +352,7 @@ void plotwindow::saveImg(QString filename,int index,bool isInverse)
             double s = 1.0*(diametermax[index] - diametermin[index])/(x - 1);
             for(int i=0;i<=x-1;i++){
                 QString str = QString("%1").arg((diametermin[index]+i*s));
-                str = str.mid(0,5);
+                str = str.mid(0,4);
                 paint.drawText(_XMIN + i*(_XMAX-_XMIN)/(x),_YMAX+10,str);
             }
             paint.drawText(_XMAX,_YMAX+10,QStringLiteral("∞"));
@@ -387,7 +387,7 @@ void plotwindow::saveImg(QString filename,int index,bool isInverse)
             double s = 1.0*(idiametermax[index] - idiametermin[index])/ x;
             for(int i=0;i<=x;i++){
                 QString str = QString("%1").arg((diametermin[index]+i*s));
-                str = str.mid(0,5);
+                str = str.mid(0,4);
                 paint.drawText(_XMIN + i*(_XMAX-_XMIN)/x,_YMAX+10,str);
             }
         }
@@ -395,7 +395,7 @@ void plotwindow::saveImg(QString filename,int index,bool isInverse)
             double s = 1.0*(idiametermax[index] - idiametermin[index])/(x - 1);
             for(int i=0;i<=x-1;i++){
                 QString str = QString("%1").arg((diametermin[index]+i*s));
-                str = str.mid(0,5);
+                str = str.mid(0,4);
                 paint.drawText(_XMIN + i*(_XMAX-_XMIN)/(x),_YMAX+10,str);
             }
             paint.drawText(_XMAX,_YMAX+10,QStringLiteral("∞"));

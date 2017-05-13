@@ -450,7 +450,7 @@ void setupwindow::indexChanged(int index)
 
 void setupwindow::play()
 {
-    qDebug()<<"num = "<<tabWindow->came->deviceNum;
+    //qDebug()<<"num = "<<tabWindow->came->deviceNum;
     if(tabWindow->came->deviceNum == 0){
         return;
     }

@@ -163,14 +163,144 @@ int location::round(float x)
     return (int)(x+0.5);
 }
 
+void location::re_location()
+{
+    for(int i=0;i<imgnumber;i++){
+        delete diameterfre[i];
+        diameterfre[i]=new double[*_secnum]();
+    }
+
+    for(int i=0;i<imgnumber;i++){
+        delete idiameterfre[i];
+        idiameterfre[i]=new double[*_secnum]();
+    }
+
+    for(int imgn=0;imgn<imgnumber;imgn++){
+        Mat p2area=SQRTs(p1area[imgn]);
+        double max,min;
+        int secponum; //表示区间内的粒子总数
+        flag=false; //表示区间最大值不大于实际
+        extreme(p2area,max,min);
+
+        if(max>*_sectionmax){
+            max=*_sectionmax;
+            flag=true;
+        }
+        if(min<*_sectionmin){
+            min=*_sectionmin;
+        }
+
+        diametermin[imgn]=min;
+        diametermax[imgn]=max;
+        meandiameter[imgn]=0;
+
+        int* frenum=new int[*_secnum];
+        memset(frenum,0,sizeof(frenum));
+        for(int i=0;i<*_secnum;i++){
+            frenum[i] = 0;
+        }
+        secponum=0;
+        double secdis=(max-min)/(*_secnum);
+
+        if(flag){
+            secdis=(max-min)/(*_secnum-1);
+        }
+
+        for(int ni=0;ni<p2area.rows;ni++){
+            if(p2area.at<double>(ni,0)>=min){
+                double factdis=p2area.at<double>(ni,0)-min;
+                int factfre=floor(factdis/secdis);
+                if(factfre>*_secnum-1)factfre=*_secnum-1;
+                frenum[factfre]++;
+                secponum++;
+                meandiameter[imgn]+=p2area.at<double>(ni,0);
+            }
+        }
+
+        double *fre=new double[*_secnum];
+        memset(fre,0,(*_secnum)*sizeof(double));
+        for(int i=0;i<*_secnum;i++){
+            fre[i]=frenum[i]*1.0/(secponum);
+            diameterfre[imgn][i]=fre[i];
+        }
+        meandiameter[imgn]/=secponum;
+
+        delete[] fre;
+        delete[] frenum;
+
+      //  qDebug()<<diametermin[imgn];
+//        qDebug()<<diametermax[imgn];
+    }
+
+
+    for(int imgn=0;imgn<imgnumber;imgn++){
+        Mat p2area=SQRTs(ip1area[imgn]);
+        double max,min;
+        int secponum; //表示区间内的粒子总数
+        iflag=false; //表示区间最大值不大于实际
+        extreme(p2area,max,min);
+
+        if(max>*_sectionmax){
+            max=*_sectionmax;
+            iflag=true;
+        }
+        if(min<*_sectionmin){
+            min=*_sectionmin;
+        }
+
+        idiametermin[imgn]=min;
+        idiametermax[imgn]=max;
+        imeandiameter[imgn]=0;
+
+        int* frenum=new int[*_secnum];
+        memset(frenum,0,sizeof(frenum));
+        for(int i=0;i<*_secnum;i++){
+            frenum[i] = 0;
+        }
+        secponum=0;
+        double secdis=(max-min)/(*_secnum);
+
+        if(iflag){
+            secdis=(max-min)/(*_secnum-1);
+        }
+
+        for(int ni=0;ni<p2area.rows;ni++){
+            if(p2area.at<double>(ni,0)>=min){
+                double factdis=p2area.at<double>(ni,0)-min;
+                int factfre=floor(factdis/secdis);
+                if(factfre>*_secnum-1)factfre=*_secnum-1;
+                frenum[factfre]++;
+                secponum++;
+                imeandiameter[imgn]+=p2area.at<double>(ni,0);
+            }
+        }
+
+        double *fre=new double[*_secnum];
+        memset(fre,0,*_secnum*sizeof(double));
+        for(int i=0;i<*_secnum;i++){
+            fre[i]=frenum[i]*1.0/(secponum);
+            idiameterfre[imgn][i]=fre[i];
+        }
+        imeandiameter[imgn]/=secponum;
+
+        delete[] fre;
+        delete[] frenum;
+    }
+}
+
 //image 目前图片,boxcoef输入的参数,planesumnumber第一步所用到的总张数
 //p1xyzd矩阵参数可以用于绘制三维图，共四列，分别是X,Y,Z,S(这里给的是直径）
 void location::p_location(string tempfilename,double boxcoef,int planesumnuber,int* secnum,int imgnum,double* sectionmin,double* sectionmax){
-    //qDebug()<<"p_location";
+    qDebug()<<"p_location";
+    _secnum=secnum;
+    _sectionmax=sectionmax;
+    _sectionmin=sectionmin;
+
+    imgnumber=imgnum;
     p1xyzd=new Mat[imgnum]();
     diameterfre=new double *[imgnum];
     for(int i=0;i<imgnum;i++){
-        diameterfre[i]=new double[*secnum]();
+        diameterfre[i]=new double[*_secnum]();
     }
     diametermin=new double [imgnum];
     diametermax=new double [imgnum];
@@ -179,10 +309,6 @@ void location::p_location(string tempfilename,double boxcoef,int planesumnuber,i
     pointnum=new int[imgnum];
 
     meandiameter=new double [imgnum];
-
-    _secnum=secnum;
-    _sectionmax=sectionmax;
-    _sectionmin=sectionmin;
 
     for(int imgn=0;imgn<imgnum;imgn++){
         //qDebug()<<"imgn = "<<imgn;
@@ -273,44 +399,44 @@ void location::p_location(string tempfilename,double boxcoef,int planesumnuber,i
         flag=false; //表示区间最大值不大于实际
         extreme(p2area,max,min);
 
-        if(max>*sectionmax){
-            max=*sectionmax;
+        if(max>*_sectionmax){
+            max=*_sectionmax;
             flag=true;
         }
-        if(min<*sectionmin){
-            min=*sectionmin;
+        if(min<*_sectionmin){
+            min=*_sectionmin;
         }
 
         diametermin[imgn]=min;
         diametermax[imgn]=max;
         meandiameter[imgn]=0;
 
-        int* frenum=new int[*secnum];
+        int* frenum=new int[*_secnum];
         memset(frenum,0,sizeof(frenum));
-        for(int i=0;i<*secnum;i++){
+        for(int i=0;i<*_secnum;i++){
             frenum[i] = 0;
         }
         secponum=0;
-        double secdis=(max-min)/(*secnum);
+        double secdis=(max-min)/(*_secnum);
 
         if(flag){
-            secdis=(max-min)/(*secnum-1);
+            secdis=(max-min)/(*_secnum-1);
         }
 
         for(int ni=0;ni<p2area.rows;ni++){
             if(p2area.at<double>(ni,0)>=min){
                 double factdis=p2area.at<double>(ni,0)-min;
                 int factfre=floor(factdis/secdis);
-                if(factfre>*secnum-1)factfre=*secnum-1;
+                if(factfre>*_secnum-1)factfre=*_secnum-1;
                 frenum[factfre]++;
                 secponum++;
                 meandiameter[imgn]+=p2area.at<double>(ni,0);
             }
         }
 
-        double *fre=new double[*secnum];
-        memset(fre,0,*secnum*sizeof(double));
-        for(int i=0;i<*secnum;i++){
+        double *fre=new double[*_secnum];
+        memset(fre,0,*_secnum*sizeof(double));
+        for(int i=0;i<*_secnum;i++){
             fre[i]=frenum[i]*1.0/(secponum);
             diameterfre[imgn][i]=fre[i];
         }
@@ -331,7 +457,7 @@ void location::p_location(string tempfilename,double boxcoef,int planesumnuber,i
     ip1xyzd=new Mat[imgnum]();
     idiameterfre=new double *[imgnum];
     for(int i=0;i<imgnum;i++){
-        idiameterfre[i]=new double[*secnum]();
+        idiameterfre[i]=new double[*_secnum]();
     }
     idiametermin=new double [imgnum];
     idiametermax=new double [imgnum];
@@ -432,12 +558,12 @@ void location::p_location(string tempfilename,double boxcoef,int planesumnuber,i
         iflag=false;
         int secponum;
 
-        if(max>*sectionmax){
-            max=*sectionmax;
+        if(max>*_sectionmax){
+            max=*_sectionmax;
             iflag=true;
         }
-        if(min<*sectionmin){
-            min=*sectionmin;
+        if(min<*_sectionmin){
+            min=*_sectionmin;
         }
 
 
@@ -446,29 +572,29 @@ void location::p_location(string tempfilename,double boxcoef,int planesumnuber,i
         imeandiameter[imgn]=0;
         secponum=0;
 
-        int* frenum=new int[*secnum];
+        int* frenum=new int[*_secnum];
         memset(frenum,0,sizeof(frenum));
-        for(int i=0;i<*secnum;i++){
+        for(int i=0;i<*_secnum;i++){
             frenum[i] = 0;
         }
-        double secdis=(max-min)/(*secnum);
+        double secdis=(max-min)/(*_secnum);
         if(iflag){
-            secdis=(max-min)/(*secnum-1);
+            secdis=(max-min)/(*_secnum-1);
         }
         for(int ni=0;ni<p2area.rows;ni++){
             if(p2area.at<double>(ni,0)>=min){
                 double factdis=p2area.at<double>(ni,0)-min;
                 int factfre=floor(factdis/secdis);
-                if(factfre>*secnum-1)factfre=*secnum-1;
+                if(factfre>*_secnum-1)factfre=*_secnum-1;
                 frenum[factfre]++;
                 secponum++;
                 imeandiameter[imgn]+=p2area.at<double>(ni,0);
             }
         }
 
-        double *fre=new double[*secnum];
-        memset(fre,0,*secnum*sizeof(double));
-        for(int i=0;i<*secnum;i++){
+        double *fre=new double[*_secnum];
+        memset(fre,0,*_secnum*sizeof(double));
+        for(int i=0;i<*_secnum;i++){
             fre[i]=frenum[i]*1.0/(secponum);
             idiameterfre[imgn][i]=fre[i];
         }

@@ -67,6 +67,7 @@ private:
     void layout();
     void setConnect();
     void loadAttr();
+    bool isDigit(QString s);
     void paintEvent(QPaintEvent*);
     QDockWidget* dock;
     bool copyFile(QString sourceDir ,QString toDir, bool coverFileIfExist);
@@ -127,6 +128,7 @@ protected:
     void keyReleaseEvent(QKeyEvent* );
     void keyPressEvent(QKeyEvent*);
 signals:
+    void issetup();
     void clear();
 };
 

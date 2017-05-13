@@ -29,6 +29,7 @@ public:
     virtual ~location();
     void set(Mat *p1xy0,Mat *p1area0,Mat *p1box0,Mat *ip1xy0,Mat *ip1area0,Mat *ip1box0);
     void p_location(string tempfilename,double boxcoef,int planesumnuber,int *secnum,int imgnum,double *sectionmin,double *sectionmax);
+    void re_location();
 
 private:
     int round(float x);
@@ -68,6 +69,7 @@ public:
     int *_secnum;
     double *_sectionmin;
     double *_sectionmax;
+    int imgnumber;
 
 signals:
     void locateOk();

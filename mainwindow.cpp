@@ -101,19 +101,19 @@ void mainwindow::loadAttr()
             }
             else if(str[i]=='\n'){
                 QString name = strlist[0];
-                qDebug()<<"name="<<name;
+           //     qDebug()<<"name="<<name;
                 premessage_t pmsg;
                 pmsg.zmin = strlist[1];
                 pmsg.zmax = strlist[2];
                 pmsg.interval = strlist[3];
                 pmsg.lamda = strlist[4];
-                qDebug()<<"name="<<name;
+             //   qDebug()<<"name="<<name;
                // pmsg.Mag = strlist[5];
                 pmsg.dpix = strlist[5];
                 pmsg.detection1 = strlist[6];
                 pmsg.detection2 = strlist[7];
                 pmsg.detection3 = strlist[8];
-                qDebug()<<"name="<<name;
+              //  qDebug()<<"name="<<name;
                 pmsg.path = strlist[9];
                 pmsg.minRadius = strlist[10];
                 qDebug()<<"name="<<name;
@@ -705,6 +705,24 @@ void mainwindow::setup()
     connect(setupDialog->cancelBtn,SIGNAL(clicked()),this,SLOT(setupCancel()));
 }
 
+bool mainwindow::isDigit(QString s)
+{
+    bool flag = false;
+    for(int i = 0; i < s.size();i++) {
+        if((s.at(i)<'0' || s.at(i)>'9')&& s.at(i)!='.') {
+            return false;
+        }
+        if(s.at(i)=='.'){
+            if(flag == false){
+                flag = true;
+            }
+            else return false;
+        }
+    }
+    return true;
+}
+
+
 void mainwindow::updateAttr(QString name,premessage_t msg)
 {
     map[name] = msg;
@@ -714,11 +732,25 @@ void mainwindow::updateAttr(QString name,premessage_t msg)
 
 void mainwindow::setupOk()
 {
+    int min = setupDialog->minRadiusText->text().toInt();
+    int max = setupDialog->maxRadiusText->text().toInt();
+    if(min >= max) {
+        QMessageBox::critical(NULL, "Error", QStringLiteral("最小粒径需要小于最大粒径\n"),
+                          QMessageBox::Yes);
+        return;
+    }
+    if(!isDigit(setupDialog->line1->text()) ||
+            !isDigit(setupDialog->line2->text())||
+            !isDigit(setupDialog->line1->text())){
+        QMessageBox::critical(NULL, "Error", QStringLiteral("输入有误\n"),
+                          QMessageBox::Yes);
+        return;
+    }
     msg.set(setupDialog->line1->text().toDouble(),
             setupDialog->line2->text().toDouble(),
             setupDialog->line3->text().toDouble(),
-            setupDialog->minRadiusText->text().toInt(),
-            setupDialog->maxRadiusText->text().toInt(),
+            min,
+            max,
             setupDialog->fileDirText->text(),
             setupDialog->intervalText->text().toInt());
     msg.size = setupDialog->scaleLengthText->text().toInt();
@@ -736,6 +768,8 @@ void mainwindow::setupOk()
     showWindow->setPlace(msg.placex,msg.placey);
     showWindow->setPath(msg.path);
     showWindow->setPlotNum(setupDialog->intervalText->text().toInt());
+    emit(issetup());
+
   //  setupWindow->MagText->setText(initWindow->planeBox->text());
 
     delete setupDialog;

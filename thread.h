@@ -72,7 +72,6 @@ class threadC : public QThread
     Q_OBJECT
 private:
     mainwindow* window;
-    location* Location;
     progressbar* bar;
     Mat* p1xy;
     Mat* p1area;
@@ -86,7 +85,9 @@ private:
     int secnum;
     int imgnum;
 public:
+    location* Location;
      void set(mainwindow*,int,progressbar*);
+     threadC();
 public slots:
     void get(Mat* _p1xy,Mat* _p1area,Mat* _p1box,Mat* _ip1xy,Mat* _ip1area,Mat* _ip1box);
 protected:
@@ -126,6 +127,7 @@ public:
 protected:
     void run();
 private slots:
+    void changeInterval();
     void clear();
     void oneKey();
     void detect();

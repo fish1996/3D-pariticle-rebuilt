@@ -86,6 +86,11 @@ Mat* threadB::getP1Box()
     return detect->p1box;
 }
 
+threadC::threadC()
+{
+    Location = nullptr;
+}
+
 void threadC::set(mainwindow* _window,int size,progressbar* _bar)
 {
     bar = _bar;
@@ -109,14 +114,13 @@ void threadC::get(Mat* _p1xy,Mat* _p1area,Mat* _p1box,Mat* _ip1xy,Mat* _ip1area,
 
 void threadC::release()
 {
-    delete Location;
-    ///qDebug()<<"location release";
+  //  delete Location;
+    //qDebug()<<"location release";
     emit(Next());
     emit(Next(Locate));
 }
 
 void threadC::run(){
-
     Location = new location();
     connect(Location,SIGNAL(locateOk()),bar,SLOT(changeState()));
     connect(Location,SIGNAL(locateAll(position**,position**,int,int,double**,double**,double*,double*,double*,double*,int*,int*,bool,bool,double*,double*)),
@@ -151,9 +155,17 @@ thread::thread()
     connect(thA,SIGNAL(Next(State)),this,SLOT(changeState(State)));
     connect(thB,SIGNAL(Next(State)),this,SLOT(changeState(State)));
     connect(thC,SIGNAL(Next(State)),this,SLOT(changeState(State)));
+    connect(window,SIGNAL(issetup()),this,SLOT(changeInterval()));
 
     connect(thB,SIGNAL(set(Mat*,Mat*,Mat*,Mat*,Mat*,Mat*)),thC,SLOT(get(Mat*,Mat*,Mat*,Mat*,Mat*,Mat*)));
     connect(this,SIGNAL(send(int)),this,SLOT(errorMsg(int)));
+}
+
+void thread::changeInterval()
+{
+    if(state == Locate) {
+        thC->Location->re_location();
+    }
 }
 
 void thread:: oneKey()
@@ -178,7 +190,7 @@ void thread::complete()
 void thread::locate()
 {
     bar = new progressbar(QStringLiteral("颗粒定位"));
-    bar->total = size*imgnum;
+    bar->total = 2*size*imgnum;
     bar->count = 0;
     bar->display();
     thC->set(window,imgnum,bar);
@@ -331,16 +343,29 @@ void thread::changeState(State s)
     window->state = s;
     switch(state){
     case Null:
+
         break;
     case Rebuilt:
+        if(thC->Location != nullptr) {
+            delete thC->Location;
+            thC->Location = nullptr;
+        }
         window->setupWindow->figplotBtn->setEnabled(true);
         window->setupWindow->locationBtn->setEnabled(false);
         window->setupWindow->detectionBtn->setEnabled(false);
         break;
     case Extend:
+        if(thC->Location != nullptr) {
+            delete thC->Location;
+            thC->Location = nullptr;
+        }
         window->setupWindow->detectionBtn->setEnabled(true);
         break;
     case Detect:
+        if(thC->Location != nullptr) {
+            delete thC->Location;
+            thC->Location = nullptr;
+        }
         window->setupWindow->locationBtn->setEnabled(true);
         break;
     case Locate:
@@ -351,6 +376,7 @@ void thread::changeState(State s)
 
 void thread::change()
 {
+    qDebug()<<"change";
     bar->changeState();
 }
 

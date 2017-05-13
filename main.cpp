@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
         //qDebug() <<"Can't start Matlab engine!" <<endl;
         exit(1);
     }
-    qDebug()<<"Open Matlab Engine!" <<endl;*/
+    //qDebug()<<"Open Matlab Engine!" <<endl;*/
     QApplication a(argc, argv);
     a.setWindowIcon(QIcon(":/main.ico"));
     thread th;

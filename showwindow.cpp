@@ -679,7 +679,7 @@ void showwindow::zoomOut()
 void showwindow::original()
 {
     //parent->update();
-    qDebug()<<"original"<<*SIZEW<<*SIZEH;
+  //  qDebug()<<"original"<<*SIZEW<<*SIZEH;
     if(isCalculate)return;
     int prew = w;
     int preh = h;
@@ -720,7 +720,7 @@ int framewindow::sizeX()
 
 int framewindow::sizeY()
 {
-    qDebug() << "here sizey = " <<showWindow->rect().height();
+    //qDebug() << "here sizey = " <<showWindow->rect().height();
     return rect().height();
 }
 
