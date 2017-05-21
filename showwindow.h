@@ -171,6 +171,12 @@ public:
     OpenGLView* openglWindow;
     showtabwindow(QTabWidget* parent = 0);
     void addItem(int);
+    void moveLeft();
+    void moveRight();
+    void moveFront();
+    void moveBack();
+    int getCurX();
+    int getCurY();
     bool isDrawWhite();
     bool isShowWhite();
     void zoomIn();

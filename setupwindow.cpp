@@ -137,10 +137,12 @@ void tabwindow::cameralayout()
     fps = new QLabel(QStringLiteral("帧率"));
     exposureTime = new QLabel(QStringLiteral("曝光时间"));
     chooseCamera = new QLabel(QStringLiteral("选择相机"));
+    size = new QLabel(QStringLiteral("分辨率"));
 
     cameraGroupBox = new QGroupBox();
     prefixText = new QComboBox();
     chooseCameraText = new QComboBox();
+    sizeText = new QComboBox();
 
     fpsBox = new QSpinBox();
     timeBox = new QSpinBox();
@@ -156,6 +158,14 @@ void tabwindow::cameralayout()
     for(int i = 0;i < came->deviceNum;i++){
         chooseCameraText->addItem(QString::number(i+1));
     }
+
+    sizeText->addItem(QStringLiteral("3262 x 2448"));
+    sizeText->addItem(QStringLiteral("2592 x 1944"));
+    sizeText->addItem(QStringLiteral("1600 x 1200"));
+    sizeText->addItem(QStringLiteral("1280 x 960 "));
+    sizeText->addItem(QStringLiteral("1024 x 768 "));
+    sizeText->addItem(QStringLiteral("800  x 500 "));
+    sizeText->addItem(QStringLiteral("640  x 480 "));
 
     prefixText->addItem(QStringLiteral("jpg"));
     prefixText->addItem(QStringLiteral("bmp"));
@@ -173,12 +183,14 @@ void tabwindow::cameralayout()
     hlayout[4]->addWidget(chooseCamera);
     hlayout[4]->addWidget(chooseCameraText);
 
+    hlayout[5]->addWidget(size);
+    hlayout[5]->addWidget(sizeText);
 
-    hlayout[5]->addStretch();
-    hlayout[5]->addWidget(playBtn);
-    hlayout[5]->addWidget(multiPlayBtn);
-    hlayout[5]->addWidget(stopBtn);
-    hlayout[5]->addStretch();
+    hlayout[6]->addStretch();
+    hlayout[6]->addWidget(playBtn);
+    hlayout[6]->addWidget(multiPlayBtn);
+    hlayout[6]->addWidget(stopBtn);
+    hlayout[6]->addStretch();
 
     vlayout[0]->addWidget(came);
     vlayout[0]->addLayout(hlayout[1]);
@@ -186,6 +198,7 @@ void tabwindow::cameralayout()
     vlayout[0]->addLayout(hlayout[3]);
     vlayout[0]->addLayout(hlayout[4]);
     vlayout[0]->addLayout(hlayout[5]);
+    vlayout[0]->addLayout(hlayout[6]);
 
     cameraGroupBox->setLayout(vlayout[0]);
     cameraGroupBox->setTitle(QStringLiteral("camera:") + status);
@@ -233,12 +246,45 @@ void tabwindow::filelayout()
 void tabwindow::setConnect()
 {
     connect(fpsBox,SIGNAL(valueChanged(int)),came,SLOT(setFPS(int)));
+    connect(sizeText,SIGNAL(currentIndexChanged(QString)),this,SLOT(setSize(QString)));
     connect(timeBox,SIGNAL(valueChanged(int)),came,SLOT(setTime(int)));
     connect(playBtn,SIGNAL(clicked()),came,SLOT(shot()));
     connect(multiPlayBtn,SIGNAL(clicked()),came,SLOT(multishot()));
     connect(stopBtn,SIGNAL(clicked()),came,SLOT(stopshot()));
     connect(prefixText,SIGNAL(currentIndexChanged(QString)),came,SLOT(updatePrefix(QString)));
     connect(chooseCameraText,SIGNAL(currentIndexChanged(int)),this,SLOT(updateIndex(int)));
+}
+/*
+sizeText->addItem(QStringLiteral("3262 x 2448"));
+sizeText->addItem(QStringLiteral("2592 x 1944"));
+sizeText->addItem(QStringLiteral("1600 x 1200"));
+sizeText->addItem(QStringLiteral("1280 x 960 "));
+sizeText->addItem(QStringLiteral("1024 x 768 "));
+sizeText->addItem(QStringLiteral("800  x 600 "));
+sizeText->addItem(QStringLiteral("640  x 480 "));*/
+void tabwindow::setSize(QString size)
+{
+    if(size.compare("3262 x 2448")==0){
+        came->setSize(3262,2448);
+    }
+    else if(size.compare("2592 x 1944")==0){
+        came->setSize(2592,1944);
+    }
+    else if(size.compare("1600 x 1200")==0){
+        came->setSize(1600,1200);
+    }
+    else if(size.compare("1280 x 960 ")==0){
+        came->setSize(1280,960);
+    }
+    else if(size.compare("800  x 600 ")==0){
+        came->setSize(800,600);
+    }
+    else if(size.compare("1024 x 768 ")==0){
+        came->setSize(1024,768);
+    }
+    else if(size.compare("640  x 480 ")==0){
+        came->setSize(640,480);
+    }
 }
 
 void tabwindow::updateIndex(int in)

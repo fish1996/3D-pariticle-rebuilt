@@ -10,7 +10,6 @@ reBuilt::reBuilt(string tempfilename1,vector<string>& filename,
                  double zmin1, double zmax1, double lamda1,
                  double pixelsize, double interval,progressbar* bar)
 {
-  //  qDebug()<<"com here";
     inum=0;
     mybar = bar;
     closeflag = false;
@@ -25,7 +24,6 @@ reBuilt::reBuilt(string tempfilename1,vector<string>& filename,
 
 void reBuilt::start()
 {
- //   int count = 0;
     for(int i = 0;i < name.size();i++){
         Mat image2;
         image2=imread(name[i],CV_LOAD_IMAGE_GRAYSCALE);

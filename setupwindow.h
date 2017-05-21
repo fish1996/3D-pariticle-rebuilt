@@ -50,7 +50,7 @@ private:
     void setConnect();
     enum{
         VMAX = 4,
-        HMAX = 6
+        HMAX = 7
     };
     imgAttr_t imgAttr;
     Button* playBtn;
@@ -68,6 +68,7 @@ private:
     QLabel* exposureTime;
     QLabel* cameraPicture;
     QLabel* chooseCamera;
+    QLabel* size;
 
     QLineEdit* pathText;
 
@@ -80,6 +81,7 @@ private:
 public:
     Button* stopBtn;
     camera* came;
+    QComboBox* sizeText;
     QComboBox* prefixText;
     QComboBox* chooseCameraText;
     QString path;
@@ -90,6 +92,7 @@ public:
     tabwindow(QTabWidget* parent = 0);
 private slots:
     void setPath();
+    void setSize(QString);
     void updateIndex(int in);
 };
 
@@ -150,6 +153,7 @@ public:
     void closeCamera();
 private slots:
     void play();
+
     void indexChanged(int index);
 public slots:
     void findCamera();

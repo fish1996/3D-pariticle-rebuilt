@@ -11,11 +11,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include "mclmcr.h"
-#include "dwt22.h"
-#include "idwt22.h"
-#include "matrix.h"
-#include "mclcppclass.h"
+
 
 using namespace std;
 using namespace cv;

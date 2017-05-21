@@ -295,7 +295,7 @@ QString framewindow::getPath()
 
 void framewindow::setPlace(int x ,int y)
 {
-    sca->move(x,y);
+    sca->Move(x,y);
 }
 
 
@@ -986,11 +986,66 @@ void showtabwindow::setRadius(double* min,double* max)
 
 int showtabwindow::sizeX()
 {
-        return frameWindow->sizeX();
+    return frameWindow->sizeX();
 }
 
 int showtabwindow::sizeY()
 {
-     return frameWindow->sizeY();
+    return frameWindow->sizeY();
+}
 
+void showtabwindow::moveLeft()
+{
+    frameWindow->getSca()->moveLeft();
+    figWindow->getSca()->moveLeft();
+    detectWindow->getSca()->moveLeft();
+}
+
+void showtabwindow::moveRight()
+{
+    frameWindow->getSca()->moveRight();
+    figWindow->getSca()->moveRight();
+    detectWindow->getSca()->moveRight();
+}
+
+void showtabwindow::moveFront()
+{
+    frameWindow->getSca()->moveFront();
+    figWindow->getSca()->moveFront();
+    detectWindow->getSca()->moveFront();
+}
+
+void showtabwindow::moveBack()
+{
+    frameWindow->getSca()->moveBack();
+    figWindow->getSca()->moveBack();
+    detectWindow->getSca()->moveBack();
+}
+
+int showtabwindow::getCurX()
+{
+    if(Index == 0) {
+        return frameWindow->getSca()->getCurX();
+    }
+    else if(Index == 2) {
+        return figWindow->getSca()->getCurX();
+    }
+    else if(Index == 3){
+        return detectWindow->getSca()->getCurX();
+    }
+    return 0;
+}
+
+int showtabwindow::getCurY()
+{
+    if(Index == 0) {
+        return frameWindow->getSca()->getCurY();
+    }
+    else if(Index == 2) {
+        return figWindow->getSca()->getCurY();
+    }
+    else if(Index == 3){
+        return detectWindow->getSca()->getCurY();
+    }
+    return 0;
 }

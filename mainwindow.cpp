@@ -698,7 +698,8 @@ void mainwindow::importBackgroundImg()
 void mainwindow::setup()
 {
     if(setupDialog->isCreate)return;
-
+    msg.placex = showWindow->getCurX();
+    msg.placey = showWindow->getCurY();
     setupDialog = new setupdialog(showWindow->sizeX(),showWindow->sizeY(),preAttr,&namelist,&map,setupWindow->dpixText->text().toDouble(),&msg);
     setupDialog->show();
     connect(setupDialog->okBtn,SIGNAL(clicked()),this,SLOT(setupOk()));
@@ -799,7 +800,18 @@ void mainwindow::keyPressEvent(QKeyEvent* event)
     else if(viewWindow->isIn && event->key() == SHIFT) {
         viewWindow->pressShift();
     }
-
+    else if(event->key() == Qt::Key_D) {
+        showWindow->moveRight();
+    }
+    else if(event->key() == Qt::Key_A) {
+        showWindow->moveLeft();
+    }
+    else if(event->key() == Qt::Key_W) {
+        showWindow->moveFront();
+    }
+    else if(event->key() == Qt::Key_S) {
+        showWindow->moveBack();
+    }
 }
 
 void mainwindow::closeEvent(QCloseEvent*)

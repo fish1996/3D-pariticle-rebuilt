@@ -25,8 +25,6 @@ void setupdialog::Add()
     addattrWindow = new addattrwindow();
     addattrWindow->show();
     connect(addattrWindow,SIGNAL(updateAttr(QString,premessage_t)),this,SLOT(updateAttr(QString,premessage_t)));
-   // connect(addattrWindow->cancelBtn,SIGNAL(clicked()),this,SLOT(cancelAddAttr()));
-
 }
 
 void setupdialog::closeEvent(QCloseEvent*)
@@ -166,6 +164,7 @@ void setupdialog::layout()
     place = new QLabel(QStringLiteral("比例尺位置"));
     place_x = new QLabel(QStringLiteral("x:"));
     place_y = new QLabel(QStringLiteral("y:"));
+    um = new QLabel(QStringLiteral("um"));
 
     for(int i=0;i<HMAX;i++){
         hlayout[i] = new QHBoxLayout();
@@ -179,9 +178,9 @@ void setupdialog::layout()
     line2->setText(QString::number(message->detection2));
     line3->setText(QString::number(message->detection3));
 
-    maxRadiusText->setRange(1,10000);
-    scaleLengthText->setRange(10,200);
-    //qDebug()<<"sizex = "<<sizex;
+    maxRadiusText->setRange(1,100);
+    scaleLengthText->setRange(10,2000);
+
     placeXText->setRange(1,sizex - 50);
     placeYText->setRange(1,sizey - 50);
     fileDirText->setText(message->path);
@@ -193,12 +192,6 @@ void setupdialog::layout()
     intervalText->setValue(message->interval);
     attrBox->setCurrentText(preattr);
 
-/*
-    if(preattr=="")setValue(0);
-    else {
-        attrBox->setCurrentText(preattr);
-        setValue(attrBox->currentIndex());
-    }*/
     hlayout[0]->addWidget(detection);
     hlayout[0]->addWidget(line1);
     hlayout[0]->addWidget(line2);
@@ -222,6 +215,7 @@ void setupdialog::layout()
     hlayout[4]->addWidget(intervalText);
     hlayout[4]->addWidget(scaleLength);
     hlayout[4]->addWidget(scaleLengthText);
+    hlayout[4]->addWidget(um);
 
     hlayout[5]->addWidget(place);
     hlayout[5]->addWidget(place_x);
@@ -233,7 +227,6 @@ void setupdialog::layout()
     hlayout[6]->addWidget(okBtn);
     hlayout[6]->addWidget(cancelBtn);
 
-
     vlayout[0]->addLayout(hlayout[0]);
     vlayout[0]->addLayout(hlayout[1]);
     vlayout[0]->addLayout(hlayout[2]);
@@ -241,7 +234,7 @@ void setupdialog::layout()
     vlayout[0]->addLayout(hlayout[4]);
     vlayout[0]->addLayout(hlayout[5]);
     vlayout[0]->addLayout(hlayout[6]);
-    //qDebug()<<"fffffff";
+
     setWindowModality(Qt::ApplicationModal);
     //setWindowFlags(Qt::WindowStaysOnTopHint);
     setWindowTitle(QStringLiteral("设置"));
@@ -258,7 +251,7 @@ void setupdialog::setValue(int i)
     line2->setText((*map)[name].detection2);
     line3->setText((*map)[name].detection3);
 
-    maxRadiusText->setRange(0,100000);
+    maxRadiusText->setRange(1,100);
     fileDirText->setText((*map)[name].path);
 
     minRadiusText->setValue((*map)[name].minRadius.toInt());

@@ -26,6 +26,7 @@ private:
     Mat image;
     int count;
     int count1;
+    int cur;
     int total;
     QTimer *timer;
     QHBoxLayout* hlayout;
@@ -58,6 +59,7 @@ public slots:
     void shot();
     void setFPS(int num);
     void setTime(int num);
+    void setSize(int w,int h);
     void updatePrefix(QString);
     void multishot();
     void stopshot();

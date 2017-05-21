@@ -73,16 +73,14 @@ HEADERS  += mainwindow.h \
     toolwindow.h \
     viewwindow.h \
     imginverse.h \
-    extend.h \
     thread.h \
     detect.h \
     locate.h \
     position.h \
-    dwt22.h \
-    idwt22.h \
     engine.h \
     savewindow.h \
-    matrix.h
+    matrix.h \
+    extend.h
 
 FORMS    += \
     frmmessagebox.ui \

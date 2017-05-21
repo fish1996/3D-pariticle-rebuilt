@@ -8,7 +8,7 @@
 #include <QTimer>
 #include <QPainter>
 #include <QWaitCondition>
-
+#include <QFileInfo>
 
 #define nullptr 0
 void test();
@@ -30,6 +30,15 @@ void camera::shot()
 
 void camera::saveImage()
 {
+    QString name;
+    for(int i = cur;;i++){
+        name = path + "photo" + QString::number(i) + "." + prefix;
+        QFileInfo file(name);
+        if(!file.exists()){
+            cur = i + 1;
+            break;
+        }
+    }
     pixmap->save(path + "photo." + prefix);
 }
 
@@ -44,7 +53,7 @@ void camera::multishot()
     multiflag = true;
     timer->stop();
 
-    capture.set(CV_CAP_PROP_EXPOSURE,time);
+
     capture.set(CV_CAP_PROP_FPS,fps);
 
     //20fps = 每秒20次，1次1/20秒，即1/20*1000 = 50ms
@@ -63,10 +72,12 @@ void camera::stopshot()
 void camera::setTime(int num)
 {
     time = num;
+    capture.set(CV_CAP_PROP_EXPOSURE,time);
 }
 
 camera::camera(QWidget* parent) :QWidget(parent)
 {
+    cur = 1;
     flag = false;
     isOpen = false;
     multiflag = false;
@@ -81,6 +92,12 @@ camera::camera(QWidget* parent) :QWidget(parent)
     total = 2;
     updateDeviceNum();
     connect(timer,SIGNAL(timeout()),this,SLOT(changeState()));
+}
+
+void camera::setSize(int w,int h)
+{
+    capture.set(CV_CAP_PROP_FRAME_WIDTH, w);
+    capture.set(CV_CAP_PROP_FRAME_HEIGHT, h);
 }
 
 void camera::updateDeviceNum()

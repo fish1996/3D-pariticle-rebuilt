@@ -39,6 +39,7 @@ private:
     QLabel* place;
     QLabel* place_x;
     QLabel* place_y;
+    QLabel* um;
     message_t* message;
 
     QLabel* preAttr;
@@ -74,7 +75,6 @@ public:
     QSpinBox* maxRadiusText;
     QSpinBox* placeXText;
     QSpinBox* placeYText;
-    //QCheckBox* isInverse;
     QVector<QString>* namelist;
     setupdialog(int sizex,int sizey,QString preattr,QVector<QString>* namelist,map_t* map,double size,message_t* msg,QWidget* parent = 0);
     ~setupdialog();
