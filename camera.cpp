@@ -9,7 +9,7 @@
 #include <QPainter>
 #include <QWaitCondition>
 #include <QFileInfo>
-
+#include <QDateTime>
 #define nullptr 0
 void test();
 using namespace cv;
@@ -30,16 +30,9 @@ void camera::shot()
 
 void camera::saveImage()
 {
-    QString name;
-    for(int i = cur;;i++){
-        name = path + "photo" + QString::number(i) + "." + prefix;
-        QFileInfo file(name);
-        if(!file.exists()){
-            cur = i + 1;
-            break;
-        }
-    }
-    pixmap->save(path + "photo." + prefix);
+    QDateTime time = QDateTime::currentDateTime();//获取系统现在的时间
+    QString str = time.toString("yyyy-MM-dd hh:mm:ss"); //设置显示格式
+    pixmap->save(path + str + "." + prefix);
 }
 
 void camera::setPath(QString p)
