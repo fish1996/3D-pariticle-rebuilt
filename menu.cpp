@@ -33,7 +33,6 @@ void menu::layout()
     findCamera = new QAction(this);
     importBackgroundAction = new QAction(this);
 
-   // importAction->setText(QStringLiteral("&导入原图"));
     importBackgroundAction->setText(QStringLiteral("&导入背景"));
     changeAction1->setText(QStringLiteral("改变比例尺颜色"));
     changeAction1->setIcon(QIcon(":/image/colorpick1.ico"));

@@ -1033,7 +1033,7 @@ int showtabwindow::getCurX()
     else if(Index == 3){
         return detectWindow->getSca()->getCurX();
     }
-    return 0;
+    return frameWindow->getSca()->getCurX();
 }
 
 int showtabwindow::getCurY()
@@ -1047,5 +1047,5 @@ int showtabwindow::getCurY()
     else if(Index == 3){
         return detectWindow->getSca()->getCurY();
     }
-    return 0;
+   return frameWindow->getSca()->getCurY();
 }

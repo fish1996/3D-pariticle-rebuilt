@@ -31,12 +31,15 @@ void camera::shot()
 void camera::saveImage()
 {
     QDateTime time = QDateTime::currentDateTime();//获取系统现在的时间
-    QString str = time.toString("yyyy-MM-dd hh:mm:ss"); //设置显示格式
+    QString str = time.toString("yyyyMMddhhmmss"); //设置显示格式
     pixmap->save(path + str + "." + prefix);
+    QMessageBox::critical(NULL, "Error",path + str + "." + prefix,
+                          QMessageBox::Yes);
 }
 
 void camera::setPath(QString p)
 {
+    qDebug()<<"path="<<p;
     path = p;
 }
 

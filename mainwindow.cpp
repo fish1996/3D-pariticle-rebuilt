@@ -101,22 +101,17 @@ void mainwindow::loadAttr()
             }
             else if(str[i]=='\n'){
                 QString name = strlist[0];
-           //     qDebug()<<"name="<<name;
                 premessage_t pmsg;
                 pmsg.zmin = strlist[1];
                 pmsg.zmax = strlist[2];
                 pmsg.interval = strlist[3];
                 pmsg.lamda = strlist[4];
-             //   qDebug()<<"name="<<name;
-               // pmsg.Mag = strlist[5];
                 pmsg.dpix = strlist[5];
                 pmsg.detection1 = strlist[6];
                 pmsg.detection2 = strlist[7];
                 pmsg.detection3 = strlist[8];
-              //  qDebug()<<"name="<<name;
                 pmsg.path = strlist[9];
                 pmsg.minRadius = strlist[10];
-                qDebug()<<"name="<<name;
                 pmsg.maxRadius = strlist[11];
                 pmsg.plotnum = strlist[12];
                 map[name] = pmsg;

@@ -21,7 +21,6 @@ class reBuilt :public QObject
 {
     Q_OBJECT
 public:
- //   enum{OPENCVERR = 3};
     bool closeflag;
     void start();
     const char* errmsg;

@@ -79,7 +79,6 @@ void removeattrwindow::removeAttr()
     QMap<QString,premessage_t>::iterator it;
     it = map->find(name);
     if(it!=map->end()){
-        //qDebug()<<"erase";
         map->erase(it);
     }
 
@@ -91,12 +90,10 @@ void removeattrwindow::removeAttr()
             << (*map)[(*namelist)[i]].zmax.toStdString() << " "
             << (*map)[(*namelist)[i]].interval.toStdString() << " "
             << (*map)[(*namelist)[i]].lamda.toStdString() << " "
-           // << (*map)[(*namelist)[i]].Mag.toStdString() << " "
             << (*map)[(*namelist)[i]].dpix.toStdString() << " "
             << (*map)[(*namelist)[i]].detection1.toStdString() << " "
             << (*map)[(*namelist)[i]].detection2.toStdString() << " "
             << (*map)[(*namelist)[i]].detection3.toStdString() << " "
-           // << (*map)[(*namelist)[i]].location.toStdString() << " "
             << (*map)[(*namelist)[i]].path.toStdString() << " "
             << (*map)[(*namelist)[i]].minRadius.toStdString() << " "
             << (*map)[(*namelist)[i]].maxRadius.toStdString() << " "

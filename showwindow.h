@@ -7,7 +7,6 @@
 #include <QTabWidget>
 #include <QLabel>
 
-//#include <opencv2/opencv.hpp>
 #include "openglwindow.h"
 #include "attr.h"
 class plotwindow;

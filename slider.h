@@ -17,7 +17,6 @@ private:
     QHBoxLayout* hlayout;
     QHBoxLayout* hlayout1;
     QVBoxLayout* vlayout;
-   // QLineEdit* location;
 
     QLineEdit* label;
 

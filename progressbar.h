@@ -24,7 +24,6 @@ public slots:
     void changeState();
     void display();
 signals:
- //   void allfinish(int);
     void isClose();
 };
 

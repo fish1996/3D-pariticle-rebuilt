@@ -6,7 +6,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGroupBox>
-#include <QPainter>0
+#include <QPainter>
 #include <QDateTime>
 #include <QFileDialog>
 #include <qDebug>
@@ -254,14 +254,7 @@ void tabwindow::setConnect()
     connect(prefixText,SIGNAL(currentIndexChanged(QString)),came,SLOT(updatePrefix(QString)));
     connect(chooseCameraText,SIGNAL(currentIndexChanged(int)),this,SLOT(updateIndex(int)));
 }
-/*
-sizeText->addItem(QStringLiteral("3262 x 2448"));
-sizeText->addItem(QStringLiteral("2592 x 1944"));
-sizeText->addItem(QStringLiteral("1600 x 1200"));
-sizeText->addItem(QStringLiteral("1280 x 960 "));
-sizeText->addItem(QStringLiteral("1024 x 768 "));
-sizeText->addItem(QStringLiteral("800  x 600 "));
-sizeText->addItem(QStringLiteral("640  x 480 "));*/
+
 void tabwindow::setSize(QString size)
 {
     if(size.compare("3262 x 2448")==0){
@@ -384,7 +377,6 @@ void setupwindow::layout()
     zmax = new QLabel(QStringLiteral("重建终点"));
     interval = new QLabel(QStringLiteral("平面间距"));
     lamda = new QLabel(QStringLiteral("重建波长"));
-   // Mag = new QLabel(QStringLiteral("放大倍数"));
     dpix = new QLabel(QStringLiteral("像素尺寸"));
     cm[0] = new QLabel(QStringLiteral("cm"));
     cm[1] = new QLabel(QStringLiteral("cm"));
@@ -442,7 +434,6 @@ void setupwindow::layout()
     window->setLayout(vlayout[1]);
 
     QWidget* title;
- //   title->setFixedHeight(30);
     dock = new QDockWidget(QStringLiteral("参数"),this);
     dock->setFeatures(QDockWidget::DockWidgetFloatable);
     if(title = dock->titleBarWidget()){
@@ -496,7 +487,6 @@ void setupwindow::indexChanged(int index)
 
 void setupwindow::play()
 {
-    //qDebug()<<"num = "<<tabWindow->came->deviceNum;
     if(tabWindow->came->deviceNum == 0){
         return;
     }

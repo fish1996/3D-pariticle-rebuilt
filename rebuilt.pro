@@ -19,9 +19,7 @@ SOURCES += main.cpp\
     button.cpp \
     camera.cpp \
     catalog.cpp \
-    frmmessagebox.cpp \
     holdbutton.cpp \
-    iconhelper.cpp \
     initwindow.cpp \
     menu.cpp \
     openglwindow.cpp \
@@ -51,13 +49,10 @@ HEADERS  += mainwindow.h \
     button.h \
     camera.h \
     catalog.h \
-    frmmessagebox.h \
     holdbutton.h \
-    iconhelper.h \
     initwindow.h \
     menu.h \
     message.h \
-    myhelper.h \
     openglwindow.h \
     plotwindow.h \
     premessage.h \
@@ -79,11 +74,8 @@ HEADERS  += mainwindow.h \
     position.h \
     engine.h \
     savewindow.h \
-    matrix.h \
     extend.h
 
-FORMS    += \
-    frmmessagebox.ui \
 
 MOC_DIR=temp/moc
 RCC_DIR=temp/rcc

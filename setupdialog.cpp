@@ -92,39 +92,7 @@ void setupdialog::choose()
 
 setupdialog::~setupdialog()
 {
-//    disconnect(addAttrBtn,0,this,0);
-//    disconnect(removeAttrBtn,0,this,0);
-
-    //qDebug()<<"~setupdialog";
     isCreate = false;
-/*    delete line1;
-    delete line2;
-    delete line3;
-    delete fileDirText;
-
-    delete intervalText;
-    delete minRadiusText;
-    delete maxRadiusText;
-
-    delete detection;
-    delete chooseDir;
-    delete addAttrBtn;
-    delete removeAttrBtn;
-
-   // delete isInverse;
-
-    delete fileDir;
-    delete interval;
-    delete minRadius;
-    delete maxRadius;
-    delete preAttr;
-
-    for(int i=0;i<HMAX;i++){
-        delete hlayout[i];
-    }
-    for(int i=0;i<VMAX;i++){
-        delete vlayout[i];
-    }*/
 }
 
 void setupdialog::layout()

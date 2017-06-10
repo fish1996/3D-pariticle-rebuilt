@@ -18,8 +18,7 @@ OpenGLView::OpenGLView()
     attrBox->addItem(QStringLiteral("3D视图"),1);
     attrBox->addItem(QStringLiteral("景深扩展"),2);
     attrBox->addItem(QStringLiteral("颗粒探测"),3);
-    attrBox->setCurrentIndex(1);//qDebug()<<"OpenGLView";
-
+    attrBox->setCurrentIndex(1);
 }
 
 
@@ -108,9 +107,7 @@ void OpenGLView::updateIndex(int _index)
 
 void OpenGLView::initializeGL()
 {
-    //qDebug()<<"initialize";
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
-    //initializeOpenGLFunctions();
 
     glClearColor(0,0,0,1);
     ax = ay = mx = my = 0;
@@ -165,7 +162,7 @@ void OpenGLView::paintGL()
 
 void OpenGLView::drawScene()
 {
-//qDebug()<<"DRAW SCENE";
+
     GLfloat mat_ambient1[] = { 0.192250, 0.192250, 0.192250, 1.000000};
     GLfloat mat_diffuse1[] = { 0.507540, 0.507540, 0.507540, 1.000000};
     GLfloat mat_specular1[] = { 0.508273, 0.508273, 0.508273, 1.000000 };
@@ -256,7 +253,7 @@ void OpenGLView::mouseReleaseEvent(QMouseEvent *e)
 void OpenGLView::wheelEvent(QWheelEvent *event)
 {
     int numDegrees = event->delta()/8;
-    int numSteps=numDegrees/15;
+    int numSteps = numDegrees/15;
     z -= numSteps;
     update();
 }
